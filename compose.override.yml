@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+
+  db:
+    ports:
+      - "5432:5432"
+
+  web:
+    build: .
+    image: django-docker
+    env_file: .env
+    environment:
+      - "DJANGO_ENV=develop"
+    restart: unless-stopped
+    command: ["/docker-cmd.sh", "--debug"]
+    volumes:
+      - "media-data:/var/www/media"
+      - "./nfc_card_game:/usr/src/nfc_card_game"  # mount the source code for watching changes
+    depends_on:
+      - db
+
+
+volumes:
+  postgres-data:
+  media-data:

@@ -1,0 +1,24 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:16.2
+    env_file: .env
+    restart: unless-stopped
+    volumes:
+      - "postgres-data:/var/lib/postgresql/data/"
+
+  web:
+    build: .
+    image: nfc_card_game
+    env_file: .env
+    restart: unless-stopped
+    volumes:
+      - "staticfiles-data:/var/www/static"
+      - "media-data:/var/www/media"
+    depends_on:
+      - db
+
+volumes:
+  postgres-data:
+  staticfiles-data:
+  media-data:
