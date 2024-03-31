@@ -3,7 +3,7 @@ name = "nfc-card-game"
 version = "0.1.0"
 description = ""
 authors = ["Quint van Dijk <quintvdijk@gmail.com>"]
-readme = "README.md"
+readme = "readme.md"
 packages = [{include = "nfc_card_game"}]
 
 [tool.poetry.dependencies]
