@@ -6,18 +6,19 @@ services:
       - "5432:5432"
 
   web:
-    build: .
+    build:
+      target: develop
     image: django-docker
     env_file: .env
     environment:
       - "DJANGO_ENV=develop"
     restart: unless-stopped
-    command: ["/docker-cmd.sh", "--debug"]
+    command: ["/code/docker-cmd.sh", "--debug"]
     volumes:
       - "media-data:/var/www/media"
-      - "./nfc_card_game:/usr/src/nfc_card_game"  # mount the source code for watching changes
-    depends_on:
-      - db
+      - ".:/code"  # mount the source code for watching changes
+    ports:
+      - "8000:8000"
 
 
 volumes:

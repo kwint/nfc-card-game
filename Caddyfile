@@ -11,6 +11,6 @@
 	}
 
 	handle {
-		reverse_proxy django:{$GUNICORN_PORT}
+		reverse_proxy web:8000
 	}
 }

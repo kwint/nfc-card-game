@@ -22,6 +22,14 @@ poetry shell
 
 ## dev:
 
+### via docker
+
+```bash
+docker compose up
+```
+
+### Run django manually
+
 Add this to /etc/hosts
 ```
 127.0.0.1       db
@@ -39,4 +47,6 @@ python manage.py runserver
 
 ## prod:
 
-todo
+```bash
+docker compose up -f compose.yml -f compose.prod.yml up
+```

@@ -1,6 +1,13 @@
 version: "3.9"
 services:
+
+  db:
+    expose:
+      - 5432
+
   web:
+    build:
+      target: production
     environment:
       - "DJANGO_ALLOWED_HOSTS=${MY_DOMAIN}"
       - "DJANGO_CSRF_TRUSTED_ORIGINS=https://${MY_DOMAIN}"
@@ -9,6 +16,10 @@ services:
       - "DJANGO_SECURE_SSL_REDIRECT=true"
       - "DJANGO_ENV=production"
     restart: unless-stopped
+    expose:
+      - 8000
+    command: ["/code/docker-cmd.sh"]
+
 
   caddy:
     image: caddy:2.7-alpine
@@ -18,7 +29,6 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
-      - "443:443"
     volumes:
       - "./Caddyfile:/etc/caddy/Caddyfile:ro"
       - "caddy-data:/data"

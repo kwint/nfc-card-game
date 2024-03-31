@@ -7,6 +7,13 @@ services:
     volumes:
       - "postgres-data:/var/lib/postgresql/data/"
 
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -p 5432 -q -d $POSTGRES_DB -U $POSTGRES_USER"]
+      interval: 5s
+      timeout: 2s
+      retries: 5
+
+
   web:
     build: .
     image: nfc_card_game
@@ -16,7 +23,9 @@ services:
       - "staticfiles-data:/var/www/static"
       - "media-data:/var/www/media"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+
 
 volumes:
   postgres-data:

@@ -11,6 +11,7 @@ python = "^3.11"
 Django = "^5.0.3"
 python-dotenv = "^1.0.1"
 psycopg2 = "^2.9.9"
+gunicorn = "^21.2.0"
 
 
 [tool.poetry.group.dev.dependencies]

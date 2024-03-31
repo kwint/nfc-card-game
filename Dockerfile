@@ -35,14 +35,15 @@ ENV DJANGO_ENV=${DJANGO_ENV} \
 # prepend poetry and venv to path
 ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 
-COPY ./docker/django/entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x "/docker-entrypoint.sh"
-
-ENTRYPOINT ["/docker-entrypoint.sh"]
 
 # System deps:
 RUN apt-get -y update && apt-get install --no-install-recommends -y \
-  git gettext build-essential 
+  git gettext build-essential curl libpq-dev
+
+COPY ./docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x "/docker-entrypoint.sh"
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
 
 FROM python-base as builder-base
 
@@ -58,15 +59,12 @@ COPY poetry.lock pyproject.toml ./
 
 # install runtime deps - uses $POETRY_VIRTUALENVS_IN_PROJECT internally
 RUN --mount=type=cache,target=/root/.cache \
-    poetry install --only main --no-directory
-
-# Copy core and material library and install as package
-COPY ./core $PYSETUP_PATH/core
-RUN --mount=type=cache,target=/root/.cache \
     poetry install --only main
 
-
-FROM python-base as develop
+#############
+# Develop
+#############
+FROM builder-base as develop
 ENV DJANGO_ENV=development
 WORKDIR $PYSETUP_PATH
 
@@ -79,21 +77,17 @@ RUN --mount=type=cache,target=/root/.cache \
     poetry install --with=dev --sync
 
 EXPOSE 8000
-WORKDIR /nfc-card-game
+WORKDIR /code
 
 #############
 # PRODUCTION
-# This steps needs bundled core in metal-cloud/core/dist/metal.exe
 #############
-FROM python-base as production
+FROM builder-base as production
 ENV DJANGO_ENV=production
 
-COPY ./docker/django/cronjob /etc/cron.d/cronjob
-RUN chmod 0644 /etc/cron.d/cronjob && crontab /etc/cron.d/cronjob
-
 COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
-COPY . /nfc-card-game
+COPY . /code
 
-WORKDIR /nfc-card-game
+WORKDIR /code
 
 
