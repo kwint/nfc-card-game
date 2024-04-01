@@ -3,7 +3,7 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-from .models import Player, Post, TeamMine
+from .models import Currency, Player, Post, TeamMine
 
 MINE_OFFLOAD = 200
 
@@ -40,14 +40,16 @@ def handle_post_scan(player: Player, post: Post) -> ActionInfo:
 
 def handle_mine_scan(player: Player, mine: TeamMine) -> ActionInfo:
     for key in mine.inventory.keys():
+        if key in Currency.values:
+            continue
         mine.inventory[key] += player.inventory.pop(key, 0)
 
     # TODO: handle negative case
     # TODO: add timeout between offloads
     mine.inventory[mine.mine.currency] -= MINE_OFFLOAD
-    player.inventory[mine.mine.currency] += MINE_OFFLOAD
+    player.inventory[mine.mine.currency] = player.inventory.get(mine.mine.currency, 0) + MINE_OFFLOAD
 
-    player.inventory.save()
-    mine.inventory.save()
+    player.save()
+    mine.save()
 
     return ActionInfo(log="Goederen afgeleverd en saldo opgewaardeerd!", status="ok")
