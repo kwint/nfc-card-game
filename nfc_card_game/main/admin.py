@@ -39,7 +39,7 @@ class PlayerAdmin(admin.ModelAdmin):
 
 
 class PostAdmin(admin.ModelAdmin):
-    list_display = ["name", "card_uuid", "buys", "sells"]
+    list_display = ["name", "card_uuid", "buys", "sells", "link"]
 
     @mark_safe
     def link(self, obj):
