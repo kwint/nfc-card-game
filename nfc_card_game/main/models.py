@@ -19,8 +19,8 @@ class Team(models.Model):
 
 class Player(models.Model):
     class Section(models.TextChoices):
-        OBV = "OBV", "Ochtend Bevers"
-        MBV = "MBV", "Middag Bevers"
+        OBV = "OBV", "Ochtendbevers"
+        MBV = "MBV", "Middagbevers"
 
         MAL = "MAL", "Malicetehorde"
         SJH = "SJH", "Sint Jorishorde"
@@ -35,11 +35,47 @@ class Player(models.Model):
         EXP = "EXP", "Explorers"
         STAF = "STAF", "Leiding"
 
+        NONE = "", "Not set"
+
     card_uuid = models.CharField(default=short_uuid, max_length=10)
-    name = models.CharField(max_length=100)
-    section = models.CharField(max_length=4, choices=Section)
+    name = models.CharField(max_length=100, blank=True)
+    section = models.CharField(max_length=4, choices=Section, default=Section.NONE)
     team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True)
-    # inventory
+    inventory = models.JSONField(default=dict, blank=True)
 
     def __str__(self):
         return f"{self.name} | {self.section}"
+
+
+class Post(models.Model):
+    card_uuid = models.CharField(default=short_uuid, max_length=10)
+
+    name = models.CharField(max_length=100)
+    buys = models.JSONField(default=dict)
+    sells = models.JSONField(default=dict)
+
+    def __str__(self):
+        return f"Post {self.name}: Sells {self.sells} for {self.buys}"
+
+
+class Currency(models.TextChoices):
+    COIN_BLUE = "BLUE", "Blauwe munt"
+    COIN_RED = "RED ", "Rode munt"
+    COIN_GREEN = "GREEN", "Groene munt"
+
+
+class Mine(models.Model):
+    name = models.CharField(max_length=100)
+    currency = models.CharField(choices=Currency)
+
+    def __str__(self):
+        return f"Mine {self.name} with {self.currency}"
+
+
+class TeamMine(models.Model):
+    mine = models.ForeignKey(Mine, on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    inventory = models.JSONField(default=dict, blank=True)
+
+    def __str__(self):
+        return f"{self.mine} of {self.team}"

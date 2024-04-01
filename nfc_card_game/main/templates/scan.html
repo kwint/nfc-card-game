@@ -8,7 +8,14 @@
 
 <body>
 
-    <p>{{ player.name }} | {{ player.section }} | Team: {{ player.team }}</p>
+    <p>
+        {{ player.name }} | {{ player.section }} | Team: {{ player.team }} <br />
+
+        {% if post %}
+        {{ post.name }}
+        {% endif %}
+
+    </p>
 
 </body>
 
