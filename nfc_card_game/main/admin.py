@@ -19,11 +19,11 @@ class TeamAdmin(admin.ModelAdmin):
 
 
 class PlayerAdmin(admin.ModelAdmin):
-    list_display = ["name", "team", "section"]
+    list_display = ["name", "card_uuid", "team", "section"]
 
 
 class PostAdmin(admin.ModelAdmin):
-    list_display = ["name", "buys", "sells"]
+    list_display = ["name", "card_uuid", "buys", "sells"]
 
 
 class MineAdmin(admin.ModelAdmin):

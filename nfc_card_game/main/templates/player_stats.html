@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Player Stats{% endblock %}
+
+{% block content %}
+
+
+<div class="container py-4 ps-4 bg-primary-subtle">
+    <h1>{{ player.name }} | {{ player.team }} | {{ player.section }}</h1>
+</div>
+
+{% if action %}
+
+{% if action.status == "ok" %}
+<div class="container py-4 ps-4">
+    <p class="my-0">
+        Gekocht:
+    </p>
+    <ul>
+        {% for item, amount in action.bought.items %}
+        <li>{{ amount }}x {{ item }} {{ test }} </li>
+        {% endfor %}
+    </ul>
+    <p class="my-0">
+        Voor:
+    </p>
+    <ul>
+        {% for item, amount in action.costs.items %}
+        <li>{{ amount }}x {{ item }} {{ test }} </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <div class="container py-4 ps-4 text-bg-danger ">
+
+        <p class="my-0">{{ action.status }}</p>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="container ps-4">
+        <h2>Opslag</h2>
+        <ul>
+            {% for item, amount in player.inventory.items %}
+            <li>{{ amount }}x {{ item }} {{ test }} </li>
+            {% endfor %}
+        </ul>
+
+    </div>
+
+
+
+    </p>
+    {% endblock %}
