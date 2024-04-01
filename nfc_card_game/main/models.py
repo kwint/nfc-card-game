@@ -73,6 +73,8 @@ class Mine(models.Model):
 
 
 class TeamMine(models.Model):
+    card_uuid = models.CharField(default=short_uuid, max_length=10)
+
     mine = models.ForeignKey(Mine, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     inventory = models.JSONField(default=dict, blank=True)

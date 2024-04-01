@@ -1,18 +1,28 @@
 from copy import copy
+from typing import Literal
 
-from .models import Player, Post
+from pydantic import BaseModel
 
-from .models import Player, Post
+from .models import Player, Post, TeamMine
+
+MINE_OFFLOAD = 200
 
 
-def execute_transaction(player: Player, post: Post):
+class ActionInfo(BaseModel):
+    log: str = ""
+    status: Literal["ok", "error"] = "ok"
+    bought: dict[str, int | float] = {}
+    costs: dict[str, int | float] = {}
+
+
+def handle_post_scan(player: Player, post: Post) -> ActionInfo:
     player_inv = copy(player.inventory)
 
     for item, amount in post.buys.items():
         player_inv[item] = player_inv.get(item, 0) - amount
 
     if any(val < 0 for val in player_inv.values()):
-        return {"status": "Niet genoeg geld!"}
+        return ActionInfo(log="Niet genoeg geld!", status="error")
 
     for item, amount in post.sells.items():
         player_inv[item] = player_inv.get(item, 0) + amount
@@ -20,4 +30,24 @@ def execute_transaction(player: Player, post: Post):
     player.inventory = player_inv
     player.save()
 
-    return {"status": "ok", "bought": post.sells, "costs": post.buys}
+    return ActionInfo(
+        log="Spullen gekocht",
+        bought=post.sells,
+        costs=post.buys,
+        status="ok",
+    )
+
+
+def handle_mine_scan(player: Player, mine: TeamMine) -> ActionInfo:
+    for key in mine.inventory.keys():
+        mine.inventory[key] += player.inventory.pop(key, 0)
+
+    # TODO: handle negative case
+    # TODO: add timeout between offloads
+    mine.inventory[mine.mine.currency] -= MINE_OFFLOAD
+    player.inventory[mine.mine.currency] += MINE_OFFLOAD
+
+    player.inventory.save()
+    mine.inventory.save()
+
+    return ActionInfo(log="Goederen afgeleverd en saldo opgewaardeerd!", status="ok")

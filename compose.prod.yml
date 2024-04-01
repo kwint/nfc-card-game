@@ -16,6 +16,7 @@ services:
       - "DJANGO_SECURE_SSL_REDIRECT=true"
       - "DJANGO_ENV=production"
     restart: unless-stopped
+    
     expose:
       - 8000
     command: ["/code/docker-cmd.sh"]
