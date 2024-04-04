@@ -1,6 +1,5 @@
 import uuid
 
-from django.contrib import admin
 from django.db import models
 
 # Create your models here.
@@ -41,10 +40,23 @@ class Player(models.Model):
     name = models.CharField(max_length=100, blank=True)
     section = models.CharField(max_length=4, choices=Section, default=Section.NONE)
     team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True)
-    inventory = models.JSONField(default=dict, blank=True)
 
     def __str__(self):
         return f"{self.name} | {self.section}"
+
+class Item(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.name}"
+
+class PlayerItem(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
+    amount = models.IntegerField()
+
+    class Meta:
+        unique_together = ('player', 'item')
 
 
 class Post(models.Model):

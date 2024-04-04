@@ -11,6 +11,7 @@ def index(request):
 
 def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
     player = get_object_or_404(Player, card_uuid=card_uuid)
+    items = player.playeritem_set.all()
 
     action: ActionInfo | None = None
     if post_uuid := request.session.get("post"):
@@ -23,7 +24,7 @@ def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
 
     action_dict = action.model_dump() if action else None
     return render(
-        request, "player_stats.html", {"player": player, "action": action_dict}
+        request, "player_stats.html", {"player": player, "action": action_dict, "items": items}
     )
 
 

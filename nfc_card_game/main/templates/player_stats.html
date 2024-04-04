@@ -49,7 +49,11 @@
             <li>{{ amount }}x {{ item }} {{ test }} </li>
             {% endfor %}
         </ul>
-
+        <ul>
+          {% for item in items %}
+            <li>{{ item.item.name }}: {{ item.amount }}</li>
+          {% endfor %}
+        </ul>
     </div>
 
 
