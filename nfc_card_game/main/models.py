@@ -50,6 +50,7 @@ class Item(models.Model):
     def __str__(self):
         return f"{self.name}"
 
+
 class PlayerItem(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
@@ -63,12 +64,19 @@ class Post(models.Model):
     card_uuid = models.CharField(default=short_uuid, max_length=10)
 
     name = models.CharField(max_length=100)
-    buys = models.JSONField(default=dict)
-    sells = models.JSONField(default=dict)
+    sells = models.ForeignKey(Item, on_delete=models.CASCADE)
+    sell_amount = models.PositiveIntegerField()
 
     def __str__(self):
-        return f"Post {self.name}: Sells {self.sells} for {self.buys}"
+        return f"Post {self.name}: "
 
+class PostRecipe(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    amount = models.PositiveIntegerField()
+
+    class Meta:
+        unique_together = ("post", "item")
 
 class Currency(models.TextChoices):
     COIN_BLUE = "BLUE", "Blauwe munt"

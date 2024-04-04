@@ -1,8 +1,8 @@
 from django.http import HttpResponse, HttpRequest
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, get_list_or_404
 
 from .logic import ActionInfo, handle_mine_scan, handle_post_scan
-from .models import Player, Post, TeamMine
+from .models import Player, Post, TeamMine, PostRecipe
 
 
 def index(request):
@@ -30,9 +30,12 @@ def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
 
 def post(request: HttpRequest, card_uuid: str) -> HttpResponse:
     post = get_object_or_404(Post, card_uuid=card_uuid)
+    buys = get_list_or_404(PostRecipe, post=post.pk)
     request.session["post"] = post.card_uuid
     request.session.pop("mine", None)
 
+
+    return render(request, "post.html", {"post": post, "buys": buys})
     return HttpResponse(f"{post.name} logged in")
 
 

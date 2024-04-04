@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from nfc_card_game.main.models import Mine, Player, Post, Team, TeamMine, PlayerItem, Item
+from nfc_card_game.main.models import Mine, Player, Post, Team, TeamMine, PlayerItem, Item, PostRecipe 
 
 # Register your models here.
 
@@ -17,6 +17,9 @@ class TeamMineInLine(admin.TabularInline):
 
 class PlayerItemInline(admin.TabularInline):
     model = PlayerItem
+
+class PostRecipeInline(admin.TabularInline):
+    model = PostRecipe
 
 class TeamMineAdmin(admin.ModelAdmin):
     list_display = ["mine", "team", "link"]
@@ -45,7 +48,8 @@ class PlayerItemAdmin(admin.ModelAdmin):
 
 
 class PostAdmin(admin.ModelAdmin):
-    list_display = ["name", "card_uuid", "buys", "sells", "link"]
+    list_display = ["name", "card_uuid", "sells", "sell_amount", "link"]
+    inlines = [PostRecipeInline]
 
     @mark_safe
     def link(self, obj):
@@ -61,6 +65,9 @@ class ItemAdmin(admin.ModelAdmin):
     list_display = ["name",]
 
 
+class PostRecipeAdmin(admin.ModelAdmin):
+    list_display = ['item', 'amount', 'post']
+
 admin.site.register(Team, TeamAdmin)
 admin.site.register(Player, PlayerAdmin)
 admin.site.register(Post, PostAdmin)
@@ -68,3 +75,4 @@ admin.site.register(Mine, MineAdmin)
 admin.site.register(TeamMine, TeamMineAdmin)
 admin.site.register(PlayerItem, PlayerItemAdmin)
 admin.site.register(Item, ItemAdmin)
+admin.site.register(PostRecipe, PostRecipeAdmin)
