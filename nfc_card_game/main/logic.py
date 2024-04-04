@@ -11,8 +11,8 @@ MINE_OFFLOAD = 200
 class ActionInfo(BaseModel):
     log: str = ""
     status: Literal["ok", "error"] = "ok"
-    bought: dict[str, int | float] = {}
-    costs: dict[str, int | float] = {}
+    bought: dict[str, int | float] | None = None
+    costs: dict[str, int | float] | None = None
 
 
 def handle_post_scan(player: Player, post: Post) -> ActionInfo:
