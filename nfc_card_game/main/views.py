@@ -11,19 +11,17 @@ def index(request):
 
 def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
     player = get_object_or_404(Player, card_uuid=card_uuid)
+    player_item = PlayerItem.objects.filter(player=player)
     items = player.playeritem_set.all()
 
     action: ActionInfo | None = None
     if post_uuid := request.session.get("post"):
         post_recipes = PostRecipe.objects.filter(post__card_uuid=post_uuid)
-        player = get_object_or_404(Player, card_uuid=card_uuid)
-        player_item = PlayerItem.objects.filter(player=player)
-
         action = handle_post_scan(player, post_recipes, player_item)
 
     if mine_uuid := request.session.get("mine"):
         mine = get_object_or_404(TeamMine, card_uuid=mine_uuid)
-        action = handle_mine_scan(player, mine)
+        action = handle_mine_scan(player_item, player, mine)
 
     action_dict = action.model_dump() if action else None
     return render(

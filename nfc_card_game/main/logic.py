@@ -1,10 +1,8 @@
-from copy import copy
 from typing import Literal
 
 from pydantic import BaseModel
-from django.db.models import F
 
-from .models import Currency, Player, Post, TeamMine, PlayerItem, PostRecipe
+from .models import Player, TeamMine, PlayerItem, PostRecipe
 
 MINE_OFFLOAD = 200
 
@@ -16,7 +14,7 @@ class ActionInfo(BaseModel):
     costs: dict[str, int | float] | None = None
 
 
-def handle_post_scan(player: PlayerItem, post_recipes: PostRecipe, player_items: PlayerItem) -> ActionInfo:
+def handle_post_scan(player: Player, post_recipes: PostRecipe, player_items: PlayerItem) -> ActionInfo:
 
     for recipe in post_recipes:
         player_item = player_items.filter(player=player, item=recipe.item).first()
@@ -41,18 +39,17 @@ def handle_post_scan(player: PlayerItem, post_recipes: PostRecipe, player_items:
     )
 
 
-def handle_mine_scan(player: Player, mine: TeamMine) -> ActionInfo:
-    for key in mine.inventory.keys():
-        if key in Currency.values:
-            continue
-        mine.inventory[key] += player.inventory.pop(key, 0)
+def handle_mine_scan(player_items: PlayerItem, player: Player, playermine: TeamMine) -> ActionInfo:
 
-    # TODO: handle negative case
-    # TODO: add timeout between offloads
-    mine.inventory[mine.mine.currency] -= MINE_OFFLOAD
-    player.inventory[mine.mine.currency] = player.inventory.get(mine.mine.currency, 0) + MINE_OFFLOAD
+    mines = player_items.filter(item=playermine.mine)
+    if not mines:
+        return ActionInfo(log="Geen mines in inventory!", status='error')
+    
+    mine_instance = mines.first()
+    delivered_amount = mine_instance.amount
+    playermine.amount += mine_instance.amount
+    mine_instance.amount = 0
+    mine_instance.save()
+    playermine.save()
 
-    player.save()
-    mine.save()
-
-    return ActionInfo(log="Goederen afgeleverd en saldo opgewaardeerd!", status="ok")
+    return ActionInfo(log=f"{delivered_amount} Mines afgeleverd en saldo opgewaardeerd!", status="ok")

@@ -44,8 +44,17 @@ class Player(models.Model):
     def __str__(self):
         return f"{self.name} | {self.section}"
 
+
+class Currency(models.TextChoices):
+    COIN_BLUE = "BLUE", "Blauwe munt"
+    COIN_RED = "RED ", "Rode munt"
+    COIN_GREEN = "GREEN", "Groene munt"
+
+
 class Item(models.Model):
     name = models.CharField(max_length=100)
+    currency = models.CharField(null=True, blank=True, choices=Currency)
+    amount = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.name}"
@@ -78,11 +87,6 @@ class PostRecipe(models.Model):
     class Meta:
         unique_together = ("post", "item")
 
-class Currency(models.TextChoices):
-    COIN_BLUE = "BLUE", "Blauwe munt"
-    COIN_RED = "RED ", "Rode munt"
-    COIN_GREEN = "GREEN", "Groene munt"
-
 
 class Mine(models.Model):
     name = models.CharField(max_length=100)
@@ -93,11 +97,13 @@ class Mine(models.Model):
 
 
 class TeamMine(models.Model):
+    mine = models.ForeignKey(Item, on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    amount = models.IntegerField()
     card_uuid = models.CharField(default=short_uuid, max_length=10)
 
-    mine = models.ForeignKey(Mine, on_delete=models.CASCADE)
-    team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    inventory = models.JSONField(default=dict, blank=True)
+    class Meta:
+        unique_together = ("team", "mine")
 
     def __str__(self):
         return f"{self.mine} of {self.team}"
