@@ -2,8 +2,9 @@ from copy import copy
 from typing import Literal
 
 from pydantic import BaseModel
+from django.db.models import F
 
-from .models import Currency, Player, Post, TeamMine
+from .models import Currency, Player, Post, TeamMine, PlayerItem, PostRecipe
 
 MINE_OFFLOAD = 200
 
@@ -15,25 +16,27 @@ class ActionInfo(BaseModel):
     costs: dict[str, int | float] | None = None
 
 
-def handle_post_scan(player: Player, post: Post) -> ActionInfo:
-    player_inv = copy(player.inventory)
+def handle_post_scan(player: PlayerItem, post_recipes: PostRecipe, player_items: PlayerItem) -> ActionInfo:
 
-    for item, amount in post.buys.items():
-        player_inv[item] = player_inv.get(item, 0) - amount
+    for recipe in post_recipes:
+        player_item = player_items.filter(player=player, item=recipe.item).first()
+        if player_item.amount < recipe.amount:
+            return ActionInfo(log=f"Niet genoeg {player_item.item.name}!", status='error')
 
-    if any(val < 0 for val in player_inv.values()):
-        return ActionInfo(log="Niet genoeg geld!", status="error")
+    for recipe in post_recipes:
+        player_item = player_items.get(player=player, item=recipe.item)
+        player_item.amount -= recipe.amount
+        player_item.save()
 
-    for item, amount in post.sells.items():
-        player_inv[item] = player_inv.get(item, 0) + amount
+    sell_item, created = player_items.get_or_create(player=player, item=post_recipes.first().post.sells, defaults={'amount': 1})
 
-    player.inventory = player_inv
-    player.save()
+    print(sell_item.item, "created", created, player_item.amount)
+    if not created:
+        sell_item.amount = sell_item.amount + post_recipes.first().post.sell_amount
+        sell_item.save()
 
     return ActionInfo(
         log="Spullen gekocht",
-        bought=post.sells,
-        costs=post.buys,
         status="ok",
     )
 

@@ -45,11 +45,6 @@
     <div class="container ps-4">
         <h2>Opslag</h2>
         <ul>
-            {% for item, amount in player.inventory.items %}
-            <li>{{ amount }}x {{ item }} {{ test }} </li>
-            {% endfor %}
-        </ul>
-        <ul>
           {% for item in items %}
             <li>{{ item.item.name }}: {{ item.amount }}</li>
           {% endfor %}

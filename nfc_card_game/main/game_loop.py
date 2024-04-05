@@ -4,7 +4,8 @@ import time
 
 
 def game_loop():
-    print("loopie")
+    # print("loopie")
+    pass
 
 def start_scheduler():
     scheduler = Scheduler()
