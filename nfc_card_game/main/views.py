@@ -1,5 +1,6 @@
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import get_object_or_404, render, get_list_or_404
+from django.core import serializers
 
 from .logic import ActionInfo,  handle_post_scan
 from .models import Player, Post, TeamMine, PostRecipe, PlayerItem
@@ -38,5 +39,13 @@ def post(request: HttpRequest, card_uuid: str) -> HttpResponse:
 
 
     return render(request, "post.html", {"post": post, "buys": buys})
+
+def dashboard(request: HttpRequest) -> HttpResponse:
+    pi = serializers.serialize("json",PlayerItem.objects.all() )
+    tm = serializers.serialize("json",TeamMine.objects.all() )
+    data = {"player_items": pi, "team_mines": tm}
+    return render(
+        request, "dashboard.html", data
+    )
 
 

@@ -4,17 +4,35 @@
 
 {% block content %}
 
-
-<div class="container py-4 ps-4 bg-primary-subtle">
-    <h1>{{ post.name }} | Verkoopt: {{ post.sells.name }}</h1>
+<div class="container pt-2">
+  <div class="accordion card shadow">
+    <div class="card-header align-items-center">
+      <h3 class="m-0">Aangemeld als {{ post.name }}, dit verkoop jij</h3>
+    </div>
+    <div class="card-body">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th colspan="2" scope="col">Verkoop</th>
+            <th style="border-left: 1px solid #000" colspan="2" scope="col">Voor</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in buys %}
+            <tr>
+              {% if forloop.counter0 == 0 %}
+                <td>{{ post.sell_amount}}</td>
+                <td>{{ post.sells.name }}</td>
+              {% else %}
+                <td colspan="2"></td>
+              {% endif %}
+              <td style="border-left: 1px solid #000">{{ item.amount }}</td>
+              <td>{{ item.item.name }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+  </div>
 </div>
 
-<div class="container py-4 ps-4">
-  <p class="my-0">Koop {{ post.sell_amount }} {{ post.sells.name }} voor:</p>
-  <ul>
-    {% for item in buys %}
-      <li> {{ item.item.name }}: {{ item.amount }} </li>
-    {% endfor %}
-
-
-    {% endblock %}
+{% endblock %}
