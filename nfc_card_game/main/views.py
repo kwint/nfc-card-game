@@ -38,11 +38,5 @@ def post(request: HttpRequest, card_uuid: str) -> HttpResponse:
 
 
     return render(request, "post.html", {"post": post, "buys": buys})
-    return HttpResponse(f"{post.name} logged in")
 
 
-def mine(request: HttpRequest, card_uuid: str) -> HttpResponse:
-    mine = get_object_or_404(TeamMine, card_uuid=card_uuid)
-    request.session["mine"] = mine.card_uuid
-    request.session.pop("post", None)
-    return HttpResponse(f"{mine.mine.name} for {mine.team.name} logged in")

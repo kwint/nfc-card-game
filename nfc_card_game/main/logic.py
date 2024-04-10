@@ -24,7 +24,7 @@ def handle_post_scan(player: Player, post_recipes: PostRecipe, player_items: Pla
 
     for recipe in post_recipes:
         player_item = player_items.filter(player=player, item=recipe.item).first()
-        if player_item== None:
+        if player_item is None:
             return ActionInfo(log=f"Geen {recipe.item} in inventory", status='error')
         if not recipe.amount:
             if player_item.amount <= 0:
@@ -40,9 +40,22 @@ def handle_post_scan(player: Player, post_recipes: PostRecipe, player_items: Pla
         changes.append(player_item)
 
 
-    # Add sell item to players inventory
-    if post_recipes.first().post.sells != None:
+    # Check if post sells anything, if not assume it's a mine
+    if post_recipes.first().post.sells is not None:
         sell_item, created = player_items.get_or_create(player=player, item=post_recipes.first().post.sells, defaults={'amount': 1})
+        if not created:
+            if post_recipes.first().post.sell_amount:
+                sell_item.amount = sell_item.amount + post_recipes.first().post.sell_amount
+                changes.append(sell_item)
+
+        commit_changes(changes)
+
+        return ActionInfo(
+            log="Spullen gekocht",
+            status="ok",
+            bought={sell_item.item.name: post_recipes.first().post.sell_amount},
+            costs=trans_cost
+        )
     else:
         team_mine = None
         for mine in team_mines:
@@ -50,29 +63,15 @@ def handle_post_scan(player: Player, post_recipes: PostRecipe, player_items: Pla
                 team_mine = mine
 
         if not team_mine:
-            print(team_mine)
-            return ActionInfo(log=f"Er bestaat geen {player_item.item.currency} mine voor {team_mines.first().team}", status='error')
+            return ActionInfo(log=f"Er bestaat geen {player_item.item.currency} mine voor {team_mine.first().post.name}", status='error')
 
-        changes.append(mine)
+        team_mine.amount += list(trans_cost.values())[0]
+        changes.append(team_mine)
         commit_changes(changes)
+
         return ActionInfo(
             log="Mine verkocht",
             status='ok',
             costs=trans_cost
         )
-
-    # update the mine amount when present
-    if not created:
-        if post_recipes.first().post.sell_amount:
-            sell_item.amount = sell_item.amount + post_recipes.first().post.sell_amount
-            changes.append(sell_item)
-
-    commit_changes(changes)
-
-    return ActionInfo(
-        log="Spullen gekocht",
-        status="ok",
-        bought={sell_item.item.name: post_recipes.first().post.sell_amount},
-        costs=trans_cost
-    )
 

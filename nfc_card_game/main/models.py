@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 
@@ -62,8 +63,38 @@ class Item(models.Model):
     currency = models.CharField(null=True, blank=True, choices=Currency)
     team = models.ForeignKey(Team, on_delete=models.CASCADE, blank=True, null=True)
 
+    class Meta:
+        unique_together = (('name', 'type'), ('type', 'currency', 'team'))
+
     def __str__(self):
         return f"{self.name}"
+
+
+    def clean(self):
+        print(self.type == ItemType.MINE)
+        if self.type == ItemType.MINE and \
+            (not self.currency or \
+            not self.team):
+            msg = "This field is required"
+            raise ValidationError({'currency': [msg], 'team': [msg]})
+        if self.type == ItemType.MINER and \
+            not self.currency:
+            raise ValidationError({'currency': ["This field is required"]})
+        if self.type == ItemType.RESOURCE and \
+            (self.currency or self.team):
+            msg = "This field must be empty!"
+            raise ValidationError({'currency': [msg], 'team': [msg]})
+
+    def save(self, *args, **kwrgs):
+        super(Item, self).save(*args, **kwrgs)
+
+        if self.type == "MINE":
+            m_instance = TeamMine.objects.create(
+                team = self.team,
+                mine = self,
+                amount = 0,
+            )
+            m_instance.save()
 
 
 class PlayerItem(models.Model):
@@ -102,7 +133,6 @@ class TeamMine(models.Model):
     mine = models.ForeignKey(Item, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     amount = models.IntegerField()
-    card_uuid = models.CharField(default=short_uuid, max_length=10)
 
     class Meta:
         unique_together = ("team", "mine")

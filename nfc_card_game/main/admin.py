@@ -22,12 +22,7 @@ class PostRecipeInline(admin.TabularInline):
     model = PostRecipe
 
 class TeamMineAdmin(admin.ModelAdmin):
-    list_display = ["mine", "team",  "link"]
-
-    @mark_safe
-    def link(self, obj):
-        card_url = reverse("mine", kwargs={"card_uuid": obj.card_uuid})
-        return format_html(f'<a href="{card_url}">link</a>')
+    list_display = ["mine", "team", "amount"]
 
 class TeamAdmin(admin.ModelAdmin):
     list_display = ["name"]
@@ -44,7 +39,7 @@ class PlayerAdmin(admin.ModelAdmin):
         return format_html(f'<a href="{card_url}">link</a>')
 
 class PlayerItemAdmin(admin.ModelAdmin):
-    list_display = ["item", "player"]
+    list_display = ["item", "player", "amount"]
 
 
 class PostAdmin(admin.ModelAdmin):
@@ -57,30 +52,9 @@ class PostAdmin(admin.ModelAdmin):
         return format_html(f'<a href="{card_url}">link</a>')
 
 
-# class MineAdmin(admin.ModelAdmin):
-#     list_display = ["name", "currency"]
-#     inlines = [TeamMineInLine]
-
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ["name",]
+    list_display = ["name", "type"]
 
-    def get_fields(self, request, obj=None):
-        fields = super().get_fields(request, obj=obj)
-        print(fields)
-        if obj and obj.type == "RESOURCE":
-            fields = ["name", "type"]
-        if obj and obj.type == "MINER":
-            fields = ["name", "type", "currency"]
-        return fields
-
-
-    # def get_fieldsets(self, request, obj=None):
-    #     fieldsets = super().get_fieldsets(request, obj=obj)
-    #     print(fieldsets)
-    #     if obj and obj.type == "MINER":
-    #         fieldsets += (('Currency'))
-    #     print(fieldsets)
-    #     return fieldsets
 
 
 class PostRecipeAdmin(admin.ModelAdmin):
@@ -89,7 +63,6 @@ class PostRecipeAdmin(admin.ModelAdmin):
 admin.site.register(Team, TeamAdmin)
 admin.site.register(Player, PlayerAdmin)
 admin.site.register(Post, PostAdmin)
-# admin.site.register(Mine, MineAdmin)
 admin.site.register(TeamMine, TeamMineAdmin)
 admin.site.register(PlayerItem, PlayerItemAdmin)
 admin.site.register(Item, ItemAdmin)
