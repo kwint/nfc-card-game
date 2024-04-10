@@ -13,19 +13,23 @@ def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
     player = get_object_or_404(Player, card_uuid=card_uuid)
     player_item = PlayerItem.objects.filter(player=player)
     items = player.playeritem_set.all()
+    template_data = {"player": player, "items": items}
 
     action: ActionInfo | None = None
     if post_uuid := request.session.get("post"):
-        post_recipes = PostRecipe.objects.filter(post__card_uuid=post_uuid)
-        action = handle_post_scan(player, post_recipes, player_item)
+        post = PostRecipe.objects.filter(post__card_uuid=post_uuid)
+        action = handle_post_scan(player, post, player_item)
+        template_data["post"] = post
 
     if mine_uuid := request.session.get("mine"):
-        mine = get_object_or_404(TeamMine, card_uuid=mine_uuid)
-        action = handle_mine_scan(player_item, player, mine)
+        post = get_object_or_404(TeamMine, card_uuid=mine_uuid)
+        action = handle_mine_scan(player_item, player, post)
 
     action_dict = action.model_dump() if action else None
+    template_data["action"] = action_dict
+    template_data["post"] = post
     return render(
-        request, "player_stats.html", {"player": player, "action": action_dict, "items": items}
+            request, "player_stats.html", template_data
     )
 
 

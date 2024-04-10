@@ -22,7 +22,7 @@ class PostRecipeInline(admin.TabularInline):
     model = PostRecipe
 
 class TeamMineAdmin(admin.ModelAdmin):
-    list_display = ["mine", "team", "link"]
+    list_display = ["mine", "team",  "link"]
 
     @mark_safe
     def link(self, obj):

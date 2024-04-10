@@ -21,7 +21,9 @@ def handle_post_scan(player: Player, post_recipes: PostRecipe, player_items: Pla
         if player_item.amount < recipe.amount:
             return ActionInfo(log=f"Niet genoeg {player_item.item.name}!", status='error')
 
+    trans_cost={}
     for recipe in post_recipes:
+        trans_cost[recipe.item.name] = recipe.amount 
         player_item = player_items.get(player=player, item=recipe.item)
         player_item.amount -= recipe.amount
         player_item.save()
@@ -36,20 +38,28 @@ def handle_post_scan(player: Player, post_recipes: PostRecipe, player_items: Pla
     return ActionInfo(
         log="Spullen gekocht",
         status="ok",
+        bought={sell_item.item.name: post_recipes.first().post.sell_amount},
+        costs=trans_cost
     )
 
 
 def handle_mine_scan(player_items: PlayerItem, player: Player, playermine: TeamMine) -> ActionInfo:
 
     mines = player_items.filter(item=playermine.mine)
-    if not mines:
-        return ActionInfo(log="Geen mines in inventory!", status='error')
+    if not mines or mines.first().amount <= 0:
+        return ActionInfo(log="Je hebt geen mine van deze munt!", status='error')
+
+    for mine in mines:
+        if playermine.mine.currency == mine.item.currency:
+            mine_instance = mine
     
-    mine_instance = mines.first()
+    if mine_instance.amount <= 0:
+        return ActionInfo(log="Je hebt geen mines!", status='error')
+
     delivered_amount = mine_instance.amount
     playermine.amount += mine_instance.amount
     mine_instance.amount = 0
     mine_instance.save()
     playermine.save()
 
-    return ActionInfo(log=f"{delivered_amount} Mines afgeleverd en saldo opgewaardeerd!", status="ok")
+    return ActionInfo(log=f"{delivered_amount} Mines afgeleverd en saldo opgewaardeerd!", status="ok", costs={mine.item.name: delivered_amount}, bought={mine.item.name: delivered_amount})

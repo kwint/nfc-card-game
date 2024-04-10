@@ -1,57 +1,89 @@
 {% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% load static %}
 
-{% block title %}Player Stats{% endblock %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{% block title %}{{ player.name }}{% endblock %}
 
 {% block content %}
+<head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.0/font/bootstrap-icons.css">
+  <link rel="shortcut icon"  href="{% static '/images/favicon.png' %}">
+</head>
 
-
-<div class="container py-4 ps-4 bg-primary-subtle">
-    <h1>{{ player.name }} | {{ player.team }} | {{ player.section }}</h1>
-</div>
-
-
-{% if action.bought %}
-<div class="container py-4 ps-4">
-    <p class="my-0">
-        Gekocht:
-    </p>
-    <ul>
-        {% for item, amount in action.bought.items %}
-        <li>{{ amount }}x {{ item }} {{ test }} </li>
-        {% endfor %}
-    </ul>
-{% endif %}
-
-{% if action.costs %}
-    <p class="my-0">
-        Voor:
-    </p>
-    <ul>
-        {% for item, amount in action.costs.items %}
-        <li>{{ amount }}x {{ item }} {{ test }} </li>
-        {% endfor %}
-    </ul>
-{% endif %}
-
-
-{% if action.log %}
-    <div class="container py-4 ps-4 {% if action.status == error %} text-bg-danger {% endif %}">
-
-        <p class="my-0">{{ action.log }}</p>
-
+<body>
+  <nav class="navbar navbar-static-top navbar-expand-lg bg-dark navbar-dark">
+    <div class="container">
+      <a href="#" class="d-flex navbar-brand ">
+        <img height="32" src="{% static '/images/icon.png' %}"></img>
+        <span class="ps-2">SCOUTING 2.0</span>
+      </a>
     </div>
-{% endif %}
+  </nav>
 
-    <div class="container ps-4">
-        <h2>Opslag</h2>
-        <ul>
-          {% for item in items %}
-            <li>{{ item.item.name }}: {{ item.amount }}</li>
-          {% endfor %}
-        </ul>
+  <div class="container pt-2">
+    <div class="card shadow">
+      <div class="card-body">
+        <span class="bi-minecart-loaded h1" style="filter: invert(0%)"></span>
+        <h5 class="card-title">{{ post.0.post.name }}</h5>
+        {% if action.status == "ok" %}
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Gekocht:</th>
+              <th scope="col">Voor:</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item, amount in action.costs.items %}
+            <tr>
+              {% if forloop.counter0 == 0 %}
+                {% for key, amount in action.bought.items %}
+                  <td class="table-success">{{ amount }}x {{ key }}</td>
+                {% endfor %}
+              {% else %}
+                <td></td>
+              {% endif %}
+              <td class="table-danger">{{ amount }}x {{ item }}</td>
+            <tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+          <p>{{ action.status }}: {{ action.log }}</p>
+        {% endif %}
+      </div>
     </div>
+  </div>
+
+  <div class="container pt-2">
+    <div class="accordion card shadow">
+      <div class="card-header align-items-center">
+        <h4 class="m-0">{{ player.name }}'s inventory</h4>
+      </div>
+      <div class="card-body">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">Item</th>
+              <th scope="col">Hoeveelheid</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in items %}
+              <tr>
+                <td>{{ item.item.name }}</td>
+                <td>{{ item.amount }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+    </div>
+  </div>
+</body>
 
 
+{% endblock content %}
 
-    </p>
-    {% endblock %}
