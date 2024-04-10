@@ -1,7 +1,7 @@
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import get_object_or_404, render, get_list_or_404
 
-from .logic import ActionInfo, handle_mine_scan, handle_post_scan
+from .logic import ActionInfo,  handle_post_scan
 from .models import Player, Post, TeamMine, PostRecipe, PlayerItem
 
 
@@ -14,16 +14,13 @@ def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
     player_item = PlayerItem.objects.filter(player=player)
     items = player.playeritem_set.all()
     template_data = {"player": player, "items": items}
+    team_mines = TeamMine.objects.filter(team=player.team)
 
     action: ActionInfo | None = None
     if post_uuid := request.session.get("post"):
         post = PostRecipe.objects.filter(post__card_uuid=post_uuid)
-        action = handle_post_scan(player, post, player_item)
+        action = handle_post_scan(player, post, player_item, team_mines)
         template_data["post"] = post
-
-    if mine_uuid := request.session.get("mine"):
-        post = get_object_or_404(TeamMine, card_uuid=mine_uuid)
-        action = handle_mine_scan(player_item, player, post)
 
     action_dict = action.model_dump() if action else None
     template_data["action"] = action_dict

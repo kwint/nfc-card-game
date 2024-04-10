@@ -43,6 +43,9 @@
                 {% for key, amount in action.bought.items %}
                   <td class="table-success">{{ amount }}x {{ key }}</td>
                 {% endfor %}
+                {% if action.bought.items == None %}
+                  <td></td>
+                {% endif %}
               {% else %}
                 <td></td>
               {% endif %}

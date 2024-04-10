@@ -64,6 +64,24 @@ class PostAdmin(admin.ModelAdmin):
 class ItemAdmin(admin.ModelAdmin):
     list_display = ["name",]
 
+    def get_fields(self, request, obj=None):
+        fields = super().get_fields(request, obj=obj)
+        print(fields)
+        if obj and obj.type == "RESOURCE":
+            fields = ["name", "type"]
+        if obj and obj.type == "MINER":
+            fields = ["name", "type", "currency"]
+        return fields
+
+
+    # def get_fieldsets(self, request, obj=None):
+    #     fieldsets = super().get_fieldsets(request, obj=obj)
+    #     print(fieldsets)
+    #     if obj and obj.type == "MINER":
+    #         fieldsets += (('Currency'))
+    #     print(fieldsets)
+    #     return fieldsets
+
 
 class PostRecipeAdmin(admin.ModelAdmin):
     list_display = ['item', 'amount', 'post']

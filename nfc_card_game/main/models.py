@@ -51,10 +51,16 @@ class Currency(models.TextChoices):
     COIN_GREEN = "GREEN", "Groene munt"
 
 
+class ItemType(models.TextChoices):
+    MINE = "MINE", "Mine"
+    RESOURCE = "RESOURCE", "Resource"
+    MINER = "MINER", "Miner"
+
 class Item(models.Model):
     name = models.CharField(max_length=100)
+    type= models.CharField(max_length=100, choices=ItemType)
     currency = models.CharField(null=True, blank=True, choices=Currency)
-    amount = models.IntegerField(null=True, blank=True)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return f"{self.name}"
@@ -68,13 +74,17 @@ class PlayerItem(models.Model):
     class Meta:
         unique_together = ('player', 'item')
 
+    def __str__(self):
+        return f"Player: {self.player} with Item:  x {self.amount}"
+
+
 
 class Post(models.Model):
     card_uuid = models.CharField(default=short_uuid, max_length=10)
 
     name = models.CharField(max_length=100)
-    sells = models.ForeignKey(Item, on_delete=models.CASCADE)
-    sell_amount = models.PositiveIntegerField()
+    sells = models.ForeignKey(Item, on_delete=models.CASCADE, blank=True, null=True)
+    sell_amount = models.PositiveIntegerField(null=True, blank=True)
 
     def __str__(self):
         return f"Post {self.name}: "
@@ -82,18 +92,10 @@ class Post(models.Model):
 class PostRecipe(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    amount = models.PositiveIntegerField()
+    amount = models.PositiveIntegerField(blank=True, null=True)
 
     class Meta:
         unique_together = ("post", "item")
-
-
-class Mine(models.Model):
-    name = models.CharField(max_length=100)
-    currency = models.CharField(choices=Currency)
-
-    def __str__(self):
-        return f"Mine {self.name} with {self.currency}"
 
 
 class TeamMine(models.Model):
