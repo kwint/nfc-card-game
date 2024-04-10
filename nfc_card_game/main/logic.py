@@ -13,8 +13,14 @@ class ActionInfo(BaseModel):
     bought: dict[str, int | float] | None = None
     costs: dict[str, int | float] | None = None
 
+def commit_changes(changes: list):
+    for obj in changes:
+        obj.save()
+
 
 def handle_post_scan(player: Player, post_recipes: PostRecipe, player_items: PlayerItem, team_mines: TeamMine) -> ActionInfo:
+    trans_cost = {}
+    changes = []
 
     for recipe in post_recipes:
         player_item = player_items.filter(player=player, item=recipe.item).first()
@@ -27,11 +33,11 @@ def handle_post_scan(player: Player, post_recipes: PostRecipe, player_items: Pla
         if player_item.amount < recipe.amount:
             return ActionInfo(log=f"Niet genoeg {player_item.item.name}!", status='error')
 
-    trans_cost={}
     for recipe in post_recipes:
         trans_cost[recipe.item.name] = recipe.amount 
         player_item = player_items.get(player=player, item=recipe.item)
         player_item.amount -= recipe.amount
+        changes.append(player_item)
 
 
     # Add sell item to players inventory
@@ -42,12 +48,13 @@ def handle_post_scan(player: Player, post_recipes: PostRecipe, player_items: Pla
         for mine in team_mines:
             if mine.mine.currency == player_item.item.currency:
                 team_mine = mine
+
         if not team_mine:
             print(team_mine)
             return ActionInfo(log=f"Er bestaat geen {player_item.item.currency} mine voor {team_mines.first().team}", status='error')
-        team_mine.amount += recipe.amount
-        mine.save()
-        player_item.save()
+
+        changes.append(mine)
+        commit_changes(changes)
         return ActionInfo(
             log="Mine verkocht",
             status='ok',
@@ -58,7 +65,9 @@ def handle_post_scan(player: Player, post_recipes: PostRecipe, player_items: Pla
     if not created:
         if post_recipes.first().post.sell_amount:
             sell_item.amount = sell_item.amount + post_recipes.first().post.sell_amount
-            sell_item.save()
+            changes.append(sell_item)
+
+    commit_changes(changes)
 
     return ActionInfo(
         log="Spullen gekocht",
