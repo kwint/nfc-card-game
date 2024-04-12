@@ -38,6 +38,7 @@ ALLOWED_HOSTS = ["*"] if DEBUG else []
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     "nfc_card_game.main",
     "django.contrib.admin",
     "django.contrib.auth",

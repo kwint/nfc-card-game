@@ -109,7 +109,6 @@ class PlayerItem(models.Model):
         return f"Player: {self.player} with Item:  x {self.amount}"
 
 
-
 class Post(models.Model):
     card_uuid = models.CharField(default=short_uuid, max_length=10)
 
@@ -139,3 +138,10 @@ class TeamMine(models.Model):
 
     def __str__(self):
         return f"{self.mine} of {self.team}"
+
+#
+# class Transaction(models.Model):
+#     time = models.TimeField(auto_now_add=True)
+#     bought = models.JSONField()
+#     sold = models.JSONField()
+#     post = models.ForeignKey(Post, on_delete=models.CASCADE, blank=True, null=True)

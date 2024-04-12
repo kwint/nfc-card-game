@@ -4,22 +4,30 @@ const ctx = document.getElementById('myChart')
 
 // var base_url = "ws://localhost:8000/ws";
 var base_url = "ws://"+ window.location.host + "/ws/"
-const websocket = new WebSocket(base_url);
+const websocket = new WebSocket('ws://localhost:8000/ws/');
 
 websocket.onopen = function(e){
   console.log("COnnected!");
+  websocket.send(JSON.stringify({message: "Hello, server!"}));
+};
+
+websocket.onclose = function(event) {
+  if (event.wasClean){
+    console.log(`Connection closed cleanly, code=${event.code}`)
+  }else{
+    console.log('Connection died!')
+  }
 }
+
+
+websocket.onerror = function(error){
+  console.log(`[WebSocket Error] ${error}`);
+  console.log(error);
+};
 
 websocket.onmessage = function(event){
     var data = JSON.parse(event.data);
-    console.log(data);
-    if(data.weather_station == current_station){
-      for(var i = 0; i < knobs.length; i++){
-        var knob = knobs[i];
-        knob.setValue(data.data[knob.getProperty("label")])
-      }
-      callREST();
-    }
+    console.log(data)
 }
 
 console.log(player_items)
