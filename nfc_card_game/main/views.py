@@ -42,8 +42,10 @@ def post(request: HttpRequest, card_uuid: str) -> HttpResponse:
 
 def dashboard(request: HttpRequest) -> HttpResponse:
     pi = serializers.serialize("json",PlayerItem.objects.all() )
-    tm = serializers.serialize("json",TeamMine.objects.all() )
+    # tm = serializers.serialize("json",TeamMine.objects.all() )
+    tm = TeamMine.objects.all()
     data = {"player_items": pi, "team_mines": tm}
+    print(data)
     return render(
         request, "dashboard.html", data
     )

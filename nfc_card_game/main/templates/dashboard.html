@@ -15,6 +15,57 @@
         <canvas id="myChart"></canvas>
     </div>
   </div>
+
+  <div class="container pt-2">
+    <div class="accordion card shadow">
+      <div class="card-header align-items-center">
+        <h3 class="m-0">Teams</h3>
+      </div>
+      <div class="card-body">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Team</th>
+              <th>Mine</th>
+              <th>currency</th>
+              <th>Amount</th>
+            <tr>
+          </thead>
+          <tbody id="team_table">
+            {% for mine in team_mines %}
+              <td>{{ mine.team }}</td>
+              <td>{{ mine.mine }}</td>
+              <td>{{ mine.mine.currency }}</td>
+              <td>{{ mine.amount }}</td>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="container pt-2">
+    <div class="accordion card shadow">
+      <div class="card-header align-items-center">
+        <h3 class="m-0">Logs</h3>
+      </div>
+      <div class="card-body">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Speler</th>
+              <th>Koopt</th>
+              <th>Voor</th>
+              <th>Actie</th>
+            <tr>
+          </thead>
+          <tbody id="logtable">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
   <script>
     var player_items = JSON.parse('{{ player_items|safe }}');
     var team_mines = JSON.parse('{{ team_mines|safe }}')
