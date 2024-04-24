@@ -1,7 +1,7 @@
 import uuid
 
-from django.contrib import admin
 from django.db import models
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 
@@ -41,21 +41,9 @@ class Player(models.Model):
     name = models.CharField(max_length=100, blank=True)
     section = models.CharField(max_length=4, choices=Section, default=Section.NONE)
     team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True)
-    inventory = models.JSONField(default=dict, blank=True)
 
     def __str__(self):
         return f"{self.name} | {self.section}"
-
-
-class Post(models.Model):
-    card_uuid = models.CharField(default=short_uuid, max_length=10)
-
-    name = models.CharField(max_length=100)
-    buys = models.JSONField(default=dict)
-    sells = models.JSONField(default=dict)
-
-    def __str__(self):
-        return f"Post {self.name}: Sells {self.sells} for {self.buys}"
 
 
 class Currency(models.TextChoices):
@@ -64,20 +52,90 @@ class Currency(models.TextChoices):
     COIN_GREEN = "GREEN", "Groene munt"
 
 
-class Mine(models.Model):
+class ItemType(models.TextChoices):
+    MINE = "MINE", "Mine"
+    RESOURCE = "RESOURCE", "Resource"
+    MINER = "MINER", "Miner"
+
+class Item(models.Model):
     name = models.CharField(max_length=100)
-    currency = models.CharField(choices=Currency)
+    type= models.CharField(max_length=100, choices=ItemType)
+    currency = models.CharField(null=True, blank=True, choices=Currency)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, blank=True, null=True)
+
+    class Meta:
+        unique_together = (('name', 'type'), ('type', 'currency', 'team'))
 
     def __str__(self):
-        return f"Mine {self.name} with {self.currency}"
+        return f"{self.name}"
+
+
+    def clean(self):
+        print(self.type == ItemType.MINE)
+        if self.type == ItemType.MINE and \
+            (not self.currency or \
+            not self.team):
+            msg = "This field is required"
+            raise ValidationError({'currency': [msg], 'team': [msg]})
+        if self.type == ItemType.MINER and \
+            not self.currency:
+            raise ValidationError({'currency': ["This field is required"]})
+        if self.type == ItemType.RESOURCE and \
+            (self.currency or self.team):
+            msg = "This field must be empty!"
+            raise ValidationError({'currency': [msg], 'team': [msg]})
+
+    def save(self, *args, **kwrgs):
+        super(Item, self).save(*args, **kwrgs)
+
+        if self.type == "MINE":
+            m_instance = TeamMine.objects.create(
+                team = self.team,
+                mine = self,
+                amount = 0,
+            )
+            m_instance.save()
+
+
+class PlayerItem(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
+    amount = models.IntegerField()
+
+    class Meta:
+        unique_together = ('player', 'item')
+
+    def __str__(self):
+        return f"Player: {self.player} with Item:  x {self.amount}"
+
+
+
+class Post(models.Model):
+    card_uuid = models.CharField(default=short_uuid, max_length=10)
+
+    name = models.CharField(max_length=100)
+    sells = models.ForeignKey(Item, on_delete=models.CASCADE, blank=True, null=True)
+    sell_amount = models.PositiveIntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Post {self.name}: "
+
+class PostRecipe(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    amount = models.PositiveIntegerField(blank=True, null=True)
+
+    class Meta:
+        unique_together = ("post", "item")
 
 
 class TeamMine(models.Model):
-    card_uuid = models.CharField(default=short_uuid, max_length=10)
-
-    mine = models.ForeignKey(Mine, on_delete=models.CASCADE)
+    mine = models.ForeignKey(Item, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    inventory = models.JSONField(default=dict, blank=True)
+    amount = models.IntegerField()
+
+    class Meta:
+        unique_together = ("team", "mine")
 
     def __str__(self):
         return f"{self.mine} of {self.team}"

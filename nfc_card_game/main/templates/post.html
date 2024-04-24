@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Post Page{% endblock %}
+
+{% block content %}
+
+
+<div class="container py-4 ps-4 bg-primary-subtle">
+    <h1>{{ post.name }} | Verkoopt: {{ post.sells.name }}</h1>
+</div>
+
+<div class="container py-4 ps-4">
+  <p class="my-0">Koop {{ post.sell_amount }} {{ post.sells.name }} voor:</p>
+  <ul>
+    {% for item in buys %}
+      <li> {{ item.item.name }}: {{ item.amount }} </li>
+    {% endfor %}
+
+
+    {% endblock %}

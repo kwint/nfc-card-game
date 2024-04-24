@@ -1,9 +1,8 @@
-from copy import copy
 from typing import Literal
 
 from pydantic import BaseModel
 
-from .models import Currency, Player, Post, TeamMine
+from .models import Player, TeamMine, PlayerItem, PostRecipe
 
 MINE_OFFLOAD = 200
 
@@ -14,42 +13,65 @@ class ActionInfo(BaseModel):
     bought: dict[str, int | float] | None = None
     costs: dict[str, int | float] | None = None
 
-
-def handle_post_scan(player: Player, post: Post) -> ActionInfo:
-    player_inv = copy(player.inventory)
-
-    for item, amount in post.buys.items():
-        player_inv[item] = player_inv.get(item, 0) - amount
-
-    if any(val < 0 for val in player_inv.values()):
-        return ActionInfo(log="Niet genoeg geld!", status="error")
-
-    for item, amount in post.sells.items():
-        player_inv[item] = player_inv.get(item, 0) + amount
-
-    player.inventory = player_inv
-    player.save()
-
-    return ActionInfo(
-        log="Spullen gekocht",
-        bought=post.sells,
-        costs=post.buys,
-        status="ok",
-    )
+def commit_changes(changes: list):
+    for obj in changes:
+        obj.save()
 
 
-def handle_mine_scan(player: Player, mine: TeamMine) -> ActionInfo:
-    for key in mine.inventory.keys():
-        if key in Currency.values:
-            continue
-        mine.inventory[key] += player.inventory.pop(key, 0)
+def handle_post_scan(player: Player, post_recipes: PostRecipe, player_items: PlayerItem, team_mines: TeamMine) -> ActionInfo:
+    trans_cost = {}
+    changes = []
 
-    # TODO: handle negative case
-    # TODO: add timeout between offloads
-    mine.inventory[mine.mine.currency] -= MINE_OFFLOAD
-    player.inventory[mine.mine.currency] = player.inventory.get(mine.mine.currency, 0) + MINE_OFFLOAD
+    for recipe in post_recipes:
+        player_item = player_items.filter(player=player, item=recipe.item).first()
+        if player_item is None:
+            return ActionInfo(log=f"Geen {recipe.item} in inventory", status='error')
+        if not recipe.amount:
+            if player_item.amount <= 0:
+                return ActionInfo(log=f"Je hebt geen {player_item.item.name}'s om in de mine te plaatsen!", status='error')
+            recipe.amount = player_item.amount
+        if player_item.amount < recipe.amount:
+            return ActionInfo(log=f"Niet genoeg {player_item.item.name}!", status='error')
 
-    player.save()
-    mine.save()
+    for recipe in post_recipes:
+        trans_cost[recipe.item.name] = recipe.amount 
+        player_item = player_items.get(player=player, item=recipe.item)
+        player_item.amount -= recipe.amount
+        changes.append(player_item)
 
-    return ActionInfo(log="Goederen afgeleverd en saldo opgewaardeerd!", status="ok")
+
+    # Check if post sells anything, if not assume it's a mine
+    if post_recipes.first().post.sells is not None:
+        sell_item, created = player_items.get_or_create(player=player, item=post_recipes.first().post.sells, defaults={'amount': 1})
+        if not created:
+            if post_recipes.first().post.sell_amount:
+                sell_item.amount = sell_item.amount + post_recipes.first().post.sell_amount
+                changes.append(sell_item)
+
+        commit_changes(changes)
+
+        return ActionInfo(
+            log="Spullen gekocht",
+            status="ok",
+            bought={sell_item.item.name: post_recipes.first().post.sell_amount},
+            costs=trans_cost
+        )
+    else:
+        team_mine = None
+        for mine in team_mines:
+            if mine.mine.currency == player_item.item.currency:
+                team_mine = mine
+
+        if not team_mine:
+            return ActionInfo(log=f"Er bestaat geen {player_item.item.currency} mine voor {team_mine.first().post.name}", status='error')
+
+        team_mine.amount += list(trans_cost.values())[0]
+        changes.append(team_mine)
+        commit_changes(changes)
+
+        return ActionInfo(
+            log="Mine verkocht",
+            status='ok',
+            costs=trans_cost
+        )
+
