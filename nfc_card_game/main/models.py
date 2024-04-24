@@ -37,7 +37,7 @@ class Player(models.Model):
 
         NONE = "", "Not set"
 
-    card_uuid = models.CharField(default=short_uuid, max_length=10)
+    card_uuid = models.CharField(default=short_uuid, max_length=10, unique=True)
     name = models.CharField(max_length=100, blank=True)
     section = models.CharField(max_length=4, choices=Section, default=Section.NONE)
     team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True)

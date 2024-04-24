@@ -1,5 +1,7 @@
-from django.http import HttpResponse, HttpRequest
+from django.http import Http404, HttpResponse, HttpRequest, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
+
+from nfc_card_game.main.forms import PlayerForm
 
 from .logic import ActionInfo, handle_mine_scan, handle_post_scan
 from .models import Player, Post, TeamMine
@@ -10,7 +12,15 @@ def index(request):
 
 
 def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
-    player = get_object_or_404(Player, card_uuid=card_uuid)
+    try:
+        player = Player.objects.get(card_uuid=card_uuid)
+        print(player.name)
+    except Player.DoesNotExist:
+        player = None
+
+    if player is None or player.name == "":
+        form = PlayerForm(player)
+        return render(request, "register.html", {"form": form})
 
     action: ActionInfo | None = None
     if post_uuid := request.session.get("post"):
@@ -27,6 +37,16 @@ def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
     )
 
 
+def register_player(request: HttpRequest):
+    if request.method == "POST":
+        form = PlayerForm(request.POST)
+        if form.is_valid():
+            player = form.save()
+            return HttpResponseRedirect(f"/player/{player.card_uuid}")
+        return HttpResponse(form.errors.as_json())
+    
+    raise Http404
+    
 def post(request: HttpRequest, card_uuid: str) -> HttpResponse:
     post = get_object_or_404(Post, card_uuid=card_uuid)
     request.session["post"] = post.card_uuid
