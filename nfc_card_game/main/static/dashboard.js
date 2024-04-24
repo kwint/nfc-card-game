@@ -1,8 +1,5 @@
-
-
 const ctx = document.getElementById('myChart')
 
-// var base_url = "ws://localhost:8000/ws";
 var base_url = "ws://"+ window.location.host + "/ws/"
 const websocket = new WebSocket('ws://localhost:8000/ws/');
 
@@ -27,6 +24,7 @@ websocket.onerror = function(error){
 websocket.onmessage = function(event){
   log_message(event);
   update_table(event);
+  update_chart(event);
 };
 
 function log_message(event){
@@ -54,21 +52,26 @@ function log_message(event){
 function update_table(event){
   var data = JSON.parse(event.data)
   if(data.data.bought == null){
-    var td_amount = document.getElementById(data.data.player.team + '_' + Object.values(data.data.costs)[0].currency);
+    var td_amount = document.getElementById(data.data.player.team +  '_' + Object.values(data.data.costs)[0].currency);
     cur_amount = parseInt(td_amount.innerText);
     cur_amount += Object.values(data.data.costs)[0].amount;
     td_amount.innerText = cur_amount;
   }
 };
 
-// TODO: update chart data on message_received
+
 function update_chart(event){
+  var data = JSON.parse(event.data)
   
-
-  // c.data.datasets[0].data = player_item_data
-  c.update()
-
-}
+  if(data.data.bought == null){
+    var datasetIndex = c.data.datasets.findIndex(dataset => dataset.label === Object.values(data.data.costs)[0].post_name)
+    console.log(datasetIndex)
+    if (datasetIndex !== -1){
+      c.data.datasets[datasetIndex].data[0] += Object.values(data.data.costs)[0].amount
+      c.update()
+    }
+  }
+};
 
 
 function items_to_string(items, newline=true){
@@ -86,15 +89,18 @@ c = new Chart(ctx, {
   type: 'bar',
   data: {
     datasets: [{
-      data: player_items[0].fields,
+      data: [],
       borderWidth: 1
     }]
   },
   options: {
     scales: {
+      x: {
+        stacked: false, 
+      },
       y: {
         beginAtZero: true,
-        stacked: true
+        stacked: false
       }
     }
   }
@@ -102,5 +108,33 @@ c = new Chart(ctx, {
 
 var player_item_data = {}
 
+function get_color_from_currency(currency) {
+  if (currency === 'BLUE') return "rgba(54, 162, 235, 0.5)";
+  if (currency === 'RED') return "rgba(255, 99, 132, 0.5)";
+  if (currency === 'GREEN') return "rgba(130, 255, 54, 0.5)";
+}
 
-set_teams();
+function init(){
+
+  var uniqueLabels = new Set();
+  var chartData = {
+    labels: [],
+    datasets: []
+  }
+
+  team_info.forEach(team => {
+    if(!uniqueLabels.has(team.team)){
+      uniqueLabels.add(team.team);
+      chartData.labels.push(team.team);
+    }
+    chartData.datasets.push({
+      label: team.mine,
+      data: [parseInt(team.mine_amount)],
+      backgroundColor: get_color_from_currency(team.currency),
+    });
+  });
+  c.data = chartData;
+  c.update()
+};
+
+init();

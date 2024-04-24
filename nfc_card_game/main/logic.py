@@ -47,7 +47,6 @@ def handle_post_scan(player: Player, post_recipes: PostRecipe, player_items: Pla
             return ActionInfo(log=f"Geen {recipe.item} in inventory", status='error')
         if not recipe.amount:
             if player_item.amount <= 0:
-                print(player_item.item.name)
                 return ActionInfo(log=f"Je hebt geen {player_item.item.name}'s om in de mine te plaatsen!", status='error')
             recipe.amount = player_item.amount
         if player_item.amount < recipe.amount:
@@ -57,6 +56,7 @@ def handle_post_scan(player: Player, post_recipes: PostRecipe, player_items: Pla
         # trans_cost[recipe.item.name] = recipe.amount 
         trans_cost[recipe.item.name] = model_to_dict(recipe.item)
         trans_cost[recipe.item.name]['amount'] = recipe.amount
+        trans_cost[recipe.item.name]['post_name'] = post_recipes[0].post.name
         player_item = player_items.get(player=player, item=recipe.item)
         player_item.amount -= recipe.amount
         changes.append(player_item)

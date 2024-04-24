@@ -48,7 +48,7 @@ class Player(models.Model):
 
 class Currency(models.TextChoices):
     COIN_BLUE = "BLUE", "Blauwe munt"
-    COIN_RED = "RED ", "Rode munt"
+    COIN_RED = "RED", "Rode munt"
     COIN_GREEN = "GREEN", "Groene munt"
 
 

@@ -35,10 +35,9 @@
             {% for team in team_mines %}
               <tr>
                 <td>{{ team.mine }}</td>
-                <td>{{ team.team.name }}</td>
+                <td>{{ team.team }}</td>
                 <td>{{ team.mine.currency }}</td>
-                <td id="{{team.team.id}}_{{team.mine.currency}}">{{ team.amount }}</td>
-              </tr>
+                <td id="{{ team.team.id }}_{{ team.mine.currency }}">{{ team.amount }}</td>
             {% endfor %}
           </tbody>
         </table>
@@ -68,6 +67,25 @@
     </div>
   </div>
 
+  <script>
+    var player_items = JSON.parse('{{ player_items|safe}}');
+    var team_info = [];
+
+    {% for item in team_mines %}
+      var object = {
+        team_id: {{ item.id }},
+        mine_id: {{ item.mine.id }},
+        mine: "{{ item.mine }}",
+        type: "{{ item.type }}",
+        currency: "{{ item.mine.currency }}",
+        team: "{{ item.team }}",
+        mine_amount: "{{ item.amount }}"
+      };
+    team_info.push(object);
+    {% endfor %}
+
+
+  </script>
   <script src={% static 'dashboard.js' %}></script>
 
 {% endblock content %}
