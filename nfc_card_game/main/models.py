@@ -139,9 +139,3 @@ class TeamMine(models.Model):
     def __str__(self):
         return f"{self.mine} of {self.team}"
 
-
-class Transaction(models.Model):
-    time = models.TimeField(auto_now_add=True)
-    bought = models.JSONField()
-    sold = models.JSONField()
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, blank=True, null=True)

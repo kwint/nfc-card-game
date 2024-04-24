@@ -19,24 +19,26 @@
   <div class="container pt-2">
     <div class="accordion card shadow">
       <div class="card-header align-items-center">
-        <h3 class="m-0">Teams</h3>
+        <h3 class="m-0">Mines</h3>
       </div>
       <div class="card-body">
         <table class="table table-striped">
           <thead>
             <tr>
-              <th>Team</th>
               <th>Mine</th>
+              <th>Team</th>
               <th>currency</th>
               <th>Amount</th>
             <tr>
           </thead>
           <tbody id="team_table">
-            {% for mine in team_mines %}
-              <td>{{ mine.team }}</td>
-              <td>{{ mine.mine }}</td>
-              <td>{{ mine.mine.currency }}</td>
-              <td>{{ mine.amount }}</td>
+            {% for team in team_mines %}
+              <tr>
+                <td>{{ team.mine }}</td>
+                <td>{{ team.team.name }}</td>
+                <td>{{ team.mine.currency }}</td>
+                <td id="{{team.team.id}}_{{team.mine.currency}}">{{ team.amount }}</td>
+              </tr>
             {% endfor %}
           </tbody>
         </table>
@@ -66,10 +68,6 @@
     </div>
   </div>
 
-  <script>
-    var player_items = JSON.parse('{{ player_items|safe }}');
-    var team_mines = JSON.parse('{{ team_mines|safe }}')
-  </script>
   <script src={% static 'dashboard.js' %}></script>
 
 {% endblock content %}

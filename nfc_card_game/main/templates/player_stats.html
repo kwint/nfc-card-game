@@ -28,16 +28,15 @@
             {% for item, amount in action.costs.items %}
             <tr>
               {% if forloop.counter0 == 0 %}
-                {% for key, amount in action.bought.items %}
-                  <td class="table-success">{{ amount }}x {{ key }}</td>
-                {% endfor %}
-                {% if action.bought.items == None %}
+                {% if action.bought.name != None %}
+                  <td class="table-success">{{ action.bought.name }}</td>
+                {% else %}
                   <td></td>
                 {% endif %}
               {% else %}
                 <td></td>
               {% endif %}
-              <td class="table-danger">{{ amount }}x {{ item }}</td>
+              <td class="table-danger">{{ amount.amount }}x {{ item }}</td>
             <tr>
             {% endfor %}
           </tbody>
