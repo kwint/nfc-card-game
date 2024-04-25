@@ -58,7 +58,12 @@ def post(request: HttpRequest, card_uuid: str) -> HttpResponse:
     request.session["post"] = post.card_uuid
     request.session.pop("mine", None)
 
-
     return render(request, "post.html", {"post": post, "buys": buys})
 
 
+def dashboard(request: HttpRequest) -> HttpResponse:
+    pi = serializers.serialize("json", PlayerItem.objects.all())
+    tm = TeamMine.objects.all()
+    data = {"player_items": pi, "team_mines": tm}
+    print(data)
+    return render(request, "dashboard.html", data)

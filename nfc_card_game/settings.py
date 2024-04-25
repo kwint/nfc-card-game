@@ -38,6 +38,7 @@ ALLOWED_HOSTS = ["*"] if DEBUG else []
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     "nfc_card_game.main",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -45,7 +46,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django_bootstrap5",
+    "channels",
 ]
 
 MIDDLEWARE = [
@@ -135,3 +136,11 @@ STATIC_ROOT = "/var/www/static"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+ASGI_APPLICATION = "nfc_card_game.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    }
+}

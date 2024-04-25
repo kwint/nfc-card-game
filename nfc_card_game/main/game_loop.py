@@ -7,6 +7,7 @@ def game_loop():
     # print("loopie")
     pass
 
+
 def start_scheduler():
     scheduler = Scheduler()
     scheduler.every().second.do(game_loop)
@@ -40,5 +41,5 @@ def run_continuously(self, interval=1):
     continuous_thread.start()
     return cease_continuous_run
 
-Scheduler.run_continuously = run_continuously
 
+Scheduler.run_continuously = run_continuously
