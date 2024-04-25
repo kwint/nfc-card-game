@@ -74,9 +74,9 @@ def handle_post_scan(
         sell_item, created = player_items.get_or_create(
             player=player, item=post_recipes.first().post.sells, defaults={"amount": 1}
         )
+        sold_amount = post_recipes.first().post.sell_amount
         if not created:
             if post_recipes.first().post.sell_amount:
-                sold_amount = post_recipes.first().post.sell_amount
                 sell_item.amount = (
                     sell_item.amount + post_recipes.first().post.sell_amount
                 )

@@ -3,7 +3,7 @@ from django.shortcuts import get_list_or_404, get_object_or_404, render
 
 from nfc_card_game.main.forms import PlayerForm
 
-from .logic import ActionInfo, handle_mine_scan, handle_post_scan
+from .logic import ActionInfo, handle_post_scan
 from .models import Player, PlayerItem, Post, PostRecipe, TeamMine
 
 
