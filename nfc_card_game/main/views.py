@@ -2,7 +2,7 @@ from django.http import HttpResponse, HttpRequest
 from django.shortcuts import get_object_or_404, render, get_list_or_404
 from django.core import serializers
 
-from .logic import ActionInfo,  handle_post_scan
+from .logic import ActionInfo, handle_post_scan
 from .models import Player, Post, TeamMine, PostRecipe, PlayerItem
 
 
@@ -26,9 +26,7 @@ def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
     action_dict = action.model_dump() if action else None
     template_data["action"] = action_dict
     template_data["post"] = post
-    return render(
-            request, "player_stats.html", template_data
-    )
+    return render(request, "player_stats.html", template_data)
 
 
 def post(request: HttpRequest, card_uuid: str) -> HttpResponse:
@@ -37,16 +35,12 @@ def post(request: HttpRequest, card_uuid: str) -> HttpResponse:
     request.session["post"] = post.card_uuid
     request.session.pop("mine", None)
 
-
     return render(request, "post.html", {"post": post, "buys": buys})
 
+
 def dashboard(request: HttpRequest) -> HttpResponse:
-    pi = serializers.serialize("json",PlayerItem.objects.all() )
+    pi = serializers.serialize("json", PlayerItem.objects.all())
     tm = TeamMine.objects.all()
     data = {"player_items": pi, "team_mines": tm}
     print(data)
-    return render(
-        request, "dashboard.html", data
-    )
-
-
+    return render(request, "dashboard.html", data)
