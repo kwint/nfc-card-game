@@ -135,6 +135,7 @@ class TeamMine(models.Model):
 
     class Meta:
         unique_together = ("team", "mine")
+        ordering = ['team', 'mine']
 
     def __str__(self):
         return f"{self.mine} of {self.team}"

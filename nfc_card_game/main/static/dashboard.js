@@ -3,7 +3,7 @@ const ctx = document.getElementById('myChart')
 var base_url = "ws://"+ window.location.host + "/ws/"
 const websocket = new WebSocket('ws://localhost:8000/ws/');
 
-websocket.onopen = function(e){
+websocket.onopen = function(){
   console.log("COnnected!");
 };
 
@@ -30,14 +30,15 @@ websocket.onmessage = function(event){
 function log_message(event){
   var data = JSON.parse(event.data);
   var table = document.getElementById("logtable");
-  let row = table.insertRow(-1);
-
+  let row = table.insertRow(0);
   let c1 = row.insertCell(0);
   let c2 = row.insertCell(1);
   let c3 = row.insertCell(2);
   let c4 = row.insertCell(3);
   
-  console.log(data.data)
+  if(table.rows.length > 5){
+    table.deleteRow(-1);
+  }
   if(data.data.bought != null){
     c2.innerText = data.data.bought.amount + 'x ' +data.data.bought.item.name;
   }else{
@@ -60,15 +61,19 @@ function update_table(event){
 };
 
 
-function update_chart(event){
-  var data = JSON.parse(event.data)
+function update_chart(event) {
+  var data = JSON.parse(event.data);
   
-  if(data.data.bought == null){
-    var datasetIndex = c.data.datasets.findIndex(dataset => dataset.label === Object.values(data.data.costs)[0].post_name)
-    console.log(datasetIndex)
-    if (datasetIndex !== -1){
-      c.data.datasets[datasetIndex].data[0] += Object.values(data.data.costs)[0].amount
-      c.update()
+  if (data.data.bought == null) {
+    var team_name = data.data.player.team_name;
+    var index = c.data.labels.findIndex(label => label === team_name);
+    var datasetIndex = c.data.datasets.findIndex(dataset => dataset.label === Object.values(data.data.costs)[0].post_name);
+    
+    if (datasetIndex !== -1) {
+      var cur_amount = c.data.datasets[datasetIndex].data[index];
+      c.data.datasets[datasetIndex].data[index] = parseInt(cur_amount) + parseInt(Object.values(data.data.costs)[0].amount);
+      
+      c.update();
     }
   }
 };
@@ -82,31 +87,9 @@ function items_to_string(items, newline=true){
       retstr += '\n';
     }
   }
-  return retstr
-}
+  return retstr;
+};
 
-c = new Chart(ctx, {
-  type: 'bar',
-  data: {
-    datasets: [{
-      data: [],
-      borderWidth: 1
-    }]
-  },
-  options: {
-    scales: {
-      x: {
-        stacked: false, 
-      },
-      y: {
-        beginAtZero: true,
-        stacked: false
-      }
-    }
-  }
-});
-
-var player_item_data = {}
 
 function get_color_from_currency(currency) {
   if (currency === 'BLUE') return "rgba(54, 162, 235, 0.5)";
@@ -114,27 +97,84 @@ function get_color_from_currency(currency) {
   if (currency === 'GREEN') return "rgba(130, 255, 54, 0.5)";
 }
 
-function init(){
+function init_bar_chart() {
+  team_info.sort((a, b) => a.team.localeCompare(b.team));
 
-  var uniqueLabels = new Set();
   var chartData = {
     labels: [],
     datasets: []
-  }
+  };
+
+  var mineDatasets = {};
 
   team_info.forEach(team => {
-    if(!uniqueLabels.has(team.team)){
-      uniqueLabels.add(team.team);
+    if(!chartData.labels.includes(team.team)){
       chartData.labels.push(team.team);
     }
-    chartData.datasets.push({
-      label: team.mine,
-      data: [parseInt(team.mine_amount)],
-      backgroundColor: get_color_from_currency(team.currency),
-    });
-  });
-  c.data = chartData;
-  c.update()
-};
 
-init();
+    if(!mineDatasets[team.mine]){
+      mineDatasets[team.mine] = {
+        label: team.mine,
+        backgroundColor: get_color_from_currency(team.currency),
+        data: []
+      };
+    }
+    mineDatasets[team.mine].data.push(team.mine_amount);
+  });
+
+  Object.values(mineDatasets).forEach(dataset => {
+    chartData.datasets.push(dataset);
+  })
+
+  c.data = chartData;
+  console.log(chartData)
+  c.update();
+}
+
+
+c = new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: [],
+    datasets: []
+  },
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true,
+        stacked: false
+      },
+    }
+  }
+});
+
+init_bar_chart();
+
+//
+// c = new Chart(ctx, {
+//   type: 'bar',
+//   data: {
+//     labels: ['team1', 'team2'],
+//     datasets: [{
+//         label: 'mine1',
+//         backgroundColor: get_color_from_currency('RED'),
+//         data: [2, 4]
+//       },{
+//         label: 'mine2',
+//         backgroundColor: get_color_from_currency('BLUE'),
+//         data: [2, 4]
+//       },{
+//         label: 'mine3',
+//         backgroundColor: get_color_from_currency('GREEN'),
+//         data: [2, 4]
+//       }] 
+//   },
+//   options: {
+//     scales: {
+//       y: {
+//         beginAtZero: true,
+//         stacked: false
+//       },
+//     }
+//   }
+// });

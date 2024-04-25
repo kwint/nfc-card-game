@@ -53,7 +53,6 @@ def handle_post_scan(player: Player, post_recipes: PostRecipe, player_items: Pla
             return ActionInfo(log=f"Niet genoeg {player_item.item.name}!", status='error')
 
     for recipe in post_recipes:
-        # trans_cost[recipe.item.name] = recipe.amount 
         trans_cost[recipe.item.name] = model_to_dict(recipe.item)
         trans_cost[recipe.item.name]['amount'] = recipe.amount
         trans_cost[recipe.item.name]['post_name'] = post_recipes[0].post.name
@@ -77,7 +76,6 @@ def handle_post_scan(player: Player, post_recipes: PostRecipe, player_items: Pla
             log="Spullen gekocht",
             status="ok",
             player=model_to_dict(player),
-            # bought={sell_item.item.name: post_recipes.first().post.sell_amount},
             bought={'amount': sold_amount, 'item': model_to_dict(sell_item.item)},
             costs=trans_cost
         )
@@ -93,11 +91,13 @@ def handle_post_scan(player: Player, post_recipes: PostRecipe, player_items: Pla
         team_mine.amount += list(trans_cost.values())[0]['amount']
         changes.append(team_mine)
         commit_changes(changes)
+        player_dict = model_to_dict(player)
+        player_dict["team_name"] = player.team.name
 
         return ActionInfo(
             log="Mine verkocht",
             status='ok',
-            player=model_to_dict(player),
+            player=player_dict,
             costs=trans_cost,
         )
 
