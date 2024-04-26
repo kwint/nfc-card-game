@@ -1,5 +1,6 @@
 from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_list_or_404, get_object_or_404, render
+from django.core import serializers
 
 from nfc_card_game.main.forms import PlayerForm
 
