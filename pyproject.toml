@@ -15,6 +15,7 @@ gunicorn = "^21.2.0"
 pydantic = "^2.6.4"
 schedule = "^1.2.1"
 daphne = "^4.1.2"
+channels = "^4.1.0"
 
 
 [tool.poetry.group.dev.dependencies]
