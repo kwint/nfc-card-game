@@ -14,28 +14,16 @@
   <div class="container pt-2">
     <div class="accordion card shadow">
       <div class="card-header align-items-center">
-        <h4 class="m-0">{{ player.name }} heeft gedaan</h4>
+        <h4 class="m-0">{{ player.name }}'s activiteiten</h4>
       </div>
       <div class="card-body">
         <ul class="list-group">
-          {% for act in player_activities %}
-            <li class="list-group-item" >{{ act }}</li>
+          {% for act, done in player_activities.items %}
+            <li class="list-group-item {% if done %}list-group-item-success{% endif %}" >{{ act }}</li>
           {% endfor %}
         </ul>
     </div>
 
-    <div class="accordion card shadow">
-      <div class="card-header align-items-center">
-        <h4 class="m-0">Nog te doen:</h4>
-      </div>
-      <div class="card-body">
-          <ul class="list-group">
-            {% for act in remaining %}
-              <li class="list-group-item" >{{ act }}</li>
-            {% endfor %}
-          </ul>
-
-    </div>
   </div>
 </body>
 

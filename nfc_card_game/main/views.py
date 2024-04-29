@@ -39,16 +39,23 @@ def handle_trading_player(request: HttpRequest, player: Player) -> HttpResponse:
 
 def handle_activities_player(request: HttpRequest, player: Player) -> HttpResponse:
     if act_uuid := request.session.get("post"):
-        activity = Activity.objects.filter(card__uuid=act_uuid)
+        activity = Activity.objects.get(card_uuid=act_uuid)
         player.activities.add(activity)
 
-    all_activities = list(Activity.objects.all())
+    all_activities = {act: False for act in Activity.objects.all()}
     player_activities = list(player.activities.all())
-    remaining = [
-        activity for activity in all_activities if activity not in player_activities
-    ]
+    for player_act in player_activities:
+        all_activities[player_act] = True
+    
 
-    return render(request, "activities/overview.html", {"remaining": remaining, "player_activities": player_activities, "player": player})
+    return render(
+        request,
+        "activities/overview.html",
+        {
+            "player_activities": all_activities,
+            "player": player,
+        },
+    )
 
 
 def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
@@ -79,12 +86,21 @@ def register_player(request: HttpRequest):
 
 
 def post(request: HttpRequest, card_uuid: str) -> HttpResponse:
-    post = get_object_or_404(Post, card_uuid=card_uuid)
-    buys = get_list_or_404(PostRecipe, post=post.pk)
-    request.session["post"] = post.card_uuid
-    request.session.pop("mine", None)
+    if GameSettings.object().mode == GameSettings.GameMode.TRADING:
 
-    return render(request, "trading/post.html", {"post": post, "buys": buys})
+        post = get_object_or_404(Post, card_uuid=card_uuid)
+        buys = get_list_or_404(PostRecipe, post=post.pk)
+        request.session["post"] = post.card_uuid
+        request.session.pop("mine", None)
+
+        return render(request, "trading/post.html", {"post": post, "buys": buys})
+    
+    if GameSettings.object().mode == GameSettings.GameMode.ACTIVITIES:
+        act = get_object_or_404(Activity, card_uuid=card_uuid)
+        request.session["post"] = act.card_uuid
+
+        return HttpResponse(f"{act.name} geregistreerd!")
+
 
 
 def dashboard(request: HttpRequest) -> HttpResponse:

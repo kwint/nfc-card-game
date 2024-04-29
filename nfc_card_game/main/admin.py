@@ -23,7 +23,12 @@ class GameModeAdmin(admin.ModelAdmin):
 
 @admin.register(Activity)
 class Activities(admin.ModelAdmin):
-    list_display = ["name", "card_uuid"]
+    list_display = ["name", "card_uuid", "link"]
+
+    @mark_safe
+    def link(self, obj):
+        card_url = reverse("post", kwargs={"card_uuid": obj.card_uuid})
+        return format_html(f'<a href="{card_url}">link</a>')
 
 
 class PlayerInLine(admin.TabularInline):
