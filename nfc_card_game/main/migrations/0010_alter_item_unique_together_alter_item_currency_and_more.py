@@ -4,26 +4,33 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0009_merge_20240412_2107'),
+        ("main", "0009_merge_20240412_2107"),
     ]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='item',
-            unique_together={('name', 'type')},
+            name="item",
+            unique_together={("name", "type")},
         ),
         migrations.AlterField(
-            model_name='item',
-            name='currency',
-            field=models.CharField(blank=True, choices=[('BLUE', 'Blauwe munt'), ('RED', 'Rode munt'), ('GREEN', 'Groene munt')], null=True),
+            model_name="item",
+            name="currency",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("BLUE", "Blauwe munt"),
+                    ("RED", "Rode munt"),
+                    ("GREEN", "Groene munt"),
+                ],
+                null=True,
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='item',
-            unique_together={('name', 'type'), ('type', 'currency', 'team')},
+            name="item",
+            unique_together={("name", "type"), ("type", "currency", "team")},
         ),
         migrations.DeleteModel(
-            name='Mine',
+            name="Mine",
         ),
     ]

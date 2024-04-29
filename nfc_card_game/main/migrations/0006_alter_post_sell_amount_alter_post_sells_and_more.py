@@ -5,25 +5,29 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0005_remove_post_buys_alter_teammine_unique_together_and_more'),
+        ("main", "0005_remove_post_buys_alter_teammine_unique_together_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='post',
-            name='sell_amount',
+            model_name="post",
+            name="sell_amount",
             field=models.PositiveIntegerField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='post',
-            name='sells',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='main.item'),
+            model_name="post",
+            name="sells",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="main.item",
+            ),
         ),
         migrations.AlterField(
-            model_name='postrecipe',
-            name='amount',
+            model_name="postrecipe",
+            name="amount",
             field=models.PositiveIntegerField(blank=True, null=True),
         ),
     ]

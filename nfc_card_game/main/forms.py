@@ -1,6 +1,7 @@
 from django.forms import ModelForm
 
-from nfc_card_game.main.models import Player
+from nfc_card_game.main.models.player import Player
+
 
 class PlayerForm(ModelForm):
     class Meta:

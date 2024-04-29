@@ -5,19 +5,41 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0007_delete_mine_remove_item_amount_item_team_item_type'),
+        ("main", "0007_delete_mine_remove_item_amount_item_team_item_type"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Mine',
+            name="Mine",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('currency', models.CharField(choices=[('BLUE', 'Blauwe munt'), ('RED ', 'Rode munt'), ('GREEN', 'Groene munt')], max_length=100)),
-                ('amount', models.IntegerField()),
-                ('team', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main.team')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "currency",
+                    models.CharField(
+                        choices=[
+                            ("BLUE", "Blauwe munt"),
+                            ("RED ", "Rode munt"),
+                            ("GREEN", "Groene munt"),
+                        ],
+                        max_length=100,
+                    ),
+                ),
+                ("amount", models.IntegerField()),
+                (
+                    "team",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="main.team"
+                    ),
+                ),
             ],
         ),
     ]

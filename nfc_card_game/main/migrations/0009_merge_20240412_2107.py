@@ -4,11 +4,9 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0008_mine'),
-        ('main', '0008_remove_teammine_card_uuid_alter_item_unique_together'),
+        ("main", "0008_mine"),
+        ("main", "0008_remove_teammine_card_uuid_alter_item_unique_together"),
     ]
 
-    operations = [
-    ]
+    operations = []

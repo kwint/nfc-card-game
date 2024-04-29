@@ -5,66 +5,95 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0004_item_remove_player_inventory_playeritem'),
+        ("main", "0004_item_remove_player_inventory_playeritem"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='post',
-            name='buys',
+            model_name="post",
+            name="buys",
         ),
         migrations.AlterUniqueTogether(
-            name='teammine',
-            unique_together={('team', 'mine')},
+            name="teammine",
+            unique_together={("team", "mine")},
         ),
         migrations.AddField(
-            model_name='item',
-            name='amount',
+            model_name="item",
+            name="amount",
             field=models.IntegerField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='item',
-            name='currency',
-            field=models.CharField(blank=True, choices=[('BLUE', 'Blauwe munt'), ('RED ', 'Rode munt'), ('GREEN', 'Groene munt')], null=True),
+            model_name="item",
+            name="currency",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("BLUE", "Blauwe munt"),
+                    ("RED ", "Rode munt"),
+                    ("GREEN", "Groene munt"),
+                ],
+                null=True,
+            ),
         ),
         migrations.AddField(
-            model_name='post',
-            name='sell_amount',
+            model_name="post",
+            name="sell_amount",
             field=models.PositiveIntegerField(default=0),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='teammine',
-            name='amount',
+            model_name="teammine",
+            name="amount",
             field=models.IntegerField(default=0),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='post',
-            name='sells',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main.item'),
+            model_name="post",
+            name="sells",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="main.item"
+            ),
         ),
         migrations.AlterField(
-            model_name='teammine',
-            name='mine',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main.item'),
+            model_name="teammine",
+            name="mine",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="main.item"
+            ),
         ),
         migrations.RemoveField(
-            model_name='teammine',
-            name='inventory',
+            model_name="teammine",
+            name="inventory",
         ),
         migrations.CreateModel(
-            name='PostRecipe',
+            name="PostRecipe",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('amount', models.PositiveIntegerField()),
-                ('item', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main.item')),
-                ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main.post')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("amount", models.PositiveIntegerField()),
+                (
+                    "item",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="main.item"
+                    ),
+                ),
+                (
+                    "post",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="main.post"
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('post', 'item')},
+                "unique_together": {("post", "item")},
             },
         ),
     ]

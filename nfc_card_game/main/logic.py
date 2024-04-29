@@ -5,7 +5,8 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from django.forms.models import model_to_dict
 
-from .models import Player, TeamMine, PlayerItem, PostRecipe
+from .models.player import Player
+from .models.trading import TeamMine, PlayerItem, PostRecipe
 
 MINE_OFFLOAD = 200
 
