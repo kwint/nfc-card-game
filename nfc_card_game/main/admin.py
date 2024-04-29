@@ -4,17 +4,26 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.db.models import Q
 
-from nfc_card_game.main.models import (
-    Player,
+from nfc_card_game.main.models.activities import Activity
+from nfc_card_game.main.models.player import Player, Team
+from nfc_card_game.main.models.game_settings import GameSettings
+from nfc_card_game.main.models.trading import (
     Post,
-    Team,
     TeamMine,
     PlayerItem,
     Item,
     PostRecipe,
 )
 
-# Register your models here.
+
+@admin.register(GameSettings)
+class GameModeAdmin(admin.ModelAdmin):
+    list_display = ["mode"]
+
+
+@admin.register(Activity)
+class Activities(admin.ModelAdmin):
+    list_display = ["name", "card_uuid"]
 
 
 class PlayerInLine(admin.TabularInline):

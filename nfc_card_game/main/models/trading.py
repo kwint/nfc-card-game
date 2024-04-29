@@ -1,49 +1,7 @@
-import uuid
-
 from django.db import models
 from django.core.exceptions import ValidationError
-
-# Create your models here.
-
-
-def short_uuid() -> str:
-    return str(uuid.uuid4())[:8]
-
-
-class Team(models.Model):
-    name = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
-
-
-class Player(models.Model):
-    class Section(models.TextChoices):
-        OBV = "OBV", "Ochtendbevers"
-        MBV = "MBV", "Middagbevers"
-
-        MAL = "MAL", "Malicetehorde"
-        SJH = "SJH", "Sint Jorishorde"
-        COM = "COM", "Commoosiehorde"
-        STH = "STH", "Sterrenhorde"
-
-        DOB = "DOB", "Donkerblauwe troep"
-        SJV = "SJV", "Sint Jorisvendel"
-        LIB = "LIB", "Lichtblauwe troep"
-        STV = "STV", "Sterrenvendel"
-
-        EXP = "EXP", "Explorers"
-        STAF = "STAF", "Leiding"
-
-        NONE = "", "Not set"
-
-    card_uuid = models.CharField(default=short_uuid, max_length=10, unique=True)
-    name = models.CharField(max_length=100, blank=True)
-    section = models.CharField(max_length=4, choices=Section, default=Section.NONE)
-    team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True)
-
-    def __str__(self):
-        return f"{self.name} | {self.section}"
+from .player import Player, Team
+from .utils import short_uuid
 
 
 class Currency(models.TextChoices):

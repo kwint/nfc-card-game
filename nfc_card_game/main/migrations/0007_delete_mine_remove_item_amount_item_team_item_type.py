@@ -5,28 +5,40 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0006_alter_post_sell_amount_alter_post_sells_and_more'),
+        ("main", "0006_alter_post_sell_amount_alter_post_sells_and_more"),
     ]
 
     operations = [
         migrations.DeleteModel(
-            name='Mine',
+            name="Mine",
         ),
         migrations.RemoveField(
-            model_name='item',
-            name='amount',
+            model_name="item",
+            name="amount",
         ),
         migrations.AddField(
-            model_name='item',
-            name='team',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='main.team'),
+            model_name="item",
+            name="team",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="main.team",
+            ),
         ),
         migrations.AddField(
-            model_name='item',
-            name='type',
-            field=models.CharField(choices=[('MINE', 'Mine'), ('RESOURCE', 'Resource'), ('MINER', 'Miner')], default='RESOURCE', max_length=100),
+            model_name="item",
+            name="type",
+            field=models.CharField(
+                choices=[
+                    ("MINE", "Mine"),
+                    ("RESOURCE", "Resource"),
+                    ("MINER", "Miner"),
+                ],
+                default="RESOURCE",
+                max_length=100,
+            ),
             preserve_default=False,
         ),
     ]

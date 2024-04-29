@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block title %}{{ player.name }}{% endblock %}
+
+{% block content %}
+<head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.0/font/bootstrap-icons.css">
+  <link rel="shortcut icon"  href="{% static '/images/favicon.png' %}">
+</head>
+
+<body>
+  <div class="container pt-2">
+    <div class="accordion card shadow">
+      <div class="card-header align-items-center">
+        <h4 class="m-0">{{ player.name }} heeft gedaan</h4>
+      </div>
+      <div class="card-body">
+        <ul class="list-group">
+          {% for act in player_activities %}
+            <li class="list-group-item" >{{ act }}</li>
+          {% endfor %}
+        </ul>
+    </div>
+
+    <div class="accordion card shadow">
+      <div class="card-header align-items-center">
+        <h4 class="m-0">Nog te doen:</h4>
+      </div>
+      <div class="card-body">
+          <ul class="list-group">
+            {% for act in remaining %}
+              <li class="list-group-item" >{{ act }}</li>
+            {% endfor %}
+          </ul>
+
+    </div>
+  </div>
+</body>
+
+
+{% endblock content %}
+

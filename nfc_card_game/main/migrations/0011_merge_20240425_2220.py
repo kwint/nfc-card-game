@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("main", "0004_alter_player_card_uuid"),
         ("main", "0010_alter_item_unique_together_alter_item_currency_and_more"),

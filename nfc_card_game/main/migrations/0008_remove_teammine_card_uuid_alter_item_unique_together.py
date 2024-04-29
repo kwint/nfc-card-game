@@ -4,18 +4,17 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0007_delete_mine_remove_item_amount_item_team_item_type'),
+        ("main", "0007_delete_mine_remove_item_amount_item_team_item_type"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='teammine',
-            name='card_uuid',
+            model_name="teammine",
+            name="card_uuid",
         ),
         migrations.AlterUniqueTogether(
-            name='item',
-            unique_together={('name', 'type')},
+            name="item",
+            unique_together={("name", "type")},
         ),
     ]
