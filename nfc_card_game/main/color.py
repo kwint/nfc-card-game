@@ -24,6 +24,7 @@ COLOR_UUID = {
 #     "a4d1193c": Player.Color.YELLOW,
 # }
 
+
 def give_player_color(request: HttpRequest, player: Player) -> HttpResponse:
     if player.color is None:
         player.color = random.choice(list(Player.Color))
@@ -57,4 +58,6 @@ def post_correct_color(
 
 
 def post_wrong_color(request: HttpRequest, player: Player, post_color) -> HttpResponse:
-    return render(request, "color/wrong.html", {"player": player, "post_color": post_color})
+    return render(
+        request, "color/wrong.html", {"player": player, "post_color": post_color}
+    )

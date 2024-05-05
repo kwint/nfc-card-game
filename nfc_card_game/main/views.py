@@ -7,6 +7,9 @@ from nfc_card_game.main.color import (
     post_correct_color,
     post_wrong_color,
     remove_player_color,
+    COLOR_HOME_UUID,
+    COLOR_JOKER_UUID,
+    COLOR_UUID,
 )
 from nfc_card_game.main.forms import PlayerForm
 from nfc_card_game.main.models.activities import Activity
@@ -15,8 +18,6 @@ from nfc_card_game.main.models.game_settings import GameSettings
 from .logic import ActionInfo, handle_post_scan
 from .models.player import Player
 from .models.trading import PlayerItem, Post, PostRecipe, TeamMine
-
-
 
 
 def index(request):
@@ -128,8 +129,16 @@ def post(request: HttpRequest, card_uuid: str) -> HttpResponse:
 
     if current_mode == GameSettings.GameMode.COLOR:
         request.session["post"] = card_uuid
-        # TODO: handle wrong code
-        return HttpResponse("Kleur geregistreerd")
+        if card_uuid == COLOR_HOME_UUID:
+            color = "thuis"
+        elif card_uuid == COLOR_JOKER_UUID:
+            color = "joker"
+        else:
+            color = COLOR_UUID.get(card_uuid)
+        if color:
+            return HttpResponse(f"Je speelt kleurenkaartjes en bent nu {color}")
+        else:
+            return Http404("Deze kaart speelt niet mee met het huidige spel")
 
 
 def dashboard(request: HttpRequest) -> HttpResponse:
