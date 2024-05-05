@@ -2,6 +2,12 @@ from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_list_or_404, get_object_or_404, render
 from django.core import serializers
 
+from nfc_card_game.main.color import (
+    give_player_color,
+    post_correct_color,
+    post_wrong_color,
+    remove_player_color,
+)
 from nfc_card_game.main.forms import PlayerForm
 from nfc_card_game.main.models.activities import Activity
 from nfc_card_game.main.models.game_settings import GameSettings
@@ -9,6 +15,8 @@ from nfc_card_game.main.models.game_settings import GameSettings
 from .logic import ActionInfo, handle_post_scan
 from .models.player import Player
 from .models.trading import PlayerItem, Post, PostRecipe, TeamMine
+
+
 
 
 def index(request):
@@ -46,7 +54,6 @@ def handle_activities_player(request: HttpRequest, player: Player) -> HttpRespon
     player_activities = list(player.activities.all())
     for player_act in player_activities:
         all_activities[player_act] = True
-    
 
     return render(
         request,
@@ -56,6 +63,21 @@ def handle_activities_player(request: HttpRequest, player: Player) -> HttpRespon
             "player": player,
         },
     )
+
+
+def handle_color_player(request: HttpRequest, player: Player) -> HttpResponse:
+    post_uuid = request.session.get("post")
+    if COLOR_HOME_UUID == post_uuid:
+        return give_player_color(request, player)
+
+    if COLOR_JOKER_UUID == post_uuid:
+        return remove_player_color(request, player)
+
+    if color := COLOR_UUID.get(post_uuid):
+        if color == player.color:
+            return post_correct_color(request, player, str(color))
+
+        return post_wrong_color(request, player, str(color))
 
 
 def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
@@ -73,6 +95,9 @@ def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
     if GameSettings.object().mode == GameSettings.GameMode.ACTIVITIES:
         return handle_activities_player(request, player)
 
+    if GameSettings.object().mode == GameSettings.GameMode.COLOR:
+        return handle_color_player(request, player)
+
 
 def register_player(request: HttpRequest):
     if request.method == "POST":
@@ -86,21 +111,25 @@ def register_player(request: HttpRequest):
 
 
 def post(request: HttpRequest, card_uuid: str) -> HttpResponse:
-    if GameSettings.object().mode == GameSettings.GameMode.TRADING:
-
+    current_mode = GameSettings.object().mode
+    if current_mode == GameSettings.GameMode.TRADING:
         post = get_object_or_404(Post, card_uuid=card_uuid)
         buys = get_list_or_404(PostRecipe, post=post.pk)
         request.session["post"] = post.card_uuid
         request.session.pop("mine", None)
 
         return render(request, "trading/post.html", {"post": post, "buys": buys})
-    
-    if GameSettings.object().mode == GameSettings.GameMode.ACTIVITIES:
+
+    if current_mode == GameSettings.GameMode.ACTIVITIES:
         act = get_object_or_404(Activity, card_uuid=card_uuid)
         request.session["post"] = act.card_uuid
 
         return HttpResponse(f"{act.name} geregistreerd!")
 
+    if current_mode == GameSettings.GameMode.COLOR:
+        request.session["post"] = card_uuid
+        # TODO: handle wrong code
+        return HttpResponse("Kleur geregistreerd")
 
 
 def dashboard(request: HttpRequest) -> HttpResponse:

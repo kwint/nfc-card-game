@@ -31,11 +31,21 @@ class Player(models.Model):
 
         NONE = "", "Not set"
 
+    class Color(models.TextChoices):
+        RED = "RED"
+        BLUE = "BLUE"
+        GREEN = "GREEN"
+        YELLOW = "YELLOW"
+
     card_uuid = models.CharField(default=short_uuid, max_length=10, unique=True)
     name = models.CharField(max_length=100, blank=True)
     section = models.CharField(max_length=4, choices=Section, default=Section.NONE)
     team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True, blank=True)
     activities = models.ManyToManyField(Activity)
+    color = models.CharField(
+        max_length=20, choices=Color, default=None, null=True, blank=True
+    )
+    color_points = models.IntegerField(blank=True, default=0)
 
     def __str__(self):
         return f"{self.name} | {self.section}"

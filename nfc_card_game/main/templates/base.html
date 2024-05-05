@@ -14,18 +14,21 @@
 </head>
 
 <body>
-  <nav class="navbar navbar-static-top navbar-expand-lg bg-dark navbar-dark">
-    <div class="container">
-      <a href="#" class="d-flex navbar-brand ">
-        <img height="32" src="{% static '/images/icon.png' %}"></img>
-        <span class="ps-2">SCOUTING 2.0</span>
-      </a>
+  <div class="vh-100 d-flex flex-column">
+    
+    <nav class="navbar navbar-static-top navbar-expand-lg bg-dark navbar-dark">
+      <div class="container">
+        <a href="#" class="d-flex navbar-brand ">
+          <img height="32" src="{% static '/images/icon.png' %}"></img>
+          <span class="ps-2">SCOUTING 2.0</span>
+        </a>
+      </div>
+    </nav>
+    
+    <div class="pt-2 flex-grow-1">
+      {% block content %}{% endblock %}
     </div>
-  </nav>
-
-    <div class="pt-2">
-        {% block content %}{% endblock %}
-    </div>
+  </div>
 
 </body>
 
