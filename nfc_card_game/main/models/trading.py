@@ -23,7 +23,7 @@ class Item(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE, blank=True, null=True)
 
     class Meta:
-        unique_together = (("name", "type"), ("type", "currency", "team"))
+        unique_together = ( ("type", "currency", "team"))
         ordering = ["type", "name"]
 
     def __str__(self):
