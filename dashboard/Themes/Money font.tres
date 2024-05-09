@@ -1,0 +1,9 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://n2sj11gmuqmo"]
+
+[sub_resource type="FontVariation" id="FontVariation_h6oe6"]
+variation_embolden = 0.5
+spacing_glyph = 2
+
+[resource]
+default_font = SubResource("FontVariation_h6oe6")
+default_font_size = 30

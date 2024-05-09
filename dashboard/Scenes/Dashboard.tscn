@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://ca1ddejybbu0g"]
+[gd_scene load_steps=4 format=3 uid="uid://ca1ddejybbu0g"]
 
 [ext_resource type="Texture2D" uid="uid://spx3oh7upq1v" path="res://Sprites/mountain.png" id="1_tusvk"]
+[ext_resource type="Theme" uid="uid://n2sj11gmuqmo" path="res://Themes/Money font.tres" id="2_1f4xi"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w6uij"]
 
 [node name="Root" type="Node"]
 
@@ -48,12 +51,17 @@ expand_mode = 3
 
 [node name="MoneyLeft" type="MarginContainer" parent="Viewport"]
 layout_mode = 1
-offset_right = 101.0
-offset_bottom = 40.0
+offset_right = 121.0
+offset_bottom = 43.0
+theme_override_constants/margin_left = 85
+theme_override_constants/margin_top = 20
 
 [node name="Label" type="Label" parent="Viewport/MoneyLeft"]
 layout_mode = 2
-size_flags_vertical = 1
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = ExtResource("2_1f4xi")
+theme_override_styles/normal = SubResource("StyleBoxTexture_w6uij")
 text = "$123.456.789"
 
 [node name="MoneyRight" type="MarginContainer" parent="Viewport"]
@@ -61,14 +69,17 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -101.0
+offset_left = -111.0
 offset_bottom = 40.0
 grow_horizontal = 0
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 85
 
 [node name="Label" type="Label" parent="Viewport/MoneyRight"]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
+theme = ExtResource("2_1f4xi")
 text = "$123.456.789"
 horizontal_alignment = 2
 
