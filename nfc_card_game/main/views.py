@@ -29,7 +29,6 @@ def get_player_register(request: HttpRequest):
     return render(request, "register.html", {"form": form})
 
 
-
 def handle_activities_player(request: HttpRequest, player: Player) -> HttpResponse:
     if act_uuid := request.session.get("post"):
         activity = Activity.objects.get(card_uuid=act_uuid)
@@ -64,6 +63,7 @@ def handle_color_player(request: HttpRequest, player: Player) -> HttpResponse:
 
         return post_wrong_color(request, player, str(color))
 
+
 def handle_trading_player(request: HttpRequest, player: Player) -> HttpResponse:
     post_uuid = request.session.get("post")
     player_item = PlayerItem.objects.filter(player=player)
@@ -72,22 +72,25 @@ def handle_trading_player(request: HttpRequest, player: Player) -> HttpResponse:
 
     context = {"player": player, "items": items}
 
-    if request.method == 'POST':
-        selected_amount = int(request.POST.get('amount', 1))
-        context = {'buy_amount': selected_amount, 'items': items}
+    if request.method == "POST":
+        selected_amount = int(request.POST.get("amount", 1))
+        context = {"buy_amount": selected_amount, "items": items}
         if post_uuid := request.session.get("post"):
             post = PostRecipe.objects.filter(post__card_uuid=post_uuid)
             context["post"] = post
             if post[0].post.type == "MINER":
-                action = handle_miner_scan(player, post, player_item, team_mines, selected_amount)
+                action = handle_miner_scan(
+                    player, post, player_item, team_mines, selected_amount
+                )
 
             elif post[0].post.type == "RESOURCE":
-                action = handle_post_scan(player, post, player_item, team_mines, selected_amount)
-
+                action = handle_post_scan(
+                    player, post, player_item, team_mines, selected_amount
+                )
 
         action_dict = action.model_dump() if action else None
         context["action"] = action_dict
-        return render(request, 'trading/player_bought.html', context)
+        return render(request, "trading/player_bought.html", context)
 
     if mine_uuid := request.session.get("mine"):
         mine = TeamMine.objects.filter(mine__card_uuid=mine_uuid, team=player.team)
@@ -102,6 +105,7 @@ def handle_trading_player(request: HttpRequest, player: Player) -> HttpResponse:
     context["buy_amounts"] = [1, 5, 10, 20, 50]
 
     return render(request, "trading/player_stats.html", context)
+
 
 def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
     try:
@@ -120,7 +124,6 @@ def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
 
     if GameSettings.object().mode == GameSettings.GameMode.COLOR:
         return handle_color_player(request, player)
-    
 
 
 def register_player(request: HttpRequest):
@@ -133,12 +136,13 @@ def register_player(request: HttpRequest):
 
     raise Http404
 
+
 def mine(request: HttpRequest, card_uuid: str) -> HttpResponse:
     mine = get_object_or_404(Mine, card_uuid=card_uuid)
     request.session["mine"] = mine.card_uuid
     request.session.pop("post", None)
 
-    return render(request, "trading/mine.html", {"mine": mine}) 
+    return render(request, "trading/mine.html", {"mine": mine})
 
 
 def post(request: HttpRequest, card_uuid: str) -> HttpResponse:

@@ -1,11 +1,31 @@
 from schedule import Scheduler
 import threading
 import time
+from dataclasses import dataclass
+from nfc_card_game.main.models.trading import TeamMine, Item
+
+
+@dataclass
+class GameSettings:
+    # Base price of item
+    base_price: float = 15
+    # price increase factor (linear)
+    unit_increase_factor: float = 0.01
+    inbalance_inefficiency: float = 0.01
 
 
 def game_loop():
-    # print("loopie")
-    pass
+    update_team_mines()
+
+
+def update_team_mines():
+    team_mines = TeamMine.objects.all()
+    for team_mine in team_mines:
+        a, b, c = get_team_mine_workers(team_mine)
+
+
+def get_team_mine_workers(team_mine: TeamMine) -> tuple[Item, Item, Item]:
+    return
 
 
 def start_scheduler():

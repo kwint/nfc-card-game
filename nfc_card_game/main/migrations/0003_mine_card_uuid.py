@@ -5,15 +5,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0002_remove_post_content_type_remove_post_object_id_and_more'),
+        ("main", "0002_remove_post_content_type_remove_post_object_id_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='mine',
-            name='card_uuid',
-            field=models.CharField(default=nfc_card_game.main.models.short_uuid, max_length=10),
+            model_name="mine",
+            name="card_uuid",
+            field=models.CharField(
+                default=nfc_card_game.main.models.short_uuid, max_length=10
+            ),
         ),
     ]

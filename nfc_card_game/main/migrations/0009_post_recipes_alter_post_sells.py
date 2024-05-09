@@ -5,20 +5,25 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0008_alter_postrecipe_item'),
+        ("main", "0008_alter_postrecipe_item"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='post',
-            name='recipes',
-            field=models.ManyToManyField(related_name='post', through='main.PostRecipe', to='main.item'),
+            model_name="post",
+            name="recipes",
+            field=models.ManyToManyField(
+                related_name="post", through="main.PostRecipe", to="main.item"
+            ),
         ),
         migrations.AlterField(
-            model_name='post',
-            name='sells',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sells', to='main.item'),
+            model_name="post",
+            name="sells",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="sells",
+                to="main.item",
+            ),
         ),
     ]

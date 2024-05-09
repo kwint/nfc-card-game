@@ -4,16 +4,22 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0010_remove_post_recipes_postrecipe_required_and_more'),
+        ("main", "0010_remove_post_recipes_postrecipe_required_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='post',
-            name='type',
-            field=models.CharField(choices=[('RESOURCE', 'Resource'), ('FACTORY', 'Factory'), ('COIN', 'Coin')], default=0),
+            model_name="post",
+            name="type",
+            field=models.CharField(
+                choices=[
+                    ("RESOURCE", "Resource"),
+                    ("FACTORY", "Factory"),
+                    ("COIN", "Coin"),
+                ],
+                default=0,
+            ),
             preserve_default=False,
         ),
     ]

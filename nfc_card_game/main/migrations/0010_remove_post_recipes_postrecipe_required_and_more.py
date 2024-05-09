@@ -5,25 +5,26 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0009_post_recipes_alter_post_sells'),
+        ("main", "0009_post_recipes_alter_post_sells"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='post',
-            name='recipes',
+            model_name="post",
+            name="recipes",
         ),
         migrations.AddField(
-            model_name='postrecipe',
-            name='required',
+            model_name="postrecipe",
+            name="required",
             field=models.BooleanField(default=0),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='post',
-            name='sells',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main.item'),
+            model_name="post",
+            name="sells",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="main.item"
+            ),
         ),
     ]

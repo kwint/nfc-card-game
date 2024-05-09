@@ -4,19 +4,59 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0005_alter_mine_unique_together_remove_mine_amount_and_more'),
+        ("main", "0005_alter_mine_unique_together_remove_mine_amount_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Item',
+            name="Item",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(choices=[('BIJL', 'Bijl'), ('BOOR', 'Boor'), ('RUPSBAND', 'Rupsband'), ('BLAUW', 'Blauw'), ('GROEN', 'Groen'), ('ROOD', 'Rood'), ('MIJNWERKER', 'Mijnwerker'), ('DRILBOOR', 'Drilboor'), ('TUNNELBOOR', 'Tunnelboor')])),
-                ('type', models.CharField(choices=[('COIN', 'Coin'), ('RESOURCE', 'Resource'), ('WORKER', 'Worker')])),
-                ('currency', models.CharField(choices=[('BLAUW', 'Blauw'), ('GROEN', 'Groen'), ('ROOD', 'Rood')])),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        choices=[
+                            ("BIJL", "Bijl"),
+                            ("BOOR", "Boor"),
+                            ("RUPSBAND", "Rupsband"),
+                            ("BLAUW", "Blauw"),
+                            ("GROEN", "Groen"),
+                            ("ROOD", "Rood"),
+                            ("MIJNWERKER", "Mijnwerker"),
+                            ("DRILBOOR", "Drilboor"),
+                            ("TUNNELBOOR", "Tunnelboor"),
+                        ]
+                    ),
+                ),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[
+                            ("COIN", "Coin"),
+                            ("RESOURCE", "Resource"),
+                            ("WORKER", "Worker"),
+                        ]
+                    ),
+                ),
+                (
+                    "currency",
+                    models.CharField(
+                        choices=[
+                            ("BLAUW", "Blauw"),
+                            ("GROEN", "Groen"),
+                            ("ROOD", "Rood"),
+                        ]
+                    ),
+                ),
             ],
         ),
     ]

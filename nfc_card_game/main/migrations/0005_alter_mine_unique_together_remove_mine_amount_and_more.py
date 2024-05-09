@@ -5,34 +5,51 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0004_alter_mine_unique_together'),
+        ("main", "0004_alter_mine_unique_together"),
     ]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='mine',
-            unique_together={('currency',)},
+            name="mine",
+            unique_together={("currency",)},
         ),
         migrations.RemoveField(
-            model_name='mine',
-            name='amount',
+            model_name="mine",
+            name="amount",
         ),
         migrations.RemoveField(
-            model_name='mine',
-            name='team',
+            model_name="mine",
+            name="team",
         ),
         migrations.CreateModel(
-            name='TeamMine',
+            name="TeamMine",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('amount', models.IntegerField()),
-                ('mine', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main.mine')),
-                ('team', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main.team')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("amount", models.IntegerField()),
+                (
+                    "mine",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="main.mine"
+                    ),
+                ),
+                (
+                    "team",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="main.team"
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('mine', 'team')},
+                "unique_together": {("mine", "team")},
             },
         ),
     ]

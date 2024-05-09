@@ -4,24 +4,25 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0011_post_type'),
+        ("main", "0011_post_type"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='postrecipe',
-            old_name='amount',
-            new_name='price',
+            model_name="postrecipe",
+            old_name="amount",
+            new_name="price",
         ),
         migrations.RemoveField(
-            model_name='postrecipe',
-            name='required',
+            model_name="postrecipe",
+            name="required",
         ),
         migrations.AlterField(
-            model_name='post',
-            name='type',
-            field=models.CharField(choices=[('RESOURCE', 'Resource'), ('MINER', 'Miner')]),
+            model_name="post",
+            name="type",
+            field=models.CharField(
+                choices=[("RESOURCE", "Resource"), ("MINER", "Miner")]
+            ),
         ),
     ]

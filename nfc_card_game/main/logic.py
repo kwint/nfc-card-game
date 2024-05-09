@@ -54,18 +54,19 @@ def handle_post_scan(
     trans_cost = {}
     changes = []
 
-    currencies = player_items.filter(item__type="COIN").exclude(item__currency=post_recipes.first().post.sells.currency)
-    currency = currencies.order_by('-amount')
+    currencies = player_items.filter(item__type="COIN").exclude(
+        item__currency=post_recipes.first().post.sells.currency
+    )
+    currency = currencies.order_by("-amount")
     cost = post_recipes.first().price * buy_amount
 
-    if cost > currency.aggregate(Sum('amount'))['amount__sum']:
+    if cost > currency.aggregate(Sum("amount"))["amount__sum"]:
         return ActionInfo(
             log="Niet genoeg geld!",
             status="error",
         )
 
-
-    for currency in currencies.order_by('-amount'):
+    for currency in currencies.order_by("-amount"):
         if cost <= 0:
             break
         if currency.amount > 0:
@@ -110,21 +111,23 @@ def handle_miner_scan(
             return ActionInfo(log=f"Geen {recipe.item} in inventory", status="error")
 
         if player_item.amount <= 0 or player_item.amount < buy_amount:
-            return ActionInfo(log=f"Niet genoeg {player_item.item.name}!", status="error")
+            return ActionInfo(
+                log=f"Niet genoeg {player_item.item.name}!", status="error"
+            )
 
-        if post_recipes.first().post.sell_amount == None:
+        if post_recipes.first().post.sell_amount is None:
             sold_amount = player_item.amount
 
         trans_cost[recipe.item.name] = {
             "name": recipe.item.name,
             "amount": cost,
-            "post_name": post_recipes[0].post.name
+            "post_name": post_recipes[0].post.name,
         }
         player_item.amount -= cost
         changes.append(player_item)
 
     sell_item = player_items.get(player=player, item=post_recipes.first().post.sells)
-    sell_item.amount = (sell_item.amount + buy_amount)
+    sell_item.amount = sell_item.amount + buy_amount
 
     changes.append(sell_item)
     commit_changes(changes)
@@ -143,19 +146,22 @@ def handle_mine_scan(
     player_items: PlayerItem,
     team_mines: TeamMine,
     mine_items: TeamMineItem,
-    ) -> ActionInfo:
-
+) -> ActionInfo:
     changes = []
     trans_cost = {}
     mine = team_mines.get()
     print(mine_items)
 
-    curr_miners = player_items.filter(item__type="MINER", item__currency=mine.mine.currency)
-
-    
+    curr_miners = player_items.filter(
+        item__type="MINER", item__currency=mine.mine.currency
+    )
 
     for item in curr_miners:
-        if item.item.type == "MINER" and item.item.currency == team_mines[0].mine.currency and item.amount > 0:
+        if (
+            item.item.type == "MINER"
+            and item.item.currency == team_mines[0].mine.currency
+            and item.amount > 0
+        ):
             mine_item = mine_items.get(item=item.item, team_mine__team=player.team)
             player_item = player_items.get(item=item.item)
             mine_item.amount += item.amount
@@ -163,14 +169,13 @@ def handle_mine_scan(
 
             trans_cost[mine_item.item.name] = {
                 "name": mine_item.item.name,
-                "amount": item.amount
+                "amount": item.amount,
             }
 
             changes.append(mine_item)
             changes.append(player_item)
 
     commit_changes(changes)
-
 
     n = player_items.get(item__currency=team_mines[0].mine.currency, item__type="COIN")
     n.amount += round(team_mines[0].money * MINE_OFFLOAD_PERCENT)
@@ -188,5 +193,3 @@ def handle_mine_scan(
         bought={"amount": received_money, "item": n},
         costs=trans_cost,
     )
-    
-

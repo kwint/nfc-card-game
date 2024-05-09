@@ -1,6 +1,7 @@
 from django.db import models
 
 from nfc_card_game.main.models.activities import Activity
+from nfc_card_game.main.models.trading import Team
 from .utils import short_uuid
 
 

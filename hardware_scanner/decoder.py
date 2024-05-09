@@ -1,27 +1,27 @@
 import ndef
 import serial
 from selenium import webdriver
-from selenium.webdriver.common.by import By
 import re
 
 
 try:
     ser = serial.Serial(
-        port='/dev/ttyUSB0',
+        port="/dev/ttyUSB0",
         baudrate=115200,
     )
 except serial.SerialException as e:
     print(e)
     exit(1)
 
+
 def decode_nfc_message(hex_data):
     byte_data = bytearray.fromhex(hex_data.replace(" ", "")[14:])
-    
+
     decoded_records = list(ndef.message_decoder(byte_data))
 
     payload = decoded_records[0].data
-    payload = payload.decode('utf-8') if isinstance(payload, bytes) else payload
-    url = re.sub('\x04', 'https://', payload)
+    payload = payload.decode("utf-8") if isinstance(payload, bytes) else payload
+    url = re.sub("\x04", "https://", payload)
     return url
 
 
@@ -43,8 +43,3 @@ while True:
             prev_line = line
         except Exception as e:
             print(e)
-        
-
-
-
-

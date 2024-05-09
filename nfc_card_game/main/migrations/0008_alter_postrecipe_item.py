@@ -5,15 +5,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0007_alter_playeritem_item_alter_post_sells'),
+        ("main", "0007_alter_playeritem_item_alter_post_sells"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='postrecipe',
-            name='item',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main.item'),
+            model_name="postrecipe",
+            name="item",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="main.item"
+            ),
         ),
     ]

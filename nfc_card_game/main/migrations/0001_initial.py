@@ -6,74 +6,230 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('contenttypes', '0002_remove_content_type_name'),
+        ("contenttypes", "0002_remove_content_type_name"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Team',
+            name="Team",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
             ],
         ),
         migrations.CreateModel(
-            name='Post',
+            name="Post",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('card_uuid', models.CharField(default=nfc_card_game.main.models.short_uuid, max_length=10)),
-                ('name', models.CharField(max_length=100)),
-                ('object_id', models.PositiveIntegerField()),
-                ('sell_amount', models.PositiveIntegerField(blank=True, null=True)),
-                ('content_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='contenttypes.contenttype')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "card_uuid",
+                    models.CharField(
+                        default=nfc_card_game.main.models.short_uuid, max_length=10
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("object_id", models.PositiveIntegerField()),
+                ("sell_amount", models.PositiveIntegerField(blank=True, null=True)),
+                (
+                    "content_type",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="contenttypes.contenttype",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Player',
+            name="Player",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('card_uuid', models.CharField(default=nfc_card_game.main.models.short_uuid, max_length=10, unique=True)),
-                ('name', models.CharField(blank=True, max_length=100)),
-                ('section', models.CharField(choices=[('OBV', 'Ochtendbevers'), ('MBV', 'Middagbevers'), ('MAL', 'Malicetehorde'), ('SJH', 'Sint Jorishorde'), ('COM', 'Commoosiehorde'), ('STH', 'Sterrenhorde'), ('DOB', 'Donkerblauwe troep'), ('SJV', 'Sint Jorisvendel'), ('LIB', 'Lichtblauwe troep'), ('STV', 'Sterrenvendel'), ('EXP', 'Explorers'), ('STAF', 'Leiding'), ('', 'Not set')], default='', max_length=4)),
-                ('team', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main.team')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "card_uuid",
+                    models.CharField(
+                        default=nfc_card_game.main.models.short_uuid,
+                        max_length=10,
+                        unique=True,
+                    ),
+                ),
+                ("name", models.CharField(blank=True, max_length=100)),
+                (
+                    "section",
+                    models.CharField(
+                        choices=[
+                            ("OBV", "Ochtendbevers"),
+                            ("MBV", "Middagbevers"),
+                            ("MAL", "Malicetehorde"),
+                            ("SJH", "Sint Jorishorde"),
+                            ("COM", "Commoosiehorde"),
+                            ("STH", "Sterrenhorde"),
+                            ("DOB", "Donkerblauwe troep"),
+                            ("SJV", "Sint Jorisvendel"),
+                            ("LIB", "Lichtblauwe troep"),
+                            ("STV", "Sterrenvendel"),
+                            ("EXP", "Explorers"),
+                            ("STAF", "Leiding"),
+                            ("", "Not set"),
+                        ],
+                        default="",
+                        max_length=4,
+                    ),
+                ),
+                (
+                    "team",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="main.team"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Mine',
+            name="Mine",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(choices=[('BLAUW', 'Blauw'), ('GROEN', 'Groen'), ('ROOD', 'Rood')], max_length=100)),
-                ('currency', models.CharField(choices=[('BLAUW', 'Blauw'), ('GROEN', 'Groen'), ('ROOD', 'Rood')], max_length=100)),
-                ('amount', models.IntegerField()),
-                ('team', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main.team')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        choices=[
+                            ("BLAUW", "Blauw"),
+                            ("GROEN", "Groen"),
+                            ("ROOD", "Rood"),
+                        ],
+                        max_length=100,
+                    ),
+                ),
+                (
+                    "currency",
+                    models.CharField(
+                        choices=[
+                            ("BLAUW", "Blauw"),
+                            ("GROEN", "Groen"),
+                            ("ROOD", "Rood"),
+                        ],
+                        max_length=100,
+                    ),
+                ),
+                ("amount", models.IntegerField()),
+                (
+                    "team",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="main.team"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='PlayerItem',
+            name="PlayerItem",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('item', models.CharField(choices=[('BIJL', 'Bijl'), ('BOOR', 'Boor'), ('RUPSBAND', 'Rupsband'), ('BLAUW', 'Blauw'), ('GROEN', 'Groen'), ('ROOD', 'Rood'), ('MIJNWERKER', 'Mijnwerker'), ('DRILBOOR', 'Drilboor'), ('TUNNELBOOR', 'Tunnelboor')])),
-                ('amount', models.IntegerField()),
-                ('player', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main.player')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "item",
+                    models.CharField(
+                        choices=[
+                            ("BIJL", "Bijl"),
+                            ("BOOR", "Boor"),
+                            ("RUPSBAND", "Rupsband"),
+                            ("BLAUW", "Blauw"),
+                            ("GROEN", "Groen"),
+                            ("ROOD", "Rood"),
+                            ("MIJNWERKER", "Mijnwerker"),
+                            ("DRILBOOR", "Drilboor"),
+                            ("TUNNELBOOR", "Tunnelboor"),
+                        ]
+                    ),
+                ),
+                ("amount", models.IntegerField()),
+                (
+                    "player",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="main.player"
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('player', 'item')},
+                "unique_together": {("player", "item")},
             },
         ),
         migrations.CreateModel(
-            name='PostRecipe',
+            name="PostRecipe",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('item', models.CharField(choices=[('BIJL', 'Bijl'), ('BOOR', 'Boor'), ('RUPSBAND', 'Rupsband'), ('BLAUW', 'Blauw'), ('GROEN', 'Groen'), ('ROOD', 'Rood'), ('MIJNWERKER', 'Mijnwerker'), ('DRILBOOR', 'Drilboor'), ('TUNNELBOOR', 'Tunnelboor')])),
-                ('amount', models.IntegerField()),
-                ('post', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main.post')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "item",
+                    models.CharField(
+                        choices=[
+                            ("BIJL", "Bijl"),
+                            ("BOOR", "Boor"),
+                            ("RUPSBAND", "Rupsband"),
+                            ("BLAUW", "Blauw"),
+                            ("GROEN", "Groen"),
+                            ("ROOD", "Rood"),
+                            ("MIJNWERKER", "Mijnwerker"),
+                            ("DRILBOOR", "Drilboor"),
+                            ("TUNNELBOOR", "Tunnelboor"),
+                        ]
+                    ),
+                ),
+                ("amount", models.IntegerField()),
+                (
+                    "post",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="main.post"
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('post', 'item')},
+                "unique_together": {("post", "item")},
             },
         ),
     ]

@@ -4,24 +4,36 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0001_initial'),
+        ("main", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='post',
-            name='content_type',
+            model_name="post",
+            name="content_type",
         ),
         migrations.RemoveField(
-            model_name='post',
-            name='object_id',
+            model_name="post",
+            name="object_id",
         ),
         migrations.AddField(
-            model_name='post',
-            name='sells',
-            field=models.CharField(choices=[('BIJL', 'Bijl'), ('BOOR', 'Boor'), ('RUPSBAND', 'Rupsband'), ('BLAUW', 'Blauw'), ('GROEN', 'Groen'), ('ROOD', 'Rood'), ('MIJNWERKER', 'Mijnwerker'), ('DRILBOOR', 'Drilboor'), ('TUNNELBOOR', 'Tunnelboor')], default=0),
+            model_name="post",
+            name="sells",
+            field=models.CharField(
+                choices=[
+                    ("BIJL", "Bijl"),
+                    ("BOOR", "Boor"),
+                    ("RUPSBAND", "Rupsband"),
+                    ("BLAUW", "Blauw"),
+                    ("GROEN", "Groen"),
+                    ("ROOD", "Rood"),
+                    ("MIJNWERKER", "Mijnwerker"),
+                    ("DRILBOOR", "Drilboor"),
+                    ("TUNNELBOOR", "Tunnelboor"),
+                ],
+                default=0,
+            ),
             preserve_default=False,
         ),
     ]
