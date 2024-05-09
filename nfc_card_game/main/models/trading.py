@@ -1,14 +1,7 @@
 from django.db import models
 
-from .player import Player
+from .player import Player, Team
 from .utils import short_uuid
-
-
-class Team(models.Model):
-    name = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
 
 
 class TypeType(models.TextChoices):

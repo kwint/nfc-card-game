@@ -1,8 +1,14 @@
 from django.db import models
 
 from nfc_card_game.main.models.activities import Activity
-from nfc_card_game.main.models.trading import Team
 from .utils import short_uuid
+
+
+class Team(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 
 class Player(models.Model):

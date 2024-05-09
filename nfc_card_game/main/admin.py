@@ -3,17 +3,17 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from nfc_card_game.main.models import (
+from nfc_card_game.main.models.trading import (
     Post,
     Mine,
     PlayerItem,
     PostRecipe,
-    Team,
-    Player,
     TeamMine,
     Item,
     TeamMineItem,
 )
+
+from nfc_card_game.main.models.player import Team, Player
 
 
 class PlayerInLine(admin.TabularInline):
