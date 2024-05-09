@@ -5,7 +5,7 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.db.models import Q
 
-from nfc_card_game.main.models import Post, Mine, PlayerItem, PostRecipe, Team, Player, TeamMine, Item
+from nfc_card_game.main.models import Post, Mine, PlayerItem, PostRecipe, Team, Player, TeamMine, Item, TeamMineItem
 
 
 
@@ -24,6 +24,14 @@ class PlayerItemInline(admin.TabularInline):
 class PostRecipeInline(admin.TabularInline):
     model = PostRecipe
 
+class TeamMineItemInline(admin.TabularInline):
+    model = TeamMineItem
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "item":
+            kwargs["queryset"] = Item.objects.filter(type="MINER")
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
 
 class MineAdmin(admin.ModelAdmin):
     list_display = ["mine", "amount"]
@@ -34,7 +42,17 @@ class TeamAdmin(admin.ModelAdmin):
     inlines = [PlayerInLine]
 
 class TeamMineAdmin(admin.ModelAdmin):
-    list_display = ["mine", "team", "amount"]
+    list_display = ["mine", "team", "money"]
+    inlines = [TeamMineItemInline]
+
+
+class TeamMineItemAdmin(admin.ModelAdmin):
+    list_display = ['team_mine', 'item', 'amount']
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "item":
+            kwargs["queryset"] = Item.objects.filter(type="MINER")
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 class PlayerAdmin(admin.ModelAdmin):
@@ -83,6 +101,7 @@ admin.site.register(Player, PlayerAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(Mine, MineAdmin)
 admin.site.register(TeamMine, TeamMineAdmin)
+admin.site.register(TeamMineItem, TeamMineItemAdmin)
 admin.site.register(Item, ItemAdmin)
 admin.site.register(PlayerItem, PlayerItemAdmin)
 admin.site.register(PostRecipe, PostRecipeAdmin)

@@ -15,9 +15,9 @@ from nfc_card_game.main.forms import PlayerForm, BuyAmountForm
 # from nfc_card_game.main.models.activities import Activity
 # from nfc_card_game.main.models.game_settings import GameSettings
 
-from .logic import ActionInfo, handle_post_scan, handle_mine_scan
+from .logic import ActionInfo, handle_miner_scan, handle_post_scan, handle_mine_scan
 from .models import Player
-from .models import PlayerItem, Post, PostRecipe, Mine, TeamMine
+from .models import PlayerItem, Post, PostRecipe, Mine, TeamMine, TeamMineItem
 
 
 def index(request):
@@ -92,23 +92,40 @@ def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
         player = None
 
     post_uuid = request.session.get("post")
-    post = PostRecipe.objects.filter(post__card_uuid=post_uuid)
     player_item = PlayerItem.objects.filter(player=player)
     team_mines = TeamMine.objects.filter(team=player.team)
     items = player.playeritem_set.all()
 
+    context = {"player": player, "items": items}
+
     if request.method == 'POST':
         selected_amount = int(request.POST.get('amount', 1))
         context = {'buy_amount': selected_amount, 'items': items}
-        action = handle_post_scan(player, post, player_item, team_mines, selected_amount)
+        if post_uuid := request.session.get("post"):
+            post = PostRecipe.objects.filter(post__card_uuid=post_uuid)
+            context["post"] = post
+            if post[0].post.type == "MINER":
+                action = handle_miner_scan(player, post, player_item, team_mines, selected_amount)
+
+            elif post[0].post.type == "RESOURCE":
+                action = handle_post_scan(player, post, player_item, team_mines, selected_amount)
+
+
         action_dict = action.model_dump() if action else None
         context["action"] = action_dict
         return render(request, 'trading/player_bought.html', context)
 
+    if mine_uuid := request.session.get("mine"):
+        mine = TeamMine.objects.filter(mine__card_uuid=mine_uuid, team=player.team)
+        mine_items = TeamMineItem.objects.filter(team_mine__mine__card_uuid=mine_uuid)
+        context["post"] = mine
+        context["mine"] = mine
+        action = handle_mine_scan(player, player_item, mine, mine_items)
+        print(action)
+        action_dict = action.model_dump() if action else None
+        context["action"] = action_dict
 
-    context = {"player": player, "items": items}
     context["buy_amounts"] = [1, 5, 10, 20, 50]
-    context["post"] = post
 
     return render(request, "trading/player_stats.html", context)
     return handle_trading_player(request, player)

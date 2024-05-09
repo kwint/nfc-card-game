@@ -47,7 +47,7 @@ class Player(models.Model):
 class TypeType(models.TextChoices):
     COIN = "COIN", "Coin"
     RESOURCE = "RESOURCE", "Resource"
-    WORKER = "WORKER", "Worker"
+    MINER = "MINER", "Miner"
 
 class CoinType(models.TextChoices):
     BLAUW = "BLAUW", "Blauw"
@@ -59,13 +59,13 @@ class ResourceType(models.TextChoices):
     B = "BOOR", "Boor"
     C = "RUPSBAND", "Rupsband"
 
-class WorkerType(models.TextChoices):
+class MinerType(models.TextChoices):
     A = "MIJNWERKER", "Mijnwerker"
     B = "DRILBOOR", "Drilboor"
     C = "TUNNELBOOR", "Tunnelboor"
 
 class Item(models.Model):
-    name = models.CharField(choices=list(ResourceType.choices) + list(CoinType.choices)+ list(WorkerType.choices))
+    name = models.CharField(choices=list(ResourceType.choices) + list(CoinType.choices)+ list(MinerType.choices))
     type = models.CharField(choices=TypeType)
     currency = models.CharField(choices=CoinType)
 
@@ -74,8 +74,8 @@ class Item(models.Model):
             self.type = TypeType.RESOURCE
         elif self.name in dict(CoinType.choices):
             self.type = TypeType.COIN
-        elif self.name in dict(WorkerType.choices):
-            self.type = TypeType.WORKER
+        elif self.name in dict(MinerType.choices):
+            self.type = TypeType.MINER
         super(Item, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -116,10 +116,18 @@ class Mine(models.Model):
 class TeamMine(models.Model):
     mine = models.ForeignKey(Mine, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    amount = models.IntegerField()
+    money = models.IntegerField()
 
     class Meta:
         unique_together = ('mine', 'team')
+
+class TeamMineItem(models.Model):
+    team_mine = models.ForeignKey(TeamMine, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    amount = models.IntegerField(default=0)
+
+    class Meta:
+        unique_together = ('team_mine', 'item')
 
 
 class ItemType(models.TextChoices):

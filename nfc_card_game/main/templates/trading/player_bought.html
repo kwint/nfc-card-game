@@ -17,6 +17,11 @@
         <span class="bi-minecart-loaded h1" style="filter: invert(0%)"></span>
         <h5 class="card-title">{{ post.0.post.name }}</h5>
         <h4>Je hebt {{ buy_amount }} gekocht!</h4>
+        <script>
+          console.log("{{post|safe}}")
+          console.log("{{mine|safe}}")
+
+        </script>
         <form method="post">
           {% csrf_token %}
           {% for amount in buy_amounts %}

@@ -16,13 +16,44 @@
       <div class="card-body">
         <span class="bi-minecart-loaded h1" style="filter: invert(0%)"></span>
         <h5 class="card-title">{{ post.0.post.name }}</h5>
-        <h4>Hoeveel {{ post.0.post.sells }} wil je kopen?</h4>
-        <form method="post">
-          {% csrf_token %}
-          {% for amount in buy_amounts %}
-            <button type="submit" name="amount" value="{{ amount }}">{{ amount }}</button>
-          {% endfor %}
-        </form>
+        <h4>Welkom bij de mine {{ mine.0.mine.name }}!</h4>
+        {% if mine %}
+          {% if action.status == "ok" %}
+            <table class="table">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">Geld gekregen:</th>
+                  <th scope="col">Afgevelerd:</th>
+                </tr>
+              </thead>
+              <tbody>
+              <tr>
+                {% if action.bought.item != None %}
+                <td class="table-success">{{ action.bought.amount }}x {{ action.bought.item.item.name}}</td>
+                {% else %}
+                  <td></td>
+                {% endif %}
+                {% for item, amount in action.costs.items %}
+                  {% if forloop.counter0 == 0 %}
+                  {% else %}
+                    <td></td>
+                  {% endif %}
+                  <td class="table-danger">{{ amount.amount }}x {{ item }}</td>
+                <tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% else %}
+              <p>{{ action.status }}: {{ action.log }}</p>
+            {% endif %}
+        {% else %}
+          <form method="post">
+            {% csrf_token %}
+            {% for amount in buy_amounts %}
+              <button type="submit" name="amount" value="{{ amount }}">{{ amount }}</button>
+            {% endfor %}
+          </form>
+        {% endif %}
       </div>
     </div>
   </div>
