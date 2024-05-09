@@ -1,4 +1,5 @@
-const ctx = document.getElementById('myChart')
+const ctx = document.getElementById('mineChart')
+const ctx2 = document.getElementById('minerChart')
 
 var base_url = "ws://"+ window.location.host + "/ws/"
 const websocket = new WebSocket('ws://localhost:8000/ws/');
@@ -97,6 +98,42 @@ function get_color_from_currency(currency) {
   if (currency === 'GREEN') return "rgba(130, 255, 54, 0.5)";
 }
 
+function init_miner_chart(){
+  team_info.sort((a, b) => a.team.localeCompare(b.team));
+
+  var chartData = {
+    labels: [],
+    datasets: []
+  };
+
+  var minerDatasets = {};
+
+  console.log(mine_items)
+  mine_items.forEach(item => {
+    console.log(item)
+    if(!chartData.labels.includes(item.item)){
+      chartData.labels.push(item.item)
+    }
+
+    if(!minerDatasets[item.team_mine.mine]){
+      minerDatasets[item.team_mine.mine] = {
+        label: item.team_mine.mine,
+        data: []
+      };
+    }
+    minerDatasets[item.team_mine.mine].data.push(team.amount);
+  }) ;
+
+  Object.values(mineDatasets).forEach(dataset => {
+    chartData.datasets.push(dataset);
+  })
+
+  console.log(chartData)
+  c2.data = chartData;
+  console.log(chartData);
+  c2.update();
+}
+
 function init_bar_chart() {
   team_info.sort((a, b) => a.team.localeCompare(b.team));
 
@@ -131,8 +168,7 @@ function init_bar_chart() {
   c.update();
 }
 
-
-c = new Chart(ctx, {
+chart_config = {
   type: 'bar',
   data: {
     labels: [],
@@ -146,9 +182,14 @@ c = new Chart(ctx, {
       },
     }
   }
-});
+};
+
+c = new Chart(ctx, chart_config);
+
+c2 = new Chart(ctx2, chart_config);
 
 init_bar_chart();
+init_miner_chart();
 
 //
 // c = new Chart(ctx, {

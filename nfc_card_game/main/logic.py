@@ -11,7 +11,7 @@ from django.db.models import Sum
 from .models import Player, Mine, PlayerItem, PostRecipe, TeamMine, TeamMineItem
 from .models import MinerType, ResourceType, CoinType
 
-MINE_OFFLOAD = 200
+MINE_OFFLOAD_PERCENT = 0.10
 
 channel_layer = get_channel_layer()
 
@@ -169,8 +169,8 @@ def handle_mine_scan(
 
 
     n = player_items.get(item__currency=team_mines[0].mine.currency, item__type="COIN")
-    n.amount += round(team_mines[0].money * 0.10)
-    received_money = round(team_mines[0].money * 0.10)
+    n.amount += round(team_mines[0].money * MINE_OFFLOAD_PERCENT)
+    received_money = round(team_mines[0].money * MINE_OFFLOAD_PERCENT)
     n.amount += received_money
     mine.money = mine.money - received_money
 

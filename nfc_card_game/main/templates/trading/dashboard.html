@@ -12,7 +12,17 @@
         <h3 class="m-0">Overzicht</h3>
       </div>
       <div class="card-body">
-        <canvas id="myChart"></canvas>
+        <canvas id="mineChart"></canvas>
+    </div>
+  </div>
+
+  <div class="container pt-2">
+    <div class="accordion card shadow">
+      <div class="card-header align-items-center">
+        <h3 class="m-0">Overzicht</h3>
+      </div>
+      <div class="card-body">
+        <canvas id="minerChart"></canvas>
     </div>
   </div>
 
@@ -37,7 +47,7 @@
                 <td>{{ team.mine }}</td>
                 <td>{{ team.team }}</td>
                 <td>{{ team.mine.currency }}</td>
-                <td id="{{ team.team.id }}_{{ team.mine.currency }}">{{ team.amount }}</td>
+                <td id="{{ team.team.id }}_{{ team.mine.currency }}">{{ team.money }}</td>
             {% endfor %}
           </tbody>
         </table>
@@ -70,6 +80,7 @@
   <script>
     var player_items = JSON.parse('{{ player_items|safe}}');
     var team_info = [];
+    var mine_items = [];
 
     {% for item in team_mines %}
       var object = {
@@ -79,9 +90,19 @@
         type: "{{ item.type }}",
         currency: "{{ item.mine.currency }}",
         team: "{{ item.team }}",
-        mine_amount: "{{ item.amount }}"
+        mine_amount: "{{ item.money }}"
       };
     team_info.push(object);
+    {% endfor %}
+
+    {% for item in team_mine_items %}
+      var object = {
+        item: "{{ item.item }}",
+        mine: "{{ item.team_mine.mine }}",
+        team: "{{ item.team_mine.team }}",
+        amount: "{{ item.amount }}",
+      }
+    mine_items.push(object)
     {% endfor %}
 
 

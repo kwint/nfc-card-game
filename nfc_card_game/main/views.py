@@ -161,7 +161,8 @@ def post(request: HttpRequest, card_uuid: str) -> HttpResponse:
 
 def dashboard(request: HttpRequest) -> HttpResponse:
     pi = serializers.serialize("json", PlayerItem.objects.all())
-    tm = Mine.objects.all()
-    data = {"player_items": pi, "team_mines": tm}
+    tm = TeamMine.objects.all()
+    tmi = TeamMineItem.objects.all()
+    data = {"player_items": pi, "team_mines": tm, "team_mine_items": tmi}
     print(data)
     return render(request, "trading/dashboard.html", data)
