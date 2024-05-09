@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://ca1ddejybbu0g"]
+[gd_scene load_steps=5 format=3 uid="uid://ca1ddejybbu0g"]
 
 [ext_resource type="Texture2D" uid="uid://spx3oh7upq1v" path="res://Sprites/mountain.png" id="1_tusvk"]
 [ext_resource type="Theme" uid="uid://n2sj11gmuqmo" path="res://Themes/Money font.tres" id="2_1f4xi"]
+[ext_resource type="Script" path="res://Scripts/MinerGrid.gd" id="3_gpr4m"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w6uij"]
 
@@ -37,7 +38,6 @@ alignment_vertical = 2
 [node name="ReferenceRect" type="ReferenceRect" parent="Viewport/AspectRatioContainer"]
 layout_mode = 2
 border_width = 2.0
-editor_only = false
 
 [node name="Mountain" type="TextureRect" parent="Viewport/AspectRatioContainer/ReferenceRect"]
 layout_mode = 1
@@ -48,6 +48,21 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_tusvk")
 expand_mode = 3
+
+[node name="HSplitContainer" type="HSplitContainer" parent="Viewport/AspectRatioContainer"]
+layout_mode = 2
+split_offset = 576
+dragger_visibility = 1
+
+[node name="MinerGridLeft" type="ReferenceRect" parent="Viewport/AspectRatioContainer/HSplitContainer"]
+layout_mode = 2
+border_color = Color(0, 0, 100, 1)
+border_width = 2.0
+
+[node name="MinerGridRight" type="ReferenceRect" parent="Viewport/AspectRatioContainer/HSplitContainer"]
+layout_mode = 2
+border_color = Color(0, 100, 0, 1)
+border_width = 2.0
 
 [node name="MoneyLeft" type="MarginContainer" parent="Viewport"]
 layout_mode = 1
@@ -83,8 +98,37 @@ theme = ExtResource("2_1f4xi")
 text = "$123.456.789"
 horizontal_alignment = 2
 
-[node name="Node2D" type="Node2D" parent="."]
-visible = false
+[node name="MinersLeft" type="Node2D" parent="." node_paths=PackedStringArray("reference_grid")]
+script = ExtResource("3_gpr4m")
+color = Color(1, 0.5, 0.5, 1)
+reference_grid = NodePath("../Viewport/AspectRatioContainer/HSplitContainer/MinerGridLeft")
+
+[node name="MinersRight" type="Node2D" parent="." node_paths=PackedStringArray("reference_grid")]
+script = ExtResource("3_gpr4m")
+flipped = true
+color = Color(0.5, 0.5, 1, 1)
+reference_grid = NodePath("../Viewport/AspectRatioContainer/HSplitContainer/MinerGridRight")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
+
+[node name="TestButtonLeft" type="Button" parent="."]
+offset_left = 36.0
+offset_top = 39.0
+offset_right = 74.0
+offset_bottom = 70.0
+text = "test"
+
+[node name="TestButtonRight" type="Button" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -74.0
+offset_top = 36.0
+offset_right = -36.0
+offset_bottom = 67.0
+grow_horizontal = 0
+text = "test"
+
+[connection signal="pressed" from="TestButtonLeft" to="MinersLeft" method="add_miner"]
+[connection signal="pressed" from="TestButtonRight" to="MinersRight" method="add_miner"]
