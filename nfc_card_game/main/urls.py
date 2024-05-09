@@ -1,6 +1,7 @@
 from django.urls import path
 
 from . import views
+from . import game_loop
 
 urlpatterns = [
     path("", views.index, name="index"),
@@ -9,4 +10,6 @@ urlpatterns = [
     path("dashboard", views.dashboard, name="dasbhoard"),
     path("mine/<str:card_uuid>", views.mine, name="mine"),
     path("register-player/", views.register_player, name="register-player"),
+    path("stop-game-loop", game_loop.stop_scheduler, name="stop-game-loop"),
+    path("start-game-loop", game_loop.start_scheduler, name="start-game-loop"),
 ]
