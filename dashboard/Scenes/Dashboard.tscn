@@ -1,0 +1,64 @@
+[gd_scene load_steps=2 format=3 uid="uid://ca1ddejybbu0g"]
+
+[ext_resource type="Texture2D" uid="uid://spx3oh7upq1v" path="res://Sprites/mountain.png" id="1_tusvk"]
+
+[node name="Root" type="Node"]
+
+[node name="Background" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Color" type="ColorRect" parent="Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.180392, 0.192157, 0.345098, 1)
+
+[node name="Mountain" type="TextureRect" parent="Background"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -512.0
+offset_top = -647.0
+offset_right = 512.0
+grow_horizontal = 2
+grow_vertical = 0
+texture = ExtResource("1_tusvk")
+
+[node name="MoneyLeft" type="MarginContainer" parent="Background"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="Background/MoneyLeft"]
+layout_mode = 2
+text = "$123.456.789"
+
+[node name="MoneyRight" type="MarginContainer" parent="Background"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -101.0
+offset_bottom = 40.0
+grow_horizontal = 0
+
+[node name="Label" type="Label" parent="Background/MoneyRight"]
+layout_mode = 2
+text = "$123.456.789"
+
+[node name="Node2D" type="Node2D" parent="."]
+visible = false
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
