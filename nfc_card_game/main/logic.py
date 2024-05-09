@@ -99,30 +99,43 @@ def handle_post_scan(
             costs=trans_cost,
         )
 
-
-
+    elif post_recipes.first().post.type == "MINER":
         for recipe in post_recipes:
-            money = player_items.get(player=player, item=recipe.item)
-            if money.amount >= cost:
-                money.amount -= cost
-                trans_cost = {recipe.item: {"name": recipe.item, "amount": cost, "post_name": post_recipes[0].post.name}}
-                trans_cost[recipe.item.name] = model_to_dict(recipe.item)
-                trans_cost[recipe.item.name]["amount"] = recipe.price
-                trans_cost[recipe.item.name]["post_name"]= post_recipes[0].post.name 
-            elif money.amount < cost:
-                cost = cost - money.amount
-                money.amount = 0
-            changes.append(money)
+            player_item = player_items.filter(player=player, item=recipe.item).first()
+            cost = recipe.price * buy_amount
+            if player_item is None:
+                return ActionInfo(log=f"Geen {recipe.item} in inventory", status="error")
+
+            if player_item.amount <= 0 or player_item.amount < buy_amount:
+                return ActionInfo(log=f"Niet genoeg {player_item.item.name}!", status="error")
+
+            recipe.amount = cost
+
+            if post_recipes.first().post.sell_amount == None:
+                sold_amount = player_item.amount
+
+            trans_cost = {recipe.item: {"name": recipe.item, "amount": cost, "post_name": post_recipes[0].post.name}}
+            player_item = player_items.get(player=player, item=recipe.item)
+            player_item.amount -= cost
+            changes.append(player_item)
+
+
+        print(post_recipes.first().post.sells)
+        sell_item = player_items.get(player=player, item=post_recipes.first().post.sells)
+        if post_recipes.first().post.sell_amount:
+            sell_item.amount = (sell_item.amount + buy_amount)
+            changes.append(sell_item)
+
+        sold_amount = buy_amount
 
         commit_changes(changes)
-        print(trans_cost)
-
-
-        pass
-            
-
-    elif post_recipes.first().post.type == "MINER":
-        pass
+        return ActionInfo(
+            log="Spullen gekocht",
+            status="ok",
+            player=model_to_dict(player),
+            bought={"amount": sold_amount, "item": sell_item.item},
+            costs=trans_cost,
+        )
 
     return ActionInfo(
         log="Spullen gekocht",
