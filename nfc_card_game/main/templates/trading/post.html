@@ -22,12 +22,12 @@
             <tr>
               {% if forloop.counter0 == 0 %}
                 <td>{{ post.sell_amount}}</td>
-                <td>{{ post.sells.name }}</td>
+                <td>{{ post.sells }}</td>
               {% else %}
                 <td colspan="2"></td>
               {% endif %}
               <td style="border-left: 1px solid #000">{{ item.amount }}</td>
-              <td>{{ item.item.name }}</td>
+              <td>{{ item.item }}</td>
             </tr>
           {% endfor %}
         </tbody>

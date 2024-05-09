@@ -7,6 +7,6 @@ urlpatterns = [
     path("player/<str:card_uuid>", views.player, name="player"),
     path("post/<str:card_uuid>", views.post, name="post"),
     path("dashboard", views.dashboard, name="dasbhoard"),
-    # path("mine/<str:card_uuid>", views.mine, name="mine"),
+    path("mine/<str:card_uuid>", views.mine, name="mine"),
     path("register-player/", views.register_player, name="register-player"),
 ]

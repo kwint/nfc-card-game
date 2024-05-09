@@ -3,7 +3,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 
 
-from .models.player import Player
+from .models import Player
 
 COLOR_HOME_UUID = "home"
 COLOR_JOKER_UUID = "joker"
