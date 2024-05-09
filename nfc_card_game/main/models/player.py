@@ -4,13 +4,6 @@ from nfc_card_game.main.models.activities import Activity
 from .utils import short_uuid
 
 
-class Team(models.Model):
-    name = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
-
-
 class Player(models.Model):
     class Section(models.TextChoices):
         OBV = "OBV", "Ochtendbevers"

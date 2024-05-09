@@ -1,55 +1,60 @@
 from django.db import models
-from django.core.exceptions import ValidationError
-from .player import Player, Team
+
+from .player import Player
 from .utils import short_uuid
 
 
-class Currency(models.TextChoices):
-    COIN_BLUE = "BLUE", "Blauwe munt"
-    COIN_RED = "RED", "Rode munt"
-    COIN_GREEN = "GREEN", "Groene munt"
+class Team(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 
-class ItemType(models.TextChoices):
-    MINE = "MINE", "Mine"
+class TypeType(models.TextChoices):
+    COIN = "COIN", "Coin"
     RESOURCE = "RESOURCE", "Resource"
     MINER = "MINER", "Miner"
 
 
-class Item(models.Model):
-    name = models.CharField(max_length=100)
-    type = models.CharField(max_length=100, choices=ItemType)
-    currency = models.CharField(null=True, blank=True, choices=Currency)
-    team = models.ForeignKey(Team, on_delete=models.CASCADE, blank=True, null=True)
+class CoinType(models.TextChoices):
+    BLAUW = "BLAUW", "Blauw"
+    GROEN = "GROEN", "Groen"
+    ROOD = "ROOD", "Rood"
 
-    class Meta:
-        unique_together = ( ("type", "currency", "team"))
-        ordering = ["type", "name"]
+
+class ResourceType(models.TextChoices):
+    A = "BIJL", "Bijl"
+    B = "BOOR", "Boor"
+    C = "RUPSBAND", "Rupsband"
+
+
+class MinerType(models.TextChoices):
+    A = "MIJNWERKER", "Mijnwerker"
+    B = "DRILBOOR", "Drilboor"
+    C = "TUNNELBOOR", "Tunnelboor"
+
+
+class Item(models.Model):
+    name = models.CharField(
+        choices=list(ResourceType.choices)
+        + list(CoinType.choices)
+        + list(MinerType.choices)
+    )
+    type = models.CharField(choices=TypeType)
+    currency = models.CharField(choices=CoinType)
+
+    def save(self, *args, **kwargs):
+        if self.name in dict(ResourceType.choices):
+            self.type = TypeType.RESOURCE
+        elif self.name in dict(CoinType.choices):
+            self.type = TypeType.COIN
+        elif self.name in dict(MinerType.choices):
+            self.type = TypeType.MINER
+        super(Item, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.name}"
-
-    def clean(self):
-        print(self.type == ItemType.MINE)
-        if self.type == ItemType.MINE and (not self.currency or not self.team):
-            msg = "This field is required"
-            raise ValidationError({"currency": [msg], "team": [msg]})
-        if self.type == ItemType.MINER and not self.currency:
-            raise ValidationError({"currency": ["This field is required"]})
-        if self.type == ItemType.RESOURCE and (self.currency or self.team):
-            msg = "This field must be empty!"
-            raise ValidationError({"currency": [msg], "team": [msg]})
-
-    def save(self, *args, **kwrgs):
-        super(Item, self).save(*args, **kwrgs)
-
-        if self.type == "MINE":
-            m_instance = TeamMine.objects.create(
-                team=self.team,
-                mine=self,
-                amount=0,
-            )
-            m_instance.save()
+        return f"{self.currency}: {self.name}"
 
 
 class PlayerItem(models.Model):
@@ -61,14 +66,56 @@ class PlayerItem(models.Model):
         unique_together = ("player", "item")
 
     def __str__(self):
-        return f"Player: {self.player} with Item:  x {self.amount}"
+        return f"Player: {self.player} with Item: {self.item} x {self.amount}"
+
+
+class Mine(models.Model):
+    card_uuid = models.CharField(default=short_uuid, max_length=10)
+    name = models.CharField(max_length=100, choices=CoinType)
+    currency = models.CharField(max_length=100, choices=CoinType)
+
+    class Meta:
+        unique_together = ("currency",)
+
+    def save(self, *args, **kwargs):
+        created = not self.pk
+        super().save(*args, **kwargs)
+        if created:
+            for team in Team.objects.all():
+                TeamMine.objects.create(team=team, mine=self, amount=0)
+
+    def __str__(self):
+        return f"{self.name} currency: {self.currency}"
+
+
+class TeamMine(models.Model):
+    mine = models.ForeignKey(Mine, on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    money = models.IntegerField()
+
+    class Meta:
+        unique_together = ("mine", "team")
+
+
+class TeamMineItem(models.Model):
+    team_mine = models.ForeignKey(TeamMine, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    amount = models.IntegerField(default=0)
+
+    class Meta:
+        unique_together = ("team_mine", "item")
+
+
+class ItemType(models.TextChoices):
+    RESOURCE = "RESOURCE", "Resource"
+    MINER = "MINER", "Miner"
 
 
 class Post(models.Model):
     card_uuid = models.CharField(default=short_uuid, max_length=10)
-
     name = models.CharField(max_length=100)
-    sells = models.ForeignKey(Item, on_delete=models.CASCADE, blank=True, null=True)
+    type = models.CharField(choices=ItemType)
+    sells = models.ForeignKey(Item, on_delete=models.CASCADE)
     sell_amount = models.PositiveIntegerField(null=True, blank=True)
 
     def __str__(self):
@@ -78,20 +125,7 @@ class Post(models.Model):
 class PostRecipe(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    amount = models.PositiveIntegerField(blank=True, null=True)
+    price = models.IntegerField()
 
     class Meta:
         unique_together = ("post", "item")
-
-
-class TeamMine(models.Model):
-    mine = models.ForeignKey(Item, on_delete=models.CASCADE)
-    team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    amount = models.IntegerField()
-
-    class Meta:
-        unique_together = ("team", "mine")
-        ordering = ["team", "mine"]
-
-    def __str__(self):
-        return f"{self.mine} of {self.team}"

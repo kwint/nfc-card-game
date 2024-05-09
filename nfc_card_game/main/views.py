@@ -1,23 +1,23 @@
+from django.core import serializers
 from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_list_or_404, get_object_or_404, render
-from django.core import serializers
 
-# from nfc_card_game.main.color import (
-#     give_player_color,
-#     post_correct_color,
-#     post_wrong_color,
-#     remove_player_color,
-#     COLOR_HOME_UUID,
-#     COLOR_JOKER_UUID,
-#     COLOR_UUID,
-# )
-from nfc_card_game.main.forms import PlayerForm, BuyAmountForm
-# from nfc_card_game.main.models.activities import Activity
-# from nfc_card_game.main.models.game_settings import GameSettings
+from nfc_card_game.main.color import (
+    COLOR_HOME_UUID,
+    COLOR_JOKER_UUID,
+    COLOR_UUID,
+    give_player_color,
+    post_correct_color,
+    post_wrong_color,
+    remove_player_color,
+)
+from nfc_card_game.main.forms import PlayerForm
+from nfc_card_game.main.models.activities import Activity
+from nfc_card_game.main.models.game_settings import GameSettings
 
-from .logic import ActionInfo, handle_miner_scan, handle_post_scan, handle_mine_scan
-from .models import Player
-from .models import PlayerItem, Post, PostRecipe, Mine, TeamMine, TeamMineItem
+from .logic import handle_mine_scan, handle_miner_scan, handle_post_scan
+from .models.player import Player
+from .models.trading import Mine, PlayerItem, Post, PostRecipe, TeamMine, TeamMineItem
 
 
 def index(request):
@@ -65,32 +65,6 @@ def handle_color_player(request: HttpRequest, player: Player) -> HttpResponse:
         return post_wrong_color(request, player, str(color))
 
 def handle_trading_player(request: HttpRequest, player: Player) -> HttpResponse:
-    player_item = PlayerItem.objects.filter(player=player)
-    items = player.playeritem_set.all()
-    template_data = {"player": player, "items": items}
-    team_mines = TeamMine.objects.filter(team=player.team)
-
-    action: ActionInfo | None = None
-    if post_uuid := request.session.get("post"):
-        post = PostRecipe.objects.filter(post__card_uuid=post_uuid)
-        action = handle_post_scan(player, post, player_item, team_mines)
-        template_data["post"] = post
-
-    if mine_uuid := request.session.get("mine"):
-        mine = TeamMine.objects.filter(mine__card_uuid=mine_uuid)
-        action = handle_mine_scan(player, player_item, mine)
-        template_data["mine"] = mine
-    action_dict = action.model_dump() if action else None
-    template_data["action"] = action_dict
-    return render(request, "trading/player_stats.html", template_data)
-
-
-def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
-    try:
-        player = Player.objects.get(card_uuid=card_uuid)
-    except Player.DoesNotExist:
-        player = None
-
     post_uuid = request.session.get("post")
     player_item = PlayerItem.objects.filter(player=player)
     team_mines = TeamMine.objects.filter(team=player.team)
@@ -128,7 +102,25 @@ def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
     context["buy_amounts"] = [1, 5, 10, 20, 50]
 
     return render(request, "trading/player_stats.html", context)
-    return handle_trading_player(request, player)
+
+def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
+    try:
+        player = Player.objects.get(card_uuid=card_uuid)
+    except Player.DoesNotExist:
+        player = None
+
+    if player is None or player.name == "":
+        return get_player_register(request)
+
+    if GameSettings.object().mode == GameSettings.GameMode.TRADING:
+        return handle_trading_player(request, player)
+
+    if GameSettings.object().mode == GameSettings.GameMode.ACTIVITIES:
+        return handle_activities_player(request, player)
+
+    if GameSettings.object().mode == GameSettings.GameMode.COLOR:
+        return handle_color_player(request, player)
+    
 
 
 def register_player(request: HttpRequest):
