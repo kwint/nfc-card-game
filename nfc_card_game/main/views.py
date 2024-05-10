@@ -1,7 +1,9 @@
+from copy import copy
+
 from django.core import serializers
+from django.db.models import Sum
 from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_list_or_404, get_object_or_404, render
-from django.db.models import Sum
 
 from nfc_card_game.main.color import (
     COLOR_HOME_UUID,
@@ -13,10 +15,10 @@ from nfc_card_game.main.color import (
     remove_player_color,
 )
 from nfc_card_game.main.forms import PlayerForm
-from nfc_card_game.main.models.trading import TypeType
 from nfc_card_game.main.models.activities import Activity
 from nfc_card_game.main.models.game_settings import GameSettings
-from copy import copy
+from nfc_card_game.main.models.trading import TypeType
+
 from .logic import (
     get_resource_price,
     handle_mine_scan,
@@ -30,13 +32,13 @@ SELL_OPTIONS = {
     1: True,
     5: True,
     10: True,
-    20: True,
-    50: True,
-    100: True,
-    500: True,
-    1000: True,
-    5000: True,
-    10000: True,
+    # 20: True,
+    # 50: True,
+    # 100: True,
+    # 500: True,
+    # 1000: True,
+    # 5000: True,
+    # 10000: True,
 }
 
 
