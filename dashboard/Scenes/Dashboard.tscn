@@ -1,11 +1,12 @@
-[gd_scene load_steps=8 format=3 uid="uid://ca1ddejybbu0g"]
+[gd_scene load_steps=9 format=3 uid="uid://ca1ddejybbu0g"]
 
 [ext_resource type="Texture2D" uid="uid://spx3oh7upq1v" path="res://Sprites/mountain.png" id="1_tusvk"]
 [ext_resource type="Script" path="res://Scripts/GameController.gd" id="1_y0gn5"]
 [ext_resource type="Theme" uid="uid://n2sj11gmuqmo" path="res://Themes/Money font.tres" id="2_1f4xi"]
 [ext_resource type="Script" path="res://Scripts/MinerGrid.gd" id="3_gpr4m"]
 [ext_resource type="PackedScene" uid="uid://c223vha4r3wq7" path="res://Scenes/Levels.tscn" id="3_oc27c"]
-[ext_resource type="Script" path="res://Scripts/DebugPanel.gd" id="5_c15vj"]
+[ext_resource type="Script" path="res://Scripts/Debug/Panel.gd" id="5_c15vj"]
+[ext_resource type="Script" path="res://Scripts/Debug/AddMiners.gd" id="6_gq5dx"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w6uij"]
 
@@ -133,44 +134,46 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VSplitContainer" type="GridContainer" parent="Viewport/DebugPanel/MarginContainer"]
+[node name="AddMiners" type="GridContainer" parent="Viewport/DebugPanel/MarginContainer" node_paths=PackedStringArray("game_controller")]
 layout_mode = 2
 columns = 2
+script = ExtResource("6_gq5dx")
+game_controller = NodePath("../../../../GameController")
 
-[node name="Label" type="Label" parent="Viewport/DebugPanel/MarginContainer/VSplitContainer"]
+[node name="Label" type="Label" parent="Viewport/DebugPanel/MarginContainer/AddMiners"]
 layout_mode = 2
 text = "Debug"
 
-[node name="Control" type="Control" parent="Viewport/DebugPanel/MarginContainer/VSplitContainer"]
+[node name="Control" type="Control" parent="Viewport/DebugPanel/MarginContainer/AddMiners"]
 layout_mode = 2
 
-[node name="SpinBox" type="SpinBox" parent="Viewport/DebugPanel/MarginContainer/VSplitContainer"]
+[node name="SpinBox1" type="SpinBox" parent="Viewport/DebugPanel/MarginContainer/AddMiners"]
 layout_mode = 2
 min_value = 1.0
 value = 1.0
 allow_greater = true
 
-[node name="Button" type="Button" parent="Viewport/DebugPanel/MarginContainer/VSplitContainer"]
+[node name="Button1" type="Button" parent="Viewport/DebugPanel/MarginContainer/AddMiners"]
 layout_mode = 2
 text = "Add"
 
-[node name="SpinBox2" type="SpinBox" parent="Viewport/DebugPanel/MarginContainer/VSplitContainer"]
+[node name="SpinBox2" type="SpinBox" parent="Viewport/DebugPanel/MarginContainer/AddMiners"]
 layout_mode = 2
 min_value = 1.0
 value = 1.0
 allow_greater = true
 
-[node name="Button2" type="Button" parent="Viewport/DebugPanel/MarginContainer/VSplitContainer"]
+[node name="Button2" type="Button" parent="Viewport/DebugPanel/MarginContainer/AddMiners"]
 layout_mode = 2
 text = "Add"
 
-[node name="SpinBox3" type="SpinBox" parent="Viewport/DebugPanel/MarginContainer/VSplitContainer"]
+[node name="SpinBox3" type="SpinBox" parent="Viewport/DebugPanel/MarginContainer/AddMiners"]
 layout_mode = 2
 min_value = 1.0
 value = 1.0
 allow_greater = true
 
-[node name="Button3" type="Button" parent="Viewport/DebugPanel/MarginContainer/VSplitContainer"]
+[node name="Button3" type="Button" parent="Viewport/DebugPanel/MarginContainer/AddMiners"]
 layout_mode = 2
 text = "Add"
 
@@ -206,8 +209,5 @@ offset_bottom = 67.0
 grow_horizontal = 0
 text = "test"
 
-[connection signal="value_changed" from="Viewport/DebugPanel/MarginContainer/VSplitContainer/SpinBox" to="Viewport/LevelsLeft" method="update_value1"]
-[connection signal="value_changed" from="Viewport/DebugPanel/MarginContainer/VSplitContainer/SpinBox2" to="Viewport/LevelsLeft" method="update_value2"]
-[connection signal="value_changed" from="Viewport/DebugPanel/MarginContainer/VSplitContainer/SpinBox3" to="Viewport/LevelsLeft" method="update_value3"]
 [connection signal="pressed" from="TestButtonLeft" to="MinersLeft" method="add_miner"]
 [connection signal="pressed" from="TestButtonRight" to="MinersRight" method="add_miner"]

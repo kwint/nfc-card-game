@@ -12,15 +12,13 @@ var noise = FastNoiseLite.new()
 
 func _ready():
 	get_viewport().connect("size_changed", reposition_miners, CONNECT_DEFERRED);
-	
-	self.add_miner.call_deferred()
 
 
 func _process(_delta):
 	pass
 	
 
-func add_miner(type: Global.MinerType = Global.MinerType.MINER1):
+func add(type: Global.MinerType = Global.MinerType.MINER1):
 	var miner = MINER_PREFAB.instantiate();
 	miner.position = self.get_miner_position(self.miners.size());
 	

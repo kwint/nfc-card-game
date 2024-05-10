@@ -10,26 +10,17 @@ extends Node
   $"../Viewport/LevelsRight",
 ];
 
-# Called when the node enters the scene tree for the first time.
+
 func _ready():
-	pass # Replace with function body.
+	# Spawn random set of miners on start in debug builds
+	if OS.has_feature("debug"):
+		for i in range(1 + randi() % 4):
+			self.add_miner.call_deferred(true, Global.MinerType.MINER1);
+		for i in range(1 + randi() % 4):
+			self.add_miner.call_deferred(false, Global.MinerType.MINER1);
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	if randi() % 40 == 0:
-		var i = randi() % 2;
-		
-		var miner_type;
-		match randi() % 3:
-			0:
-				miner_type = Global.MinerType.MINER1;
-				self.levels[i].update_value1(self.mines[i].count() + 1);
-			1:
-				miner_type = Global.MinerType.MINER2;
-				self.levels[i].update_value2(self.mines[i].count() + 1);
-			_:
-				miner_type = Global.MinerType.MINER3;
-				self.levels[i].update_value3(self.mines[i].count() + 1);
-		
-		self.mines[i].add_miner(miner_type);
+func add_miner(left: bool, miner_type: Global.MinerType):
+	var i = 0 if left else 1;
+	self.mines[i].add(miner_type);
+	self.levels[i].add(miner_type);
