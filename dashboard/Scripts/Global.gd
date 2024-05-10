@@ -1,5 +1,7 @@
 class_name Global
 
+const MINE_ID: String = "1";
+
 const API_URL: String = "http://localhost:8000/api";
 const API_PATH_DASHBOARD: String = "/dashboard";
 

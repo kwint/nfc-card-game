@@ -41,6 +41,8 @@ def dashboard(request: HttpRequest) -> JsonResponse:
                 data_items.append({
                     "name": item.item.name,
                     "amount": item.amount,
+                    # TODO: expose effective amount here?
+                    "effective": item.amount,
                 });
 
             data_teams[team_mine.team_id] = {

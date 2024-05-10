@@ -21,12 +21,12 @@ func _ready():
 	stats_http_client.request_completed.connect(_on_stats_fetched)
 	self.fetch_stats.call_deferred();
 	
-	# Spawn random set of miners on start in debug builds
-	if OS.has_feature("debug"):
-		for i in range(1 + randi() % 4):
-			self.add_miner.call_deferred(true, Global.MinerType.MINER1);
-		for i in range(1 + randi() % 4):
-			self.add_miner.call_deferred(false, Global.MinerType.MINER1);
+	# # Spawn random set of miners on start in debug builds
+	# if OS.has_feature("debug"):
+	# 	for i in range(1 + randi() % 4):
+	# 		self.add_miner.call_deferred(true, Global.MinerType.MINER1);
+	# 	for i in range(1 + randi() % 4):
+	# 		self.add_miner.call_deferred(false, Global.MinerType.MINER1);
 
 
 func _process(_delta):
@@ -48,4 +48,26 @@ func fetch_stats():
 
 func _on_stats_fetched(result, response_code, headers, body):
 	var json = JSON.parse_string(body.get_string_from_utf8())
-	print(json)
+	
+	# TODO: set data for both teams
+	var team_data = json["mines"][Global.MINE_ID]["teams"]["1"];
+	
+	# TODO: set money!
+	var money = team_data["money"];
+	
+	# TODO: add existing miners in a more efficient way
+	var i = 0;
+	for item_stats in team_data["items"]:
+		var effective = item_stats["effective"];
+		for j in range(effective):
+			add_miner(true, i);
+		i += 1;
+		
+	# TODO: do the same for the other team?
+	team_data = json["mines"][Global.MINE_ID]["teams"]["2"];
+	i = 0;
+	for item_stats in team_data["items"]:
+		var effective = item_stats["effective"];
+		for j in range(effective):
+			add_miner(false, i);
+		i += 1;
