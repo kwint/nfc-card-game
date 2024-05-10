@@ -149,6 +149,9 @@ def handle_trading_player(request: HttpRequest, player: Player) -> HttpResponse:
     if mine_uuid := request.session.get("mine"):
         mine = TeamMine.objects.filter(mine__card_uuid=mine_uuid, team=player.team)
         context["mine"] = mine
+
+    if mine_uuid := request.session.get("mine"):
+        mine = TeamMine.objects.filter(mine__card_uuid=mine_uuid, team=player.team)
         mine_items = TeamMineItem.objects.filter(team_mine__mine__card_uuid=mine_uuid)
         context["post"] = mine
         context["mine"] = mine
