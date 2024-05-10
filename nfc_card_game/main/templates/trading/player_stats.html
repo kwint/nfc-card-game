@@ -47,7 +47,7 @@
             {% endif %}
         {% else %}
           <h4 class="card-title">Welkom bij {{ post.0.post.name }}</h4>
-          <h6>Hoeveel {{post.0.post.sells}} wil je kopen?</h6>
+          <h6>Hoeveel {{post.0.post.sells}} wil je kopen? Prijs: {{ price }}</h6>
           <form method="post">
             {% csrf_token %}
               {% for amount, possible in buy_amounts.items %}

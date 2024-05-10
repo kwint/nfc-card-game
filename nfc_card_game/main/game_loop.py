@@ -1,4 +1,4 @@
-from django.http import Http404, HttpResponse
+from django.http import HttpResponse
 from schedule import Scheduler
 import threading
 import time
@@ -15,7 +15,7 @@ class GameSettings(BaseModel):
     # price increase factor (linear)
     unit_increase_factor: float = 0.01
     inbalance_inefficiency: float = 0.05
-    miner_factors: dict[tuple[str, str], int] = Field(
+    miner_factors: dict[str, int] = Field(
         default={
             MinerType.A.value: 1,
             MinerType.B.value: 3,

@@ -5,15 +5,19 @@ from channels.layers import get_channel_layer
 from django.db.models import Sum
 from django.forms.models import model_to_dict
 from pydantic import BaseModel
-
-from .models.player import Player
+from django.db.models.query import QuerySet
+from .models.player import Player, Team
 from .models.trading import (
+    CoinType,
+    Item,
     Mine,
+    MinerType,
     PlayerItem,
     PostRecipe,
     TeamMine,
     TeamMineItem,
 )
+from .game_loop import SETTINGS
 
 MINE_OFFLOAD_PERCENT = 0.10
 
@@ -50,7 +54,7 @@ def handle_post_scan(
     player: Player,
     post_recipes: PostRecipe,
     player_items: PlayerItem,
-    team_mines: Mine,
+    price: int,
     buy_amount: int,
 ) -> ActionInfo:
     trans_cost = {}
@@ -60,7 +64,7 @@ def handle_post_scan(
         item__currency=post_recipes.first().post.sells.currency
     )
     currency = currencies.order_by("-amount")
-    cost = post_recipes.first().price * buy_amount
+    cost = price * buy_amount
 
     if cost > currency.aggregate(Sum("amount"))["amount__sum"]:
         return ActionInfo(
@@ -92,7 +96,10 @@ def handle_post_scan(
         status="ok",
         team=player.team.name,
         player=model_to_dict(player),
-        bought={"amount": buy_amount, "item": model_to_dict(post_recipes.first().post.sells)},
+        bought={
+            "amount": buy_amount,
+            "item": model_to_dict(post_recipes.first().post.sells),
+        },
         costs=trans_cost,
     )
 
@@ -176,8 +183,9 @@ def handle_mine_scan(
             changes.append(mine_item)
             changes.append(player_item)
 
-
-    player_wallet = player_items.get(item__currency=team_mines[0].mine.currency, item__type="COIN")
+    player_wallet = player_items.get(
+        item__currency=team_mines[0].mine.currency, item__type="COIN"
+    )
     received_money = round(team_mines[0].money * MINE_OFFLOAD_PERCENT)
     player_wallet.amount += received_money
     mine.money = mine.money - received_money
@@ -195,3 +203,28 @@ def handle_mine_scan(
         bought={"amount": received_money, "item": model_to_dict(mine.mine)},
         costs=trans_cost,
     )
+
+
+def get_miner_price(team_mine: TeamMine, item_name: str):
+    team_mine_item = TeamMineItem.objects.get(
+        team_mine=team_mine,
+        item__name=item_name,
+        item__currency=team_mine.mine.currency,
+    )
+
+    base_price = SETTINGS.base_price * SETTINGS.miner_factors[item_name]
+    price_increase = team_mine_item.amount * base_price * SETTINGS.unit_increase_factor
+    return int(base_price + price_increase)
+
+
+def get_resource_price(team_mines: QuerySet[TeamMine], resource: Item) -> int:
+    team_mine = team_mines.get(mine__currency=resource.currency)
+    bijl_price = get_miner_price(team_mine, MinerType.A.value)
+    if resource.name == "BIJL":
+        return bijl_price
+
+    tandwiel_price = get_miner_price(team_mine, MinerType.B.value) - bijl_price
+    if resource.name == "TANDWIEL":
+        return tandwiel_price
+
+    return get_miner_price(team_mine, MinerType.C.value) - tandwiel_price

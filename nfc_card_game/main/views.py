@@ -16,10 +16,28 @@ from nfc_card_game.main.forms import PlayerForm
 from nfc_card_game.main.models.trading import TypeType
 from nfc_card_game.main.models.activities import Activity
 from nfc_card_game.main.models.game_settings import GameSettings
-
-from .logic import handle_mine_scan, handle_miner_scan, handle_post_scan
+from copy import copy
+from .logic import (
+    get_resource_price,
+    handle_mine_scan,
+    handle_miner_scan,
+    handle_post_scan,
+)
 from .models.player import Player
 from .models.trading import Mine, PlayerItem, Post, PostRecipe, TeamMine, TeamMineItem
+
+SELL_OPTIONS = {
+    1: True,
+    5: True,
+    10: True,
+    20: True,
+    50: True,
+    100: True,
+    500: True,
+    1000: True,
+    5000: True,
+    10000: True,
+}
 
 
 def index(request):
@@ -66,41 +84,60 @@ def handle_color_player(request: HttpRequest, player: Player) -> HttpResponse:
         return post_wrong_color(request, player, str(color))
 
 
+def handle_trading_player_post(request, player: Player, items, player_item):
+    selected_amount = int(request.POST.get("amount", 1))
+    price = request.session.get("price")
+    context = {"buy_amount": selected_amount, "items": items}
+    if post_uuid := request.session.get("post"):
+        post = PostRecipe.objects.filter(post__card_uuid=post_uuid)
+        context["post"] = post
+        if post[0].post.type == "MINER":
+            action = handle_miner_scan(player, post, player_item, selected_amount)
+
+        elif post[0].post.type == "RESOURCE":
+            action = handle_post_scan(player, post, player_item, price, selected_amount)
+
+    action_dict = action.model_dump() if action else None
+    context["action"] = action_dict
+    return render(request, "trading/player_bought.html", context)
+
+
 def handle_trading_player(request: HttpRequest, player: Player) -> HttpResponse:
     post_uuid = request.session.get("post")
-    player_item = PlayerItem.objects.filter(player=player)
+    player_items = PlayerItem.objects.filter(player=player)
     team_mines = TeamMine.objects.filter(team=player.team)
     items = player.playeritem_set.all()
 
-    sell_options = {1: True,
-                    5: True,
-                    10: True,
-                    20: True,
-                    50: True,
-                    100: True,
-                    500: True,
-                    1000: True,
-                    5000: True,
-                    10000: True
-    }
+    if request.method == "POST":
+        return handle_trading_player_post(request, player, items, player_items)
 
     context = {"player": player, "items": items}
+    request.session.pop("price", None)
 
     if post_uuid := request.session.get("post"):
+        sell_options = copy(SELL_OPTIONS)
         post = PostRecipe.objects.filter(post__card_uuid=post_uuid)
         context["post"] = post
 
         if post[0].post.type == "RESOURCE":
-            total_money = player_item.filter(item__type=TypeType.COIN).exclude(item__currency=post.first().post.sells.currency).aggregate(Sum("amount"))["amount__sum"]
-            print(total_money)
+            total_money = (
+                player_items.filter(item__type=TypeType.COIN)
+                .exclude(item__currency=post.first().post.sells.currency)
+                .aggregate(Sum("amount"))["amount__sum"]
+            )
+            price = get_resource_price(team_mines, post[0].post.sells)
+            context["price"] = price
+            request.session["price"] = price
             for sell_option in sell_options:
-                if sell_option * post[0].price > total_money:
+                if sell_option * price > total_money:
                     sell_options[sell_option] = False
 
         if post[0].post.type == "MINER":
             for sell_option in sell_options:
                 for recipe in post:
-                    item_amount = player_item.filter(item__type=TypeType.RESOURCE, item=recipe.item)[0].amount
+                    item_amount = player_items.filter(
+                        item__type=TypeType.RESOURCE, item=recipe.item
+                    )[0].amount
                     if sell_option * recipe.price > item_amount:
                         sell_options[sell_option] = False
 
@@ -108,32 +145,12 @@ def handle_trading_player(request: HttpRequest, player: Player) -> HttpResponse:
         mine = TeamMine.objects.filter(mine__card_uuid=mine_uuid, team=player.team)
         context["mine"] = mine
 
-    if request.method == "POST":
-        selected_amount = int(request.POST.get("amount", 1))
-        context = {"buy_amount": selected_amount, "items": items}
-        if post_uuid := request.session.get("post"):
-            post = PostRecipe.objects.filter(post__card_uuid=post_uuid)
-            context["post"] = post
-            if post[0].post.type == "MINER":
-                action = handle_miner_scan(
-                    player, post, player_item, selected_amount
-                )
-
-            elif post[0].post.type == "RESOURCE":
-                action = handle_post_scan(
-                    player, post, player_item, team_mines, selected_amount
-                )
-
-        action_dict = action.model_dump() if action else None
-        context["action"] = action_dict
-        return render(request, "trading/player_bought.html", context)
-
     if mine_uuid := request.session.get("mine"):
         mine = TeamMine.objects.filter(mine__card_uuid=mine_uuid, team=player.team)
         mine_items = TeamMineItem.objects.filter(team_mine__mine__card_uuid=mine_uuid)
         context["post"] = mine
         context["mine"] = mine
-        action = handle_mine_scan(player, player_item, mine, mine_items)
+        action = handle_mine_scan(player, player_items, mine, mine_items)
         action_dict = action.model_dump() if action else None
         context["action"] = action_dict
 
@@ -192,6 +209,8 @@ def post(request: HttpRequest, card_uuid: str) -> HttpResponse:
 def dashboard(request: HttpRequest) -> HttpResponse:
     pi = serializers.serialize("json", PlayerItem.objects.all())
     tm = TeamMine.objects.all().order_by("team", "mine__currency")
-    tmi = TeamMineItem.objects.all().order_by("team_mine__team", "item__currency", "item")
+    tmi = TeamMineItem.objects.all().order_by(
+        "team_mine__team", "item__currency", "item"
+    )
     data = {"player_items": pi, "team_mines": tm, "team_mine_items": tmi}
     return render(request, "trading/dashboard.html", data)
