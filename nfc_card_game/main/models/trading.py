@@ -18,14 +18,14 @@ class CoinType(models.TextChoices):
 
 class ResourceType(models.TextChoices):
     A = "BIJL", "Bijl"
-    B = "BOOR", "Boor"
+    B = "TANDWIEL", "Tandwiel"
     C = "RUPSBAND", "Rupsband"
 
 
 class MinerType(models.TextChoices):
     A = "MIJNWERKER", "Mijnwerker"
     B = "DRILBOOR", "Drilboor"
-    C = "TUNNELBOOR", "Tunnelboor"
+    C = "BULLDOZER", "Bulldozer"
 
 
 class Item(models.Model):
