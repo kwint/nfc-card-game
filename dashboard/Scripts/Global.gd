@@ -1,5 +1,8 @@
 class_name Global
 
+const API_URL: String = "http://localhost:8000/api";
+const API_PATH_DASHBOARD: String = "/dashboard";
+
 enum MinerType { MINER1, MINER2, MINER3 };
 
 
