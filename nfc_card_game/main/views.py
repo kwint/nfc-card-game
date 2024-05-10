@@ -113,9 +113,9 @@ def handle_trading_player(request: HttpRequest, player: Player) -> HttpResponse:
 
     context = {"player": player, "items": items}
     request.session.pop("price", None)
+    sell_options = copy(SELL_OPTIONS)
 
     if post_uuid := request.session.get("post"):
-        sell_options = copy(SELL_OPTIONS)
         post = PostRecipe.objects.filter(post__card_uuid=post_uuid)
         context["post"] = post
 
