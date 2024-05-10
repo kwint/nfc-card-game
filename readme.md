@@ -44,6 +44,13 @@ python manage.py migrate
 python manage.py runserver
 ```
 
+## Initialize
+```bash
+python manage.py createsuperuser
+
+# or when running through Docker compose
+docker compose run -it web ./manage.py createsuperuser
+```
 
 ## prod:
 
