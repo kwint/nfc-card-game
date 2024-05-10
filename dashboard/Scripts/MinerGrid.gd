@@ -20,7 +20,7 @@ func _process(_delta):
 	pass
 	
 
-func add_miner():
+func add_miner(type: Global.MinerType = Global.MinerType.MINER1):
 	var miner = MINER_PREFAB.instantiate();
 	miner.position = self.get_miner_position(self.miners.size());
 	
@@ -31,6 +31,9 @@ func add_miner():
 		miner.modulate = self.color;
 	
 	self.miners.append(miner);
+	
+	miner.type = type;
+	
 	self.add_child(miner);
 	
 	
