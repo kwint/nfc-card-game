@@ -2,7 +2,6 @@ from django.core import serializers
 from django.db.models import Sum
 from django.http import Http404, HttpRequest, JsonResponse
 from django.shortcuts import get_list_or_404, get_object_or_404, render
-from itertools import groupby
 
 from nfc_card_game.main.color import (
     COLOR_HOME_UUID,
@@ -31,20 +30,28 @@ from .models.trading import Mine, PlayerItem, Post, PostRecipe, TeamMine, TeamMi
 def dashboard(request: HttpRequest) -> JsonResponse:
     mines = list(TeamMine.objects.values());
 
-    # Structure mines data
-    data_mines = {};
-    for mine_id, mines in groupby(mines, lambda m: m["mine_id"]):
-        if mine_id not in data_mines:
-            data_mines[mine_id] = {
-                "name": "Mine " + str(mine_id),
-                "teams": {},
+    # Extract and structure mine stats
+    # mines -> teams -> items
+    data_mines = {}
+    for mine in Mine.objects.all():
+        data_teams = {};
+        for team_mine in mine.teammine_set.all():
+            data_items = []
+            for item in team_mine.teammineitem_set.all().order_by("item_id"):
+                data_items.append({
+                    "name": item.item.name,
+                    "amount": item.amount,
+                });
+
+            data_teams[team_mine.team_id] = {
+                "money": team_mine.money,
+                "items": data_items,
             };
-        for mine in mines:
-            team_id = mine["team_id"];
-            del mine["id"];
-            del mine["team_id"];
-            del mine["mine_id"];
-            data_mines[mine_id]["teams"][team_id] = mine;
+
+        data_mines[mine.id] = {
+            "name": mine.name,
+            "teams": data_teams,
+        };
 
     return JsonResponse({
         "mines": data_mines,
