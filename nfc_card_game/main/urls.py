@@ -1,5 +1,6 @@
 from django.urls import path
 
+from . import api
 from . import views
 from . import game_loop
 
@@ -12,4 +13,5 @@ urlpatterns = [
     path("register-player/", views.register_player, name="register-player"),
     path("stop-game-loop", game_loop.stop_scheduler, name="stop-game-loop"),
     path("start-game-loop", game_loop.start_scheduler, name="start-game-loop"),
+    path("api/dashboard", api.dashboard, name="api/dashboard"),
 ]
