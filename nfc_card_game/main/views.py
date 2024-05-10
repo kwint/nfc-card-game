@@ -135,9 +135,14 @@ def handle_trading_player(request: HttpRequest, player: Player) -> HttpResponse:
         if post[0].post.type == "MINER":
             for sell_option in sell_options:
                 for recipe in post:
-                    item_amount = player_items.filter(
+                    resource_items = player_items.filter(
                         item__type=TypeType.RESOURCE, item=recipe.item
-                    )[0].amount
+                    )
+                    if resource_items:
+                        item_amount = resource_items[0].amount
+                    else:
+                        item_amount = 0
+
                     if sell_option * recipe.price > item_amount:
                         sell_options[sell_option] = False
 
