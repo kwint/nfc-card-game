@@ -15,6 +15,10 @@
 [node name="GameController" type="Node" parent="."]
 script = ExtResource("1_y0gn5")
 
+[node name="StatsHttpClient" type="HTTPRequest" parent="GameController"]
+body_size_limit = 24000000
+timeout = 30.0
+
 [node name="Viewport" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 15

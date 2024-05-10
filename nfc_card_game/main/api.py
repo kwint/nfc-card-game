@@ -1,7 +1,7 @@
 from django.core import serializers
+from django.db.models import Sum
 from django.http import Http404, HttpRequest, JsonResponse
 from django.shortcuts import get_list_or_404, get_object_or_404, render
-from django.db.models import Sum
 
 from nfc_card_game.main.color import (
     COLOR_HOME_UUID,
@@ -28,11 +28,33 @@ from .models.trading import Mine, PlayerItem, Post, PostRecipe, TeamMine, TeamMi
 
 
 def dashboard(request: HttpRequest) -> JsonResponse:
-    pi = serializers.serialize("json", PlayerItem.objects.all())
-    tm = TeamMine.objects.all().order_by("team", "mine__currency")
-    tmi = TeamMineItem.objects.all().order_by(
-        "team_mine__team", "item__currency", "item"
-    )
-    # data = {"player_items": pi, "team_mines": tm, "team_mine_items": tmi}
-    data = {"mines": [1000, 2000]}
-    return JsonResponse(data);
+    mines = list(TeamMine.objects.values());
+
+    # Extract and structure mine stats
+    # mines -> teams -> items
+    data_mines = {}
+    for mine in Mine.objects.all():
+        data_teams = {};
+        for team_mine in mine.teammine_set.all():
+            data_items = []
+            for item in team_mine.teammineitem_set.all().order_by("item_id"):
+                data_items.append({
+                    "name": item.item.name,
+                    "amount": item.amount,
+                    # TODO: expose effective amount here?
+                    "effective": item.amount,
+                });
+
+            data_teams[team_mine.team_id] = {
+                "money": team_mine.money,
+                "items": data_items,
+            };
+
+        data_mines[mine.id] = {
+            "name": mine.name,
+            "teams": data_teams,
+        };
+
+    return JsonResponse({
+        "mines": data_mines,
+    });
