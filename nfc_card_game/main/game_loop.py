@@ -1,17 +1,28 @@
+from django.http import HttpResponse
 from schedule import Scheduler
 import threading
 import time
-from dataclasses import dataclass
-from nfc_card_game.main.models.trading import TeamMine, Item
+from pydantic import BaseModel, Field
+from nfc_card_game.main.models.trading import MinerType, TeamMine, TeamMineItem
 
 
-@dataclass
-class GameSettings:
+class GameSettings(BaseModel):
     # Base price of item
     base_price: float = 15
     # price increase factor (linear)
     unit_increase_factor: float = 0.01
-    inbalance_inefficiency: float = 0.01
+    inbalance_inefficiency: float = 0.05
+    miner_factors: dict[tuple[str, str], int] = Field(
+        default={
+            MinerType.A: 1,
+            MinerType.B: 3,
+            MinerType.C: 10,
+        }
+    )
+    base_miner_per_sec: float = 1
+
+
+SETTINGS = GameSettings()
 
 
 def game_loop():
@@ -22,20 +33,54 @@ def game_loop():
 def update_team_mines():
     team_mines = TeamMine.objects.all()
     for team_mine in team_mines:
-        a, b, c = get_team_mine_workers(team_mine)
+        update_team_mine(team_mine)
 
 
-def get_team_mine_workers(team_mine: TeamMine) -> tuple[Item, Item, Item]:
-    return
+def update_team_mine(team_mine: TeamMine):
+    mine_items = TeamMineItem.objects.filter(team_mine=team_mine)
+    miners = {
+        mine_item.item: SETTINGS.miner_factors[mine_item.item] * mine_item.amount
+        for mine_item in mine_items
+    }
+
+    balance = min(miners.values())
+    profit = sum(get_profit(amount, balance) for amount in miners.values())
+    team_mine.money += profit
+    team_mine.save()
 
 
-def start_scheduler():
+def get_profit(amount: int, balance: int):
+    in_balance_profit = balance * SETTINGS.base_miner_per_sec
+
+    over_balance = (amount - balance) * SETTINGS.base_miner_per_sec
+
+    over_balance_profit = (over_balance) / (
+        over_balance**SETTINGS.inbalance_inefficiency
+    )
+
+    return in_balance_profit + over_balance_profit
+
+
+cease_continuous_run: threading.Event | None = None
+
+
+def start_scheduler(_):
+    global cease_continuous_run
+    print("start")
     scheduler = Scheduler()
     scheduler.every().second.do(game_loop)
-    scheduler.run_continuously()
+    cease_continuous_run = scheduler.run_continuously()
+    return HttpResponse("started!")
 
 
-def run_continuously(self, interval=1):
+def stop_scheduler(_):
+    global cease_continuous_run
+    print("stop")
+    cease_continuous_run.set()
+    return HttpResponse("stopped!")
+
+
+def run_continuously(self, interval=1) -> threading.Event:
     """Continuously run, while executing pending jobs at each elapsed
     time interval.
     @return cease_continuous_run: threading.Event which can be set to
