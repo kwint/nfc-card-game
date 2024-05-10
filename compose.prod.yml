@@ -11,9 +11,8 @@ services:
     environment:
       - "DJANGO_ALLOWED_HOSTS=${MY_DOMAIN}"
       - "DJANGO_CSRF_TRUSTED_ORIGINS=https://${MY_DOMAIN}"
-      - "DJANGO_SESSION_COOKIE_SECURE=true"
-      - "DJANGO_CSRF_COOKIE_SECURE=true"
-      - "DJANGO_SECURE_SSL_REDIRECT=true"
+      - "DJANGO_SESSION_COOKIE_SECURE=1"
+      - "DJANGO_CSRF_COOKIE_SECURE=1"
       - "DJANGO_ENV=production"
     restart: unless-stopped
     
