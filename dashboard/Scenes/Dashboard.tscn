@@ -190,24 +190,3 @@ reference_grid = NodePath("../Viewport/AspectRatioContainer/HSplitContainer/Mine
 
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
-
-[node name="TestButtonLeft" type="Button" parent="."]
-offset_left = 36.0
-offset_top = 39.0
-offset_right = 74.0
-offset_bottom = 70.0
-text = "test"
-
-[node name="TestButtonRight" type="Button" parent="."]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -74.0
-offset_top = 36.0
-offset_right = -36.0
-offset_bottom = 67.0
-grow_horizontal = 0
-text = "test"
-
-[connection signal="pressed" from="TestButtonLeft" to="MinersLeft" method="add_miner"]
-[connection signal="pressed" from="TestButtonRight" to="MinersRight" method="add_miner"]
