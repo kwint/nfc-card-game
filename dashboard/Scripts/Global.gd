@@ -4,7 +4,7 @@ enum MinerType { MINER1, MINER2, MINER3 };
 
 
 static func miner_type_index(type: MinerType):
-	match randi() % 3:
+	match type:
 		MinerType.MINER1:
 			return 0;
 		MinerType.MINER2:
