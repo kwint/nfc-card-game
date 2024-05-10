@@ -7,4 +7,5 @@ position = Vector2(287, 405)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("1_dw4to")
-autoplay = "default"
+animation = &"miner2"
+autoplay = "miner1"

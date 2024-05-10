@@ -1,12 +1,17 @@
-[gd_scene load_steps=5 format=3 uid="uid://ca1ddejybbu0g"]
+[gd_scene load_steps=7 format=3 uid="uid://ca1ddejybbu0g"]
 
 [ext_resource type="Texture2D" uid="uid://spx3oh7upq1v" path="res://Sprites/mountain.png" id="1_tusvk"]
+[ext_resource type="Script" path="res://Scripts/GameController.gd" id="1_y0gn5"]
 [ext_resource type="Theme" uid="uid://n2sj11gmuqmo" path="res://Themes/Money font.tres" id="2_1f4xi"]
 [ext_resource type="Script" path="res://Scripts/MinerGrid.gd" id="3_gpr4m"]
+[ext_resource type="PackedScene" uid="uid://c223vha4r3wq7" path="res://Scenes/Levels.tscn" id="3_oc27c"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w6uij"]
 
 [node name="Root" type="Node"]
+
+[node name="GameController" type="Node" parent="."]
+script = ExtResource("1_y0gn5")
 
 [node name="Viewport" type="Control" parent="."]
 layout_mode = 3
@@ -98,6 +103,36 @@ theme = ExtResource("2_1f4xi")
 text = "$123.456.789"
 horizontal_alignment = 2
 
+[node name="LevelsLeft" parent="Viewport" instance=ExtResource("3_oc27c")]
+layout_mode = 0
+offset_left = 33.0
+offset_top = 96.0
+offset_right = 83.0
+offset_bottom = 246.0
+
+[node name="LevelsRight" parent="Viewport" instance=ExtResource("3_oc27c")]
+layout_mode = 0
+offset_left = 1069.0
+offset_top = 96.0
+offset_right = 1119.0
+offset_bottom = 246.0
+
+[node name="VSplitContainer" type="VBoxContainer" parent="Viewport"]
+layout_mode = 0
+offset_left = 112.0
+offset_top = 108.0
+offset_right = 152.0
+offset_bottom = 148.0
+
+[node name="SpinBox" type="SpinBox" parent="Viewport/VSplitContainer"]
+layout_mode = 2
+
+[node name="SpinBox2" type="SpinBox" parent="Viewport/VSplitContainer"]
+layout_mode = 2
+
+[node name="SpinBox3" type="SpinBox" parent="Viewport/VSplitContainer"]
+layout_mode = 2
+
 [node name="MinersLeft" type="Node2D" parent="." node_paths=PackedStringArray("reference_grid")]
 script = ExtResource("3_gpr4m")
 color = Color(1, 0.5, 0.5, 1)
@@ -130,5 +165,8 @@ offset_bottom = 67.0
 grow_horizontal = 0
 text = "test"
 
+[connection signal="value_changed" from="Viewport/VSplitContainer/SpinBox" to="Viewport/LevelsLeft" method="update_value1"]
+[connection signal="value_changed" from="Viewport/VSplitContainer/SpinBox2" to="Viewport/LevelsLeft" method="update_value2"]
+[connection signal="value_changed" from="Viewport/VSplitContainer/SpinBox3" to="Viewport/LevelsLeft" method="update_value3"]
 [connection signal="pressed" from="TestButtonLeft" to="MinersLeft" method="add_miner"]
 [connection signal="pressed" from="TestButtonRight" to="MinersRight" method="add_miner"]

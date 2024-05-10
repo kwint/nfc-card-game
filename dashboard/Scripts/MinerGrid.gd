@@ -16,9 +16,9 @@ func _ready():
 	self.add_miner.call_deferred()
 
 
-func _process(delta):
+func _process(_delta):
 	pass
-
+	
 
 func add_miner():
 	var miner = MINER_PREFAB.instantiate();
@@ -32,6 +32,10 @@ func add_miner():
 	
 	self.miners.append(miner);
 	self.add_child(miner);
+	
+	
+func count() -> int:
+	return self.miners.size();
 	
 	
 func reposition_miners():
