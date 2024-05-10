@@ -9,9 +9,9 @@ const ORIGIN: float = 0.5;
 ];
 
 @onready var levels = [
-	$Level1,
-	$Level2,
-	$Level3,
+	$Gauge1,
+	$Gauge2,
+	$Gauge3,
 ];
 
 

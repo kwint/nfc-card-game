@@ -6,8 +6,8 @@ extends Node
 ];
 
 @onready var levels = [
-  $"../Viewport/LevelsLeft",
-  $"../Viewport/LevelsRight",
+  $"../Viewport/BalanceGaugeLeft",
+  $"../Viewport/BalanceGaugeRight",
 ];
 
 
