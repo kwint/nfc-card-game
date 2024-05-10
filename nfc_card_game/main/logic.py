@@ -23,6 +23,7 @@ channel_layer = get_channel_layer()
 class ActionInfo(BaseModel):
     log: str = ""
     status: Literal["ok", "error"] = "ok"
+    team: str | None = None
     player: dict | None = None
     bought: dict | dict[str, int | float] | None = None
     costs: dict | None = None
@@ -34,6 +35,7 @@ class ActionInfo(BaseModel):
     def broadcast_message(self):
         if self.status == "ok":
             data = {"type": "websocket.send", "data": self.model_dump()}
+            print(data)
             async_to_sync(channel_layer.group_send)(
                 "broadcast", {"type": "action_message", "data": data}
             )
@@ -88,8 +90,9 @@ def handle_post_scan(
     return ActionInfo(
         log="Spullen gekocht",
         status="ok",
+        team=player.team.name,
         player=model_to_dict(player),
-        bought={"amount": buy_amount, "item": post_recipes.first().post.sells},
+        bought={"amount": buy_amount, "item": model_to_dict(post_recipes.first().post.sells)},
         costs=trans_cost,
     )
 
@@ -98,7 +101,6 @@ def handle_miner_scan(
     player: Player,
     post_recipes: PostRecipe,
     player_items: PlayerItem,
-    team_mines: Mine,
     buy_amount: int,
 ) -> ActionInfo:
     changes = []
@@ -114,9 +116,6 @@ def handle_miner_scan(
             return ActionInfo(
                 log=f"Niet genoeg {player_item.item.name}!", status="error"
             )
-
-        if post_recipes.first().post.sell_amount is None:
-            sold_amount = player_item.amount
 
         trans_cost[recipe.item.name] = {
             "name": recipe.item.name,
@@ -136,7 +135,8 @@ def handle_miner_scan(
         log="Spullen gekocht",
         status="ok",
         player=model_to_dict(player),
-        bought={"amount": buy_amount, "item": sell_item.item},
+        team=player.team.name,
+        bought={"amount": buy_amount, "item": model_to_dict(sell_item.item)},
         costs=trans_cost,
     )
 
@@ -169,27 +169,29 @@ def handle_mine_scan(
 
             trans_cost[mine_item.item.name] = {
                 "name": mine_item.item.name,
+                "post": str(mine_item.item),
                 "amount": item.amount,
             }
 
             changes.append(mine_item)
             changes.append(player_item)
 
-    commit_changes(changes)
 
-    n = player_items.get(item__currency=team_mines[0].mine.currency, item__type="COIN")
-    n.amount += round(team_mines[0].money * MINE_OFFLOAD_PERCENT)
+    player_wallet = player_items.get(item__currency=team_mines[0].mine.currency, item__type="COIN")
     received_money = round(team_mines[0].money * MINE_OFFLOAD_PERCENT)
-    n.amount += received_money
+    player_wallet.amount += received_money
     mine.money = mine.money - received_money
 
-    changes.append(n)
+    changes.append(player_wallet)
     changes.append(mine)
     commit_changes(changes)
+    print(mine.mine.currency)
 
     return ActionInfo(
         log="Miner's afgeleverd",
         status="ok",
-        bought={"amount": received_money, "item": n},
+        team=player.team.name,
+        player=model_to_dict(player),
+        bought={"amount": received_money, "item": model_to_dict(mine.mine)},
         costs=trans_cost,
     )

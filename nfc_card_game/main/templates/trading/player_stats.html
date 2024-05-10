@@ -15,9 +15,8 @@
     <div class="card shadow">
       <div class="card-body">
         <span class="bi-minecart-loaded h1" style="filter: invert(0%)"></span>
-        <h5 class="card-title">{{ post.0.post.name }}</h5>
-        <h4>Welkom bij de mine {{ mine.0.mine.name }}!</h4>
         {% if mine %}
+          <h4 class="card-title">Welkom bij de mine {{ mine.0.mine.currency }}</h4>
           {% if action.status == "ok" %}
             <table class="table">
               <thead class="thead-dark">
@@ -29,7 +28,7 @@
               <tbody>
               <tr>
                 {% if action.bought.item != None %}
-                <td class="table-success">{{ action.bought.amount }}x {{ action.bought.item.item.name}}</td>
+                <td class="table-success">{{ action.bought.amount }}x {{ action.bought.item.name }}</td>
                 {% else %}
                   <td></td>
                 {% endif %}
@@ -47,11 +46,17 @@
               <p>{{ action.status }}: {{ action.log }}</p>
             {% endif %}
         {% else %}
+          <h4 class="card-title">Welkom bij {{ post.0.post.name }}</h4>
+          <h6>Hoeveel {{post.0.post.sells}} wil je kopen?</h6>
           <form method="post">
             {% csrf_token %}
-            {% for amount in buy_amounts %}
-              <button type="submit" name="amount" value="{{ amount }}">{{ amount }}</button>
-            {% endfor %}
+              {% for amount, possible in buy_amounts.items %}
+                {% if possible %}
+                  <button class="btn btn-primary my-2 d-block w-25" type="submit" name="amount" value="{{ amount }}">{{ amount }}</button>
+                {% else %}
+                  <button class="btn btn-secondary my-2 d-block w-25" disabled name="amount" value="{{ amount }}">{{ amount }}</button>
+                {% endif %}
+              {% endfor %}
           </form>
         {% endif %}
       </div>

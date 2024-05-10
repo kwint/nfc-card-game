@@ -41,7 +41,7 @@
             <tr>
               {% if forloop.counter0 == 0 %}
                 {% if action.bought.item != None %}
-                <td class="table-success">{{ action.bought.amount }}x {{ action.bought.item }}</td>
+                <td class="table-success">{{ action.bought.amount }}x {{ action.bought.item.name }}</td>
                 {% else %}
                   <td></td>
                 {% endif %}

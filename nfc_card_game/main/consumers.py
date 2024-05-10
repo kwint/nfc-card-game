@@ -14,7 +14,6 @@ class MessageConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({"message": message + "ECHO"}))
 
     async def action_message(self, event):
-        print(event)
         message = event.get("data")
         await self.send(text_data=json.dumps(message))
 

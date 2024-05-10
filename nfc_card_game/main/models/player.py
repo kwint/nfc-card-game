@@ -41,7 +41,7 @@ class Player(models.Model):
     name = models.CharField(max_length=100, blank=True)
     section = models.CharField(max_length=4, choices=Section, default=Section.NONE)
     team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True, blank=True)
-    activities = models.ManyToManyField(Activity)
+    activities = models.ManyToManyField(Activity, blank=True)
     color = models.CharField(
         max_length=20, choices=Color, default=None, null=True, blank=True
     )

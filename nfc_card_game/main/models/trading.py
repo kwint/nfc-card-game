@@ -75,7 +75,7 @@ class Mine(models.Model):
         super().save(*args, **kwargs)
         if created:
             for team in Team.objects.all():
-                TeamMine.objects.create(team=team, mine=self, amount=0)
+                TeamMine.objects.create(team=team, mine=self, amount=100)
 
     def __str__(self):
         return f"{self.name} currency: {self.currency}"
@@ -88,6 +88,9 @@ class TeamMine(models.Model):
 
     class Meta:
         unique_together = ("mine", "team")
+
+    def __str__(self):
+        return f"{self.team}: {self.mine}"
 
 
 class TeamMineItem(models.Model):

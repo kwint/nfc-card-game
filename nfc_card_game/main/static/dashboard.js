@@ -65,7 +65,7 @@ function update_table(event){
 function update_chart(event) {
   var data = JSON.parse(event.data);
   
-  if (data.data.bought == null) {
+  if(data.data.costs != null){
     var team_name = data.data.player.team_name;
     var index = c.data.labels.findIndex(label => label === team_name);
     var datasetIndex = c.data.datasets.findIndex(dataset => dataset.label === Object.values(data.data.costs)[0].post_name);
@@ -75,6 +75,19 @@ function update_chart(event) {
       c.data.datasets[datasetIndex].data[index] = parseInt(cur_amount) + parseInt(Object.values(data.data.costs)[0].amount);
       
       c.update();
+    }
+  }
+
+  if(data.data.costs != null){
+    var team_name = data.data.team;
+    var index = c2.data.labels.findIndex(label => label === team_name);
+    var datasetIndex = c2.data.datasets.findIndex(dataset => dataset.label === Object.values(data.data.costs)[0].post);
+    
+    if (datasetIndex !== -1) {
+      var cur_amount = c2.data.datasets[datasetIndex].data[index];
+      c2.data.datasets[datasetIndex].data[index] = parseInt(cur_amount) + parseInt(Object.values(data.data.costs)[0].amount);
+      
+      c2.update();
     }
   }
 };
@@ -93,9 +106,9 @@ function items_to_string(items, newline=true){
 
 
 function get_color_from_currency(currency) {
-  if (currency === 'BLUE') return "rgba(54, 162, 235, 0.5)";
-  if (currency === 'RED') return "rgba(255, 99, 132, 0.5)";
-  if (currency === 'GREEN') return "rgba(130, 255, 54, 0.5)";
+  if (currency.includes('BLAUW')) return "rgba(54, 162, 235, 0.5)";
+  if (currency.includes('ROOD')) return "rgba(255, 99, 132, 0.5)";
+  if (currency.includes('GROEN')) return "rgba(130, 255, 54, 0.5)";
 }
 
 function init_miner_chart(){
@@ -108,29 +121,28 @@ function init_miner_chart(){
 
   var minerDatasets = {};
 
-  console.log(mine_items)
   mine_items.forEach(item => {
-    console.log(item)
-    if(!chartData.labels.includes(item.item)){
-      chartData.labels.push(item.item)
+    if(!chartData.labels.includes(item.team)){
+      chartData.labels.push(item.team)
     }
 
-    if(!minerDatasets[item.team_mine.mine]){
-      minerDatasets[item.team_mine.mine] = {
-        label: item.team_mine.mine,
+    console.log(item.item)
+    if(!minerDatasets[item.item]){
+      minerDatasets[item.item] = {
+        label: item.item,
+        backgroundColor: get_color_from_currency(item.item),
         data: []
       };
     }
-    minerDatasets[item.team_mine.mine].data.push(team.amount);
+    minerDatasets[item.item].data.push(item.amount);
   }) ;
 
-  Object.values(mineDatasets).forEach(dataset => {
+  Object.values(minerDatasets).forEach(dataset => {
     chartData.datasets.push(dataset);
   })
 
-  console.log(chartData)
+
   c2.data = chartData;
-  console.log(chartData);
   c2.update();
 }
 
@@ -164,7 +176,6 @@ function init_bar_chart() {
   })
 
   c.data = chartData;
-  console.log(chartData)
   c.update();
 }
 
@@ -183,10 +194,10 @@ chart_config = {
     }
   }
 };
+let chart_config2 = structuredClone(chart_config);
 
 c = new Chart(ctx, chart_config);
-
-c2 = new Chart(ctx2, chart_config);
+c2 = new Chart(ctx2, chart_config2);
 
 init_bar_chart();
 init_miner_chart();

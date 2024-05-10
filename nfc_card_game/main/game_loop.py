@@ -15,7 +15,8 @@ class GameSettings:
 
 
 def game_loop():
-    update_team_mines()
+    # update_team_mines()
+    pass
 
 
 def update_team_mines():

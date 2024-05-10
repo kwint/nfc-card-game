@@ -3,6 +3,8 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
+from nfc_card_game.main.models.activities import Activity
+from nfc_card_game.main.models.game_settings import GameSettings
 from nfc_card_game.main.models.trading import (
     Post,
     Mine,
@@ -14,6 +16,21 @@ from nfc_card_game.main.models.trading import (
 )
 
 from nfc_card_game.main.models.player import Team, Player
+
+
+@admin.register(GameSettings)
+class GameModeAdmin(admin.ModelAdmin):
+    list_display = ["mode"]
+
+
+@admin.register(Activity)
+class Activities(admin.ModelAdmin):
+    list_display = ["name", "card_uuid", "link"]
+
+    @mark_safe
+    def link(self, obj):
+        card_url = reverse("post", kwargs={"card_uuid": obj.card_uuid})
+        return format_html(f'<a href="{card_url}">link</a>')
 
 
 class PlayerInLine(admin.TabularInline):
@@ -39,10 +56,6 @@ class TeamMineItemInline(admin.TabularInline):
         if db_field.name == "item":
             kwargs["queryset"] = Item.objects.filter(type="MINER")
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
-
-
-class MineAdmin(admin.ModelAdmin):
-    list_display = ["mine", "amount"]
 
 
 class TeamAdmin(admin.ModelAdmin):
