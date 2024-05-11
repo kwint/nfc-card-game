@@ -14,4 +14,5 @@ urlpatterns = [
     path("stop-game-loop", game_loop.stop_scheduler, name="stop-game-loop"),
     path("start-game-loop", game_loop.start_scheduler, name="start-game-loop"),
     path("api/dashboard", api.dashboard, name="api/dashboard"),
+    path("api/dashboard/<int:mine_id>", api.dashboard_mine, name="api/dashboard/mine"),
 ]
