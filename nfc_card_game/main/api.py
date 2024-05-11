@@ -28,33 +28,52 @@ from .models.trading import Mine, PlayerItem, Post, PostRecipe, TeamMine, TeamMi
 
 
 def dashboard(request: HttpRequest) -> JsonResponse:
-    mines = list(TeamMine.objects.values());
+    """
+    Expose all game stats for the dashboard.
+    """
 
     # Extract and structure mine stats
     # mines -> teams -> items
     data_mines = {}
     for mine in Mine.objects.all():
-        data_teams = {};
-        for team_mine in mine.teammine_set.all():
-            data_items = []
-            for item in team_mine.teammineitem_set.all().order_by("item_id"):
-                data_items.append({
-                    "name": item.item.name,
-                    "amount": item.amount,
-                    # TODO: expose effective amount here?
-                    "effective": item.amount,
-                });
-
-            data_teams[team_mine.team_id] = {
-                "money": team_mine.money,
-                "items": data_items,
-            };
-
-        data_mines[mine.id] = {
-            "name": mine.name,
-            "teams": data_teams,
-        };
+        data_mines[mine.id] = describe_mine(mine);
 
     return JsonResponse({
         "mines": data_mines,
     });
+
+
+def dashboard_mine(request: HttpRequest, mine_id: int) -> JsonResponse:
+    """
+    Expose stats of a specific mine to the dashboard.
+    """
+
+    mine = Mine.objects.get(id=mine_id);
+    return JsonResponse(describe_mine(mine));
+
+
+def describe_mine(mine: Mine):
+    """
+    Describe the stats of a mine in a way that the dashboard understands.
+    """
+
+    data_teams = {};
+    for team_mine in mine.teammine_set.all():
+        data_items = []
+        for item in team_mine.teammineitem_set.all().order_by("item_id"):
+            data_items.append({
+                "name": item.item.name,
+                "amount": item.amount,
+                # TODO: expose effective amount here?
+                "effective": item.amount,
+            });
+
+        data_teams[team_mine.team_id] = {
+            "money": team_mine.money,
+            "items": data_items,
+        };
+
+    return {
+        "name": mine.name,
+        "teams": data_teams,
+    };

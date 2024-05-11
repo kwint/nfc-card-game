@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://ca1ddejybbu0g"]
+[gd_scene load_steps=10 format=3 uid="uid://ca1ddejybbu0g"]
 
 [ext_resource type="Texture2D" uid="uid://spx3oh7upq1v" path="res://Sprites/mountain.png" id="1_tusvk"]
 [ext_resource type="Script" path="res://Scripts/GameController.gd" id="1_y0gn5"]
 [ext_resource type="Theme" uid="uid://n2sj11gmuqmo" path="res://Themes/Money font.tres" id="2_1f4xi"]
 [ext_resource type="Script" path="res://Scripts/MinerGrid.gd" id="3_gpr4m"]
+[ext_resource type="Script" path="res://Scripts/MoneyDisplay.gd" id="3_o437a"]
 [ext_resource type="PackedScene" uid="uid://c223vha4r3wq7" path="res://Scenes/BalanceGauge.tscn" id="3_oc27c"]
 [ext_resource type="Script" path="res://Scripts/Debug/Panel.gd" id="5_c15vj"]
 [ext_resource type="Script" path="res://Scripts/Debug/AddMiners.gd" id="6_gq5dx"]
@@ -65,24 +66,25 @@ layout_mode = 2
 split_offset = 576
 dragger_visibility = 1
 
-[node name="MinerGridLeft" type="ReferenceRect" parent="Viewport/AspectRatioContainer/HSplitContainer"]
+[node name="MinersTeam1" type="ReferenceRect" parent="Viewport/AspectRatioContainer/HSplitContainer"]
 layout_mode = 2
 border_color = Color(0, 0, 100, 1)
 border_width = 2.0
 
-[node name="MinerGridRight" type="ReferenceRect" parent="Viewport/AspectRatioContainer/HSplitContainer"]
+[node name="MinersTeam2" type="ReferenceRect" parent="Viewport/AspectRatioContainer/HSplitContainer"]
 layout_mode = 2
 border_color = Color(0, 100, 0, 1)
 border_width = 2.0
 
-[node name="MoneyLeft" type="MarginContainer" parent="Viewport"]
+[node name="MoneyTeam1" type="MarginContainer" parent="Viewport"]
 layout_mode = 1
 offset_right = 121.0
 offset_bottom = 43.0
 theme_override_constants/margin_left = 85
 theme_override_constants/margin_top = 20
+script = ExtResource("3_o437a")
 
-[node name="Label" type="Label" parent="Viewport/MoneyLeft"]
+[node name="Label" type="Label" parent="Viewport/MoneyTeam1"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -90,7 +92,7 @@ theme = ExtResource("2_1f4xi")
 theme_override_styles/normal = SubResource("StyleBoxTexture_w6uij")
 text = "$123.456.789"
 
-[node name="MoneyRight" type="MarginContainer" parent="Viewport"]
+[node name="MoneyTeam2" type="MarginContainer" parent="Viewport"]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -100,8 +102,9 @@ offset_bottom = 40.0
 grow_horizontal = 0
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 85
+script = ExtResource("3_o437a")
 
-[node name="Label" type="Label" parent="Viewport/MoneyRight"]
+[node name="Label" type="Label" parent="Viewport/MoneyTeam2"]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
@@ -109,14 +112,14 @@ theme = ExtResource("2_1f4xi")
 text = "$123.456.789"
 horizontal_alignment = 2
 
-[node name="BalanceGaugeLeft" parent="Viewport" instance=ExtResource("3_oc27c")]
+[node name="BalanceGaugeTeam1" parent="Viewport" instance=ExtResource("3_oc27c")]
 layout_mode = 0
 offset_left = 33.0
 offset_top = 96.0
 offset_right = 83.0
 offset_bottom = 246.0
 
-[node name="BalanceGaugeRight" parent="Viewport" instance=ExtResource("3_oc27c")]
+[node name="BalanceGaugeTeam2" parent="Viewport" instance=ExtResource("3_oc27c")]
 layout_mode = 0
 offset_left = 1069.0
 offset_top = 96.0
@@ -181,16 +184,16 @@ allow_greater = true
 layout_mode = 2
 text = "Add"
 
-[node name="MinersLeft" type="Node2D" parent="." node_paths=PackedStringArray("reference_grid")]
+[node name="MinersTeam1" type="Node2D" parent="." node_paths=PackedStringArray("reference_grid")]
 script = ExtResource("3_gpr4m")
 color = Color(1, 0.5, 0.5, 1)
-reference_grid = NodePath("../Viewport/AspectRatioContainer/HSplitContainer/MinerGridLeft")
+reference_grid = NodePath("../Viewport/AspectRatioContainer/HSplitContainer/MinersTeam1")
 
-[node name="MinersRight" type="Node2D" parent="." node_paths=PackedStringArray("reference_grid")]
+[node name="MinersTeam2" type="Node2D" parent="." node_paths=PackedStringArray("reference_grid")]
 script = ExtResource("3_gpr4m")
 flipped = true
 color = Color(0.5, 0.5, 1, 1)
-reference_grid = NodePath("../Viewport/AspectRatioContainer/HSplitContainer/MinerGridRight")
+reference_grid = NodePath("../Viewport/AspectRatioContainer/HSplitContainer/MinersTeam2")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0

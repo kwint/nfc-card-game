@@ -1,20 +1,10 @@
 class_name Global
 
-const MINE_ID: String = "1";
+const MINE_ID: int = 1;
 
 const API_URL: String = "http://localhost:8000/api";
 const API_PATH_DASHBOARD: String = "/dashboard";
 
-enum MinerType { MINER1, MINER2, MINER3 };
+enum TeamId { TEAM1 = 1, TEAM2 = 2 }
 
-
-static func miner_type_index(type: MinerType):
-	match type:
-		MinerType.MINER1:
-			return 0;
-		MinerType.MINER2:
-			return 1;
-		MinerType.MINER3:
-			return 2;
-		_:
-			assert(false, "unknown miner type");
+enum MinerType { MINER1 = 1, MINER2 = 2, MINER3 = 3 };

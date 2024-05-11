@@ -4,14 +4,18 @@ extends Node
 const FETCH_STATS_INTERVAL: int = 60 * 1;
 
 @onready var stats_http_client = $StatsHttpClient;
-@onready var mines = [
-  $"../MinersLeft",
-  $"../MinersRight",
-];
-@onready var levels = [
-  $"../Viewport/BalanceGaugeLeft",
-  $"../Viewport/BalanceGaugeRight",
-];
+@onready var mines = {
+  Global.TeamId.TEAM1: $"../MinersTeam1",
+  Global.TeamId.TEAM2: $"../MinersTeam2",
+};
+@onready var money = {
+  Global.TeamId.TEAM1: $"../Viewport/MoneyTeam1",
+  Global.TeamId.TEAM2: $"../Viewport/MoneyTeam2",
+};
+@onready var levels = {
+  Global.TeamId.TEAM1: $"../Viewport/BalanceGaugeTeam1",
+  Global.TeamId.TEAM2: $"../Viewport/BalanceGaugeTeam2",
+};
 
 var fetch_stats_at;
 
@@ -35,39 +39,44 @@ func _process(_delta):
 		self.fetch_stats();
 
 
-func add_miner(left: bool, miner_type: Global.MinerType):
-	var i = 0 if left else 1;
-	self.mines[i].add(miner_type);
-	self.levels[i].add(miner_type);
+func add_miner(team_id: Global.TeamId, miner_type: Global.MinerType):
+	self.mines[team_id].add(miner_type);
+	self.levels[team_id].add(miner_type);
 
 
 func fetch_stats():
 	self.fetch_stats_at = Time.get_ticks_msec() / 1000 + FETCH_STATS_INTERVAL;
-	stats_http_client.request(Global.API_URL + Global.API_PATH_DASHBOARD);
+	stats_http_client.request(Global.API_URL + Global.API_PATH_DASHBOARD + "/" + str(Global.MINE_ID));
 
 
 func _on_stats_fetched(result, response_code, headers, body):
 	var json = JSON.parse_string(body.get_string_from_utf8())
+	self.process_stats(json);
+
+
+func process_stats(stats: Dictionary):
+	var teams_stats = stats["teams"];
 	
-	# TODO: set data for both teams
-	var team_data = json["mines"][Global.MINE_ID]["teams"]["1"];
-	
-	# TODO: set money!
-	var money = team_data["money"];
-	
-	# TODO: add existing miners in a more efficient way
-	var i = 0;
-	for item_stats in team_data["items"]:
-		var effective = item_stats["effective"];
-		for j in range(effective):
-			add_miner(true, i);
-		i += 1;
+	for team_id in Global.TeamId.values():
+		if !teams_stats.has(str(team_id)):
+			print("missing stats for team ", team_id);
+			continue;
 		
-	# TODO: do the same for the other team?
-	team_data = json["mines"][Global.MINE_ID]["teams"]["2"];
-	i = 0;
-	for item_stats in team_data["items"]:
-		var effective = item_stats["effective"];
-		for j in range(effective):
-			add_miner(false, i);
-		i += 1;
+		var team_stats = teams_stats[str(team_id)];
+		process_stats_team(team_id, team_stats);
+
+
+func process_stats_team(team_id: Global.TeamId, team: Dictionary):
+	# Update money display
+	var money = team["money"];
+	self.money[team_id].set_money(money);
+	
+	# Update miners
+	# TODO: add existing miners in a more efficient way
+	# TODO: derive miner types from global enum
+	var items = team["items"];
+	for i in range(items.size()):
+		var item = items[i];
+		var effective = item["effective"];
+		for _i in range(effective):
+			add_miner(team_id, i + 1);
