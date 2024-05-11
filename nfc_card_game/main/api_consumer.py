@@ -4,6 +4,7 @@ from asgiref.sync import async_to_sync, sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from enum import Enum
 
+from .models.trading import Mine
 from . import api
 
 
@@ -12,6 +13,7 @@ class PacketServerType(Enum):
 
 class PacketClientType(Enum):
     GAME_STATE = 1
+    MINE_STATE = 2
 
 
 class ApiConsumer(AsyncJsonWebsocketConsumer):
@@ -24,6 +26,7 @@ class ApiConsumer(AsyncJsonWebsocketConsumer):
         print("Dashboard client connected to API socket")
 
         # Share current game state over websocket
+        # TODO: remove this? only send mine state after selecting mine?
         await self.send_game_state()
 
 
@@ -51,6 +54,12 @@ class ApiConsumer(AsyncJsonWebsocketConsumer):
         await self.send_packet(PacketClientType.GAME_STATE, mines)
 
 
+    async def send_mine_state(self, mine_id: int = None):
+        async_describe_mine = sync_to_async(api.describe_mine)
+        mines = await async_describe_mine(mine_id or self.mine_id)
+        await self.send_packet(PacketClientType.MINE_STATE, mines)
+
+
     async def handle_raw_packet(self, data: dict):
         if "packet_id" not in data:
             print(f"Got malformed packet, no packet_id: f{data}")
@@ -76,3 +85,7 @@ class ApiConsumer(AsyncJsonWebsocketConsumer):
     async def handle_set_mine(self, data: dict):
         self.mine_id = data["mine_id"]
         print(f"Client selected mine {self.mine_id}")
+
+        # Update client with latest mine state
+        await self.send_mine_state()
+

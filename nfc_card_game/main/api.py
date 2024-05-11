@@ -54,10 +54,14 @@ def describe_mines():
     return {"mines": data_mines}
 
 
-def describe_mine(mine: Mine):
+def describe_mine(mine: Mine | int):
     """
     Describe the stats of a mine in a way that the dashboard understands.
     """
+
+    # If an ID is provided, fetch the mine object
+    if isinstance(mine, int):
+        mine = Mine.objects.get(id=mine)
 
     data_teams = {}
     for team_mine in mine.teammine_set.all():
