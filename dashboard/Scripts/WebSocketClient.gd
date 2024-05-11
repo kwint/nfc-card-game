@@ -1,5 +1,7 @@
 extends Node
 
+@onready var game_controller = $"../../GameController";
+
 var socket = WebSocketPeer.new()
 var connected: bool = false;
 
@@ -17,7 +19,7 @@ enum PacketClientType {
 func _ready():
 	socket.connect_to_url(Global.WEBSOCKET_API_URL);
 
-func _process(delta):
+func _process(_delta):
 	# Keep progressing the socket
 	socket.poll()
 	
@@ -94,6 +96,7 @@ func handle_game_state(state: Dictionary):
 
 func handle_mine_state(state: Dictionary):
 	print("Got mine state: ", str(state));
+	self.game_controller.process_stats(state);
 
 
 func send_packet(packet_id: PacketServerType, data: Dictionary):
