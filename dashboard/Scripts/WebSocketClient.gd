@@ -90,12 +90,11 @@ func handle_packet(packet_id: int, data: Dictionary):
 			print("Failed to handle packet with ID ", str(packet_id), ", missing handler?");
 
 
-func handle_game_state(state: Dictionary):
-	print("Got game state: ", str(state));
+func handle_game_state(_state: Dictionary):
+	print("Ignoring game state packet");
 
 
 func handle_mine_state(state: Dictionary):
-	print("Got mine state: ", str(state));
 	self.game_controller.process_stats(state);
 
 

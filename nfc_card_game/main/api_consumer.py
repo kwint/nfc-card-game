@@ -81,7 +81,7 @@ class ApiConsumer(AsyncJsonWebsocketConsumer):
                 await self.handle_set_mine(data)
             case _:
                 print(f"Failed to handle packet with ID {packet_id}, missing handler?")
-                return;
+                return
 
 
     async def handle_set_mine(self, data: dict):

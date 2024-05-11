@@ -15,6 +15,10 @@ run/main_scene="res://Scenes/Dashboard.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"
 
+[debug]
+
+gdscript/warnings/shadowed_variable=0
+
 [display]
 
 window/stretch/mode="canvas_items"
