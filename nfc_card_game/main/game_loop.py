@@ -1,10 +1,14 @@
 from django.http import HttpResponse
 from schedule import Scheduler
+from asgiref.sync import async_to_sync
+import channels
 import threading
 import time
 from pydantic import BaseModel, Field
 from nfc_card_game.main.models.trading import MinerType, TeamMine, TeamMineItem
 import logging
+
+from . import api_consumer
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +40,17 @@ def update_team_mines():
     team_mines = TeamMine.objects.all()
     for team_mine in team_mines:
         update_team_mine(team_mine)
+
+    # Broadcast for API clients: tick game loop
+    channel_layer = channels.layers.get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        api_consumer.CHANNEL_NAME,
+        {
+            "type": "event_handler",
+            "event_id": api_consumer.ChannelEventType.GAME_LOOP_TICKED.value,
+            "data": {},
+        }
+    )
 
 
 def update_team_mine(team_mine: TeamMine):

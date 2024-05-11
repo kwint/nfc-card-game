@@ -15,7 +15,6 @@ services:
       - "DJANGO_CSRF_COOKIE_SECURE=1"
       - "DJANGO_ENV=production"
     restart: unless-stopped
-    
     expose:
       - 8000
     command: ["/code/docker-cmd.sh"]
