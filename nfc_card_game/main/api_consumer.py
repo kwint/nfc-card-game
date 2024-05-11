@@ -17,7 +17,7 @@ class PacketClientType(Enum):
     MINE_STATE = 2
 
 class ChannelEventType(Enum):
-    REFRESH_MINE_STATE = 1
+    GAME_LOOP_TICKED = 1
 
 
 class ApiConsumer(AsyncJsonWebsocketConsumer):
@@ -111,7 +111,8 @@ class ApiConsumer(AsyncJsonWebsocketConsumer):
             print(f"Got malformed channel event, unknown event ID: {event_id}")
 
         match event_id:
-            case ChannelEventType.REFRESH_MINE_STATE.value:
+            case ChannelEventType.GAME_LOOP_TICKED.value:
+                # TODO: do not send mine state on every game loop tick
                 await self.send_mine_state()
             case _:
                 print(f"Ignored event with ID {event_id}, no handler configured")

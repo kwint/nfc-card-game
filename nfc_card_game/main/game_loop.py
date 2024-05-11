@@ -41,14 +41,13 @@ def update_team_mines():
     for team_mine in team_mines:
         update_team_mine(team_mine)
 
-    # Bump all API clients, update their mine state
-    # TODO: we want to do this in a more efficient way in the future
+    # Broadcast for API clients: tick game loop
     channel_layer = channels.layers.get_channel_layer()
     async_to_sync(channel_layer.group_send)(
         api_consumer.CHANNEL_NAME,
         {
             "type": "event_handler",
-            "event_id": api_consumer.ChannelEventType.REFRESH_MINE_STATE.value,
+            "event_id": api_consumer.ChannelEventType.GAME_LOOP_TICKED.value,
             "data": {},
         }
     )
