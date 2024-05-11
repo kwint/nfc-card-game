@@ -6,7 +6,7 @@ const MINER_PREFAB = preload("res://Scenes/Miner.tscn");
 @export var color: Color = Color.WHITE;
 @export var reference_grid: Control;
 
-var miners = [];
+var miners = {};
 var noise = FastNoiseLite.new()
 
 
@@ -18,9 +18,9 @@ func _process(_delta):
 	pass
 	
 
-func add(type: Global.MinerType = Global.MinerType.MINER1):
+func add_miner(type: Global.MinerType = Global.MinerType.MINER1):
 	var miner = MINER_PREFAB.instantiate();
-	miner.position = self.get_miner_position(self.miners.size());
+	miner.position = self.get_miner_position(type, self.count_miners(type));
 	
 	if self.flipped:
 		miner.scale.x *= -1;
@@ -28,36 +28,63 @@ func add(type: Global.MinerType = Global.MinerType.MINER1):
 	if self.color != null:
 		miner.modulate = self.color;
 	
-	self.miners.append(miner);
+	self._add_miner_to_list(type, miner);
 	
 	miner.type = type;
 	
 	self.add_child(miner);
+
+
+func remove_miner(type: Global.MinerType = Global.MinerType.MINER1):
+	var miner = self.miners[type].pop_back();
+	if miner == null:
+		return;
+	miner.destroy();
 	
 
-func set_miners(type: Global.MinerType, amount):
-	# TODO: properly set, scale up or down
-	while self.miners.size() < amount:
-		self.add(type);
+func _add_miner_to_list(type: Global.MinerType, miner):
+	if !self.miners.has(type):
+		self.miners[type] = [];
+	self.miners[type].append(miner);
+
+
+func set_miners(type: Global.MinerType, amount: int):
+	# TODO: do this in batches
+	
+	var delta = amount - self.count_miners(type);
+	
+	# Add new miners
+	if delta > 0:
+		for _i in range(delta):
+			self.add_miner(type);
+			
+	# Remove excess miners
+	if delta < 0:
+		delta *= -1;
+		for _i in range(delta):
+			self.remove_miner(type);
 	
 	
-func count() -> int:
-	return self.miners.size();
+func count_miners(type: Global.MinerType) -> int:
+	if !self.miners.has(type):
+		return 0;
+	return self.miners[type].size();
 	
 	
 func reposition_miners():
-	for i in range(self.miners.size()):
-		var miner = self.miners[i];
-		miner.position = self.get_miner_position(i);
+	for type in self.miners:
+		var miners = self.miners[type];
+		for i in range(miners.size()):
+			miners[i].position = self.get_miner_position(type, i);
 
 
-func get_miner_position(index: int) -> Vector2:
+func get_miner_position(type: Global.MinerType, index: int) -> Vector2:
 	if self.reference_grid == null:
 		return Vector2.ZERO;
 	
 	var rect = self.reference_grid.get_global_rect();
 	
-	var diagnal_position_factor = self.noise.get_noise_1d(float(index) * 100.0);
+	var diagnal_position_factor = self.noise.get_noise_1d((type * 100000.3) + float(index) * 100.0);
 	diagnal_position_factor = scale_float(diagnal_position_factor, -1.0, 1.0, 0.0, 1.0);
 	
 	var offset = rect.size * diagnal_position_factor;

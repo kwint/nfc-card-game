@@ -44,7 +44,7 @@ func update_levels():
 		self.levels[miner_type].value = ORIGIN + offsets[miner_type] / 2.0;
 
 
-func add(type: Global.MinerType):
+func add_level(type: Global.MinerType):
 	self.values[type] += 1;
 	self.update_levels();
 

@@ -17,7 +17,7 @@ const FETCH_STATS_INTERVAL: int = 60 * 1;
   Global.TeamId.TEAM2: $"../Viewport/BalanceGaugeTeam2",
 };
 
-var fetch_stats_at;
+var fetch_stats_at: int;
 
 
 func _ready():
@@ -35,13 +35,15 @@ func _ready():
 
 func _process(_delta):
 	# Keep fetching stats to prevent game desync
-	if self.fetch_stats_at <= Time.get_ticks_msec() / 1000:
+	@warning_ignore("integer_division")
+	var now = Time.get_ticks_msec() / 1000;
+	if self.fetch_stats_at <= now:
 		self.fetch_stats();
 
 
 func add_miner(team_id: Global.TeamId, miner_type: Global.MinerType):
-	self.mines[team_id].add(miner_type);
-	self.levels[team_id].add(miner_type);
+	self.mines[team_id].add_miner(miner_type);
+	self.levels[team_id].add_level(miner_type);
 
 
 func set_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: int):
@@ -50,11 +52,12 @@ func set_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: in
 	
 
 func fetch_stats():
+	@warning_ignore("integer_division")
 	self.fetch_stats_at = Time.get_ticks_msec() / 1000 + FETCH_STATS_INTERVAL;
 	stats_http_client.request(Global.API_URL + Global.API_PATH_DASHBOARD + "/" + str(Global.MINE_ID));
 
 
-func _on_stats_fetched(result, response_code, headers, body):
+func _on_stats_fetched(_result, _response_code, _headers, body):
 	var json = JSON.parse_string(body.get_string_from_utf8())
 	self.process_stats(json);
 
