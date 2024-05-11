@@ -226,6 +226,21 @@ def handle_mine_scan(
     player_wallet.amount += received_money
     mine.money = mine.money - received_money
 
+    # Broadcast for API clients: mine money update
+    channel_layer = channels.layers.get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        api_consumer.CHANNEL_NAME,
+        {
+            "type": api_consumer.CHANNEL_EVENT_HANDLER,
+            "event_id": api_consumer.ChannelEventType.MINE_MONEY_UPDATE.value,
+            "data": {
+                "mine_id": mine.mine_id,
+                "team_id": mine.team_id,
+                "money": mine.money,
+            },
+        }
+    )
+
     changes.append(player_wallet)
     changes.append(mine)
     commit_changes(changes)
