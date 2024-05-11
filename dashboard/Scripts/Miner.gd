@@ -19,3 +19,8 @@ func update_miner_type(type: Global.MinerType):
 			self.sprite.animation = "miner3";
 		_:
 			assert(false, "unknown miner type");
+
+
+func destroy():
+	if is_instance_valid(self):
+		self.queue_free();

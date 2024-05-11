@@ -40,8 +40,8 @@ func _process(_delta):
 
 
 func add_miner(team_id: Global.TeamId, miner_type: Global.MinerType):
-	self.mines[team_id].add(miner_type);
-	self.levels[team_id].add(miner_type);
+	self.mines[team_id].add_miner(miner_type);
+	self.levels[team_id].add_level(miner_type);
 
 
 func set_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: int):
