@@ -8,6 +8,10 @@ const FETCH_STATS_INTERVAL: int = 60 * 1;
   Global.TeamId.TEAM1: $"../MinersTeam1",
   Global.TeamId.TEAM2: $"../MinersTeam2",
 };
+@onready var money = {
+  Global.TeamId.TEAM1: $"../Viewport/MoneyTeam1",
+  Global.TeamId.TEAM2: $"../Viewport/MoneyTeam2",
+};
 @onready var levels = {
   Global.TeamId.TEAM1: $"../Viewport/BalanceGaugeTeam1",
   Global.TeamId.TEAM2: $"../Viewport/BalanceGaugeTeam2",
@@ -63,11 +67,14 @@ func process_stats(stats: Dictionary):
 
 
 func process_stats_team(team_id: Global.TeamId, team: Dictionary):
+	# Update money display
 	var money = team["money"];
-	var items = team["items"];
+	self.money[team_id].set_money(money);
 	
+	# Update miners
 	# TODO: add existing miners in a more efficient way
 	# TODO: derive miner types from global enum
+	var items = team["items"];
 	for i in range(items.size()):
 		var item = items[i];
 		var effective = item["effective"];
