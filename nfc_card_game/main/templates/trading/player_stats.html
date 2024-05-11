@@ -17,7 +17,7 @@
       <div class="card-body">
         <span class="bi-minecart-loaded h1" style="filter: invert(0%)"></span>
         {% if mine %}
-        <h4 class="card-title">Welkom bij de mine {{ mine.0.mine.currency }}</h4>
+        <h4 class="card-title">Welkom bij de mine {{ mine.0.mine.get_currency_display }}{{ mine.0.mine.currency }}</h4>
         {% if action.status == "ok" %}
         <table class="table">
           <thead class="thead-dark">
@@ -29,17 +29,17 @@
           <tbody>
             <tr>
               {% if action.bought.item != None %}
-              <td class="table-success">{{ action.bought.amount }}x {{ action.bought.item.name }}</td>
+              <td class="table-success">{{ action.bought.amount }}x {{action.bought.item.get_name_display}}{{ action.bought.item.name }}</td>
               {% else %}
-              <td></td>
+                <td></td>
               {% endif %}
-              {% for item, amount in action.costs.items %}
-              {% if forloop.counter0 == 0 %}
-              {% else %}
-              <td></td>
-              {% endif %}
-              <td class="table-danger">{{ amount.amount }}x {{ item }}</td>
-            <tr>
+              {% for key, val in action.costs.items %}
+                {% if forloop.counter0 == 0 %}
+                {% else %}
+                <td></td>
+                {% endif %}
+                <td class="table-danger">{{ val.amount }}x {{ val.currency }}{{ val.name }}</td>
+              <tr>
               {% endfor %}
           </tbody>
         </table>
@@ -47,8 +47,8 @@
         <p>{{ action.status }}: {{ action.log }}</p>
         {% endif %}
         {% else %}
-        <h4 class="card-title">Welkom bij {{ post.0.post.name }}</h4>
-        <h6>Hoeveel {{post.0.post.sells}} wil je kopen? Prijs: {{ price }}</h6>
+        <h4 class="card-title">Welkom bij {{ post.0.post.sells.get_currency_display }}{{post.0.post.name }}</h4>
+        <h6>Hoeveel {{ post.0.post.sells.get_currency_display }}{{post.0.post.sells.name}} wil je kopen? Prijs: {{ price }}</h6>
         <form method="post">
           {% csrf_token %}
           {% for amount, possible in buy_amounts.items %}
@@ -84,7 +84,7 @@
           <tbody>
             {% for item in items %}
             <tr>
-              <td>{{ item.item }}</td>
+              <td>{{item.item.get_currency_display}} {{ item.item.name }}</td>
               <td>{{ item.amount }}</td>
             </tr>
             {% endfor %}

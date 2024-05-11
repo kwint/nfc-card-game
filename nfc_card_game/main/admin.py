@@ -54,7 +54,7 @@ class TeamMineItemInline(admin.TabularInline):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "item":
-            kwargs["queryset"] = Item.objects.filter(type="MINER")
+            kwargs["queryset"] = Item.objects.filter(type=TypeType.MINER)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
@@ -73,7 +73,7 @@ class TeamMineItemAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "item":
-            kwargs["queryset"] = Item.objects.filter(type="MINER")
+            kwargs["queryset"] = Item.objects.filter(type=TypeType.MINER)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 

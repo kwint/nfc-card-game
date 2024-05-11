@@ -17,11 +17,6 @@
         <span class="bi-minecart-loaded h1" style="filter: invert(0%)"></span>
         <h5 class="card-title">{{ post.0.post.name }}</h5>
         <h4>Je hebt {{ buy_amount }} gekocht!</h4>
-        <script>
-          console.log("{{post|safe}}")
-          console.log("{{mine|safe}}")
-
-        </script>
         <form method="post">
           {% csrf_token %}
           {% for amount in buy_amounts %}
@@ -37,18 +32,18 @@
             </tr>
           </thead>
           <tbody>
-            {% for item, amount in action.costs.items %}
+            {% for key, val in action.costs.items %}
             <tr>
               {% if forloop.counter0 == 0 %}
                 {% if action.bought.item != None %}
-                <td class="table-success">{{ action.bought.amount }}x {{ action.bought.item.name }}</td>
+                <td class="table-success">{{ action.bought.amount }}x {{ action.bought.item.get_currency_display }}{{ action.bought.item.get_name_display}}</td>
                 {% else %}
                   <td></td>
                 {% endif %}
               {% else %}
                 <td></td>
               {% endif %}
-              <td class="table-danger">{{ amount.amount }}x {{ item }}</td>
+              <td class="table-danger">{{ val.amount }}x {{ val.currency }}{{ val.name }}</td>
             <tr>
             {% endfor %}
           </tbody>

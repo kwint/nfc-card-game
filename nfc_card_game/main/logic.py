@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Any, Literal
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
@@ -14,8 +14,10 @@ from .models.trading import (
     MinerType,
     PlayerItem,
     PostRecipe,
+    ResourceType,
     TeamMine,
     TeamMineItem,
+    TypeType
 )
 from .game_loop import SETTINGS
 
@@ -28,7 +30,7 @@ class ActionInfo(BaseModel):
     log: str = ""
     status: Literal["ok", "error"] = "ok"
     team: str | None = None
-    player: dict | None = None
+    player: Any | None = None
     bought: dict | dict[str, int | float] | None = None
     costs: dict | None = None
 
@@ -36,9 +38,20 @@ class ActionInfo(BaseModel):
         super().__init__(*args, **kwargs)
         self.broadcast_message()
 
+    def clean_message(self, data):
+        model_types = [Item, Mine, PlayerItem, Player, TeamMine, TeamMineItem]
+        for key, value in data.items():
+            if any(isinstance(value, type) for type in model_types):
+                data[key] = model_to_dict(value)
+            elif isinstance(value, dict):
+                self.clean_message(value)
+        return data
+
+
     def broadcast_message(self):
         if self.status == "ok":
             data = {"type": "websocket.send", "data": self.model_dump()}
+            data = self.clean_message(data)
             print(data)
             async_to_sync(channel_layer.group_send)(
                 "broadcast", {"type": "action_message", "data": data}
@@ -60,7 +73,7 @@ def handle_post_scan(
     trans_cost = {}
     changes = []
 
-    currencies = player_items.filter(item__type="COIN").exclude(
+    currencies = player_items.filter(item__type=TypeType.COIN).exclude(
         item__currency=post_recipes.first().post.sells.currency
     )
     currency = currencies.order_by("-amount")
@@ -80,9 +93,10 @@ def handle_post_scan(
             currency.amount -= deducted_amount
             cost -= deducted_amount
 
-            trans_cost[currency.item.name] = {
+            trans_cost[currency.item.get_name_display()] = {
                 "name": currency.item.name,
                 "amount": deducted_amount,
+                "currency": currency.item.get_currency_display(),
             }
             changes.append(currency)
 
@@ -95,10 +109,10 @@ def handle_post_scan(
         log="Spullen gekocht",
         status="ok",
         team=player.team.name,
-        player=model_to_dict(player),
+        player=player,
         bought={
             "amount": buy_amount,
-            "item": model_to_dict(post_recipes.first().post.sells),
+            "item": post_recipes.first().post.sells,
         },
         costs=trans_cost,
     )
@@ -124,10 +138,11 @@ def handle_miner_scan(
                 log=f"Niet genoeg {player_item.item.name}!", status="error"
             )
 
-        trans_cost[recipe.item.name] = {
-            "name": recipe.item.name,
+        trans_cost[recipe.item.get_name_display()] = {
+            "name": recipe.item.get_name_display(),
             "amount": cost,
             "post_name": post_recipes[0].post.name,
+            "currency": recipe.item.get_currency_display(),
         }
         player_item.amount -= cost
         changes.append(player_item)
@@ -141,9 +156,9 @@ def handle_miner_scan(
     return ActionInfo(
         log="Spullen gekocht",
         status="ok",
-        player=model_to_dict(player),
+        player=player,
         team=player.team.name,
-        bought={"amount": buy_amount, "item": model_to_dict(sell_item.item)},
+        bought={"amount": buy_amount, "item": sell_item.item},
         costs=trans_cost,
     )
 
@@ -160,12 +175,12 @@ def handle_mine_scan(
     print(mine_items)
 
     curr_miners = player_items.filter(
-        item__type="MINER", item__currency=mine.mine.currency
+        item__type=TypeType.MINER, item__currency=mine.mine.currency
     )
 
     for item in curr_miners:
         if (
-            item.item.type == "MINER"
+            item.item.type == TypeType.MINER
             and item.item.currency == team_mines[0].mine.currency
             and item.amount > 0
         ):
@@ -174,17 +189,18 @@ def handle_mine_scan(
             mine_item.amount += item.amount
             player_item.amount -= item.amount
 
-            trans_cost[mine_item.item.name] = {
-                "name": mine_item.item.name,
+            trans_cost[mine_item.item.get_name_display()] = {
+                "name": mine_item.item.get_name_display(),
                 "post": str(mine_item.item),
                 "amount": item.amount,
+                "currency": item.item.get_currency_display(),
             }
 
             changes.append(mine_item)
             changes.append(player_item)
 
     player_wallet = player_items.get(
-        item__currency=team_mines[0].mine.currency, item__type="COIN"
+        item__currency=team_mines[0].mine.currency, item__type=TypeType.COIN
     )
     received_money = round(team_mines[0].money * MINE_OFFLOAD_PERCENT)
     player_wallet.amount += received_money
@@ -199,8 +215,8 @@ def handle_mine_scan(
         log="Miner's afgeleverd",
         status="ok",
         team=player.team.name,
-        player=model_to_dict(player),
-        bought={"amount": received_money, "item": model_to_dict(mine.mine)},
+        player=player,
+        bought={"amount": received_money, "item": mine.mine},
         costs=trans_cost,
     )
 
@@ -220,11 +236,11 @@ def get_miner_price(team_mine: TeamMine, item_name: str):
 def get_resource_price(team_mines: QuerySet[TeamMine], resource: Item) -> int:
     team_mine = team_mines.get(mine__currency=resource.currency)
     bijl_price = get_miner_price(team_mine, MinerType.A.value)
-    if resource.name == "BIJL":
+    if resource.name == ResourceType.A:
         return bijl_price
 
     tandwiel_price = get_miner_price(team_mine, MinerType.B.value) - bijl_price
-    if resource.name == "TANDWIEL":
+    if resource.name == ResourceType.B:
         return tandwiel_price
 
     return get_miner_price(team_mine, MinerType.C.value) - tandwiel_price

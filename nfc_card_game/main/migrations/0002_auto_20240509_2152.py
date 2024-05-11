@@ -40,11 +40,11 @@ def populate_data(apps, schema_editor):
     Post = apps.get_model('main', 'Post')
     for resource in ResourceType:
         for coin in CoinType:
-            Post.objects.create(name=f"{resource.label} winkel", type="RESOURCE", sells=Item.objects.get(name=resource, currency=coin), sell_amount=1)
+            Post.objects.create(name=f"{resource} winkel", type="RESOURCE", sells=Item.objects.get(name=resource, currency=coin), sell_amount=1)
 
     for miner in MinerType:
         for coin in CoinType:
-            Post.objects.create(name=f"{miner.label} winkel", type="MINER", sells=Item.objects.get(name=miner, currency=coin), sell_amount=1)
+            Post.objects.create(name=f"{miner} winkel", type=TypeType.MINER, sells=Item.objects.get(name=miner, currency=coin), sell_amount=1)
 
 
     PostRecipe = apps.get_model('main', 'PostRecipe')

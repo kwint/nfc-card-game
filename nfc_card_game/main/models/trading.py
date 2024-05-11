@@ -11,9 +11,9 @@ class TypeType(models.TextChoices):
 
 
 class CoinType(models.TextChoices):
-    BLAUW = "BLAUW", "Blauw"
-    GROEN = "GROEN", "Groen"
-    ROOD = "ROOD", "Rood"
+    BLAUW = "Blauw", u"\U0001F535"
+    GROEN = "Groen", u"\U0001F7E2"
+    ROOD = "Rood", u"\U0001F534"
 
 
 class ResourceType(models.TextChoices):
