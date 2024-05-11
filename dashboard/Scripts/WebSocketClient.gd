@@ -12,7 +12,21 @@ func _process(delta):
 	var state = socket.get_ready_state()
 	if state == WebSocketPeer.STATE_OPEN:
 		while socket.get_available_packet_count():
-			print("Packet: ", socket.get_packet())
+			var packet_raw = socket.get_packet();
+			if packet_raw.is_empty():
+				continue;
+
+			var packet_str = packet_raw.get_string_from_utf8();
+			if packet_str.is_empty():
+				print("Got malformed packet, invalid UTF-8: ", str(packet_raw));
+				continue;
+
+			var packet = JSON.parse_string(packet_str);
+			if packet == null:
+				print("Got malformed packet, invalid JSON: ", str(packet_raw));
+				continue;
+
+			print("Packet: ", packet);
 
 	elif state == WebSocketPeer.STATE_CLOSING:
 		# Keep polling to achieve proper close.

@@ -8,6 +8,8 @@ class ApiConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_add("broadcast", self.channel_name)
         print("Dashboard client connected to API socket")
 
+        await self.send(text_data='{"data": "test packet"}')
+
     async def receive(self, text_data):
         if text_data:
             text_data_json = json.loads(text_data)
