@@ -13,7 +13,6 @@ services:
       timeout: 2s
       retries: 5
 
-
   web:
     build: .
     image: nfc_card_game
