@@ -1,7 +1,9 @@
 from typing import Any, Literal
 
 from asgiref.sync import async_to_sync
+import channels
 from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 from django.db.models import Sum
 from django.forms.models import model_to_dict
 from pydantic import BaseModel
@@ -20,6 +22,7 @@ from .models.trading import (
     TypeType
 )
 from .game_loop import SETTINGS
+from . import api_consumer
 
 MINE_OFFLOAD_PERCENT = 0.10
 
@@ -195,6 +198,23 @@ def handle_mine_scan(
                 "amount": item.amount,
                 "currency": item.item.get_currency_display(),
             }
+
+            # Broadcast for API clients: miners added
+            channel_layer = channels.layers.get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                api_consumer.CHANNEL_NAME,
+                {
+                    "type": api_consumer.CHANNEL_EVENT_HANDLER,
+                    "event_id": api_consumer.ChannelEventType.MINE_MINERS_ADDED.value,
+                    "data": {
+                        "mine_id": mine_item.team_mine.mine_id,
+                        "team_id": mine_item.team_mine.team_id,
+                        # TODO(timvisee): define proper type here!
+                        "miner_type": 1,
+                        "amount": item.amount,
+                    },
+                }
+            )
 
             changes.append(mine_item)
             changes.append(player_item)
