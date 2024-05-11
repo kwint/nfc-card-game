@@ -5,6 +5,8 @@ from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
 from . import api
 
+PACKET_CLIENT_GAME_STATE = 1
+
 class ApiConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         await self.accept()
@@ -12,9 +14,7 @@ class ApiConsumer(AsyncJsonWebsocketConsumer):
         print("Dashboard client connected to API socket")
 
         # Share current game state over websocket
-        async_describe_mines = sync_to_async(api.describe_mines)
-        mines = await async_describe_mines()
-        await self.send_json(content=mines)
+        await self.send_game_state()
 
 
     async def receive_json(self, content):
@@ -25,6 +25,17 @@ class ApiConsumer(AsyncJsonWebsocketConsumer):
         message = event.get("data")
         await self.send(text_data=json.dumps(message))
 
+
     async def disconnect(self, close_code):
         print(f"Dashboard client disconnected from API socket (code: {close_code})")
         pass
+
+
+    async def send_packet(self, packet_id: int, data: dict):
+        await self.send_json({"packet_id": packet_id, "data": data})
+
+
+    async def send_game_state(self):
+        async_describe_mines = sync_to_async(api.describe_mines)
+        mines = await async_describe_mines()
+        await self.send_packet(PACKET_CLIENT_GAME_STATE, mines)
