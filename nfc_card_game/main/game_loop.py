@@ -71,7 +71,7 @@ def update_team_mine(team_mine: TeamMine):
     async_to_sync(channel_layer.group_send)(
         api_consumer.CHANNEL_NAME,
         {
-            "type": "event_handler",
+            "type": api_consumer.CHANNEL_EVENT_HANDLER,
             "event_id": api_consumer.ChannelEventType.MINE_MONEY_UPDATE.value,
             "data": {
                 "mine_id": team_mine.mine_id,

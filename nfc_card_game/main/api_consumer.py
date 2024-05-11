@@ -8,6 +8,7 @@ from .models.trading import Mine
 from . import api
 
 CHANNEL_NAME = "api-state-broadcast"
+CHANNEL_EVENT_HANDLER = "event_handler"
 
 class PacketServerType(Enum):
     SET_MINE = 1
