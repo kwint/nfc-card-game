@@ -46,6 +46,12 @@ func add_miner(team_id: Global.TeamId, miner_type: Global.MinerType):
 	self.levels[team_id].add_level(miner_type);
 
 
+func add_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: int):
+	# TODO: add in batch!
+	for _i in range(amount):
+		self.add_miner(team_id, miner_type);
+
+
 func set_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: int):
 	self.mines[team_id].set_miners(miner_type, amount);
 	self.levels[team_id].set_level(miner_type, amount);
@@ -75,9 +81,7 @@ func process_stats(stats: Dictionary):
 
 
 func process_stats_team(team_id: Global.TeamId, team: Dictionary):
-	# Update money display
-	var money = team["money"];
-	self.money[team_id].set_money(money);
+	self.update_money(team_id, team["money"]);
 	
 	# Update miners
 	# TODO: add existing miners in a more efficient way
@@ -87,3 +91,7 @@ func process_stats_team(team_id: Global.TeamId, team: Dictionary):
 		var item = items[i];
 		var effective = item["effective"];
 		set_miners(team_id, i + 1, effective);
+
+
+func update_money(team_id: Global.TeamId, amount: int):
+	self.money[team_id].set_money(amount);
