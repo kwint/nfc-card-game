@@ -44,6 +44,11 @@ func add_miner(team_id: Global.TeamId, miner_type: Global.MinerType):
 	self.levels[team_id].add(miner_type);
 
 
+func set_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: int):
+	self.mines[team_id].set_miners(miner_type, amount);
+	self.levels[team_id].set_level(miner_type, amount);
+	
+
 func fetch_stats():
 	self.fetch_stats_at = Time.get_ticks_msec() / 1000 + FETCH_STATS_INTERVAL;
 	stats_http_client.request(Global.API_URL + Global.API_PATH_DASHBOARD + "/" + str(Global.MINE_ID));
@@ -78,5 +83,4 @@ func process_stats_team(team_id: Global.TeamId, team: Dictionary):
 	for i in range(items.size()):
 		var item = items[i];
 		var effective = item["effective"];
-		for _i in range(effective):
-			add_miner(team_id, i + 1);
+		set_miners(team_id, i + 1, effective);
