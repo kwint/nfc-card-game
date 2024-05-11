@@ -47,3 +47,8 @@ func update_levels():
 func add(type: Global.MinerType):
 	self.values[type] += 1;
 	self.update_levels();
+
+
+func set_level(type: Global.MinerType, amount: int):
+	self.values[type] = amount;
+	self.update_levels();

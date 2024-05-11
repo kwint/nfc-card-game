@@ -34,6 +34,12 @@ func add(type: Global.MinerType = Global.MinerType.MINER1):
 	
 	self.add_child(miner);
 	
+
+func set_miners(type: Global.MinerType, amount):
+	# TODO: properly set, scale up or down
+	while self.miners.size() < amount:
+		self.add(type);
+	
 	
 func count() -> int:
 	return self.miners.size();
