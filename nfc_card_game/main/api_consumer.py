@@ -7,6 +7,7 @@ from enum import Enum
 from .models.trading import Mine
 from . import api
 
+CHANNEL_NAME = "api-state-broadcast"
 
 class PacketServerType(Enum):
     SET_MINE = 1
@@ -15,6 +16,9 @@ class PacketClientType(Enum):
     GAME_STATE = 1
     MINE_STATE = 2
 
+class ChannelEventType(Enum):
+    REFRESH_MINE_STATE = 1
+
 
 class ApiConsumer(AsyncJsonWebsocketConsumer):
     # Selected mine ID by client
@@ -22,7 +26,10 @@ class ApiConsumer(AsyncJsonWebsocketConsumer):
 
     async def connect(self):
         await self.accept()
-        await self.channel_layer.group_add("broadcast", self.channel_name)
+
+        # Connect to API state broadcasting channel
+        await self.channel_layer.group_add(CHANNEL_NAME, self.channel_name)
+
         print("Dashboard client connected to API socket")
 
         # Share current game state over websocket
@@ -34,14 +41,9 @@ class ApiConsumer(AsyncJsonWebsocketConsumer):
         await self.handle_raw_packet(content)
 
 
-    async def action_message(self, event):
-        message = event.get("data")
-        await self.send(text_data=json.dumps(message))
-
-
     async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(CHANNEL_NAME, self.channel_name)
         print(f"Dashboard client disconnected from API socket (code: {close_code})")
-        pass
 
 
     async def send_packet(self, packet_id: PacketClientType, data: dict):
@@ -89,3 +91,28 @@ class ApiConsumer(AsyncJsonWebsocketConsumer):
         # Update client with latest mine state
         await self.send_mine_state()
 
+
+    async def event_handler(self, event):
+        await self.handle_raw_event(event)
+
+
+    async def handle_raw_event(self, event):
+        if "event_id" not in event:
+            print(f"Got malformed channel event, no event_id: f{event}")
+            return
+        if "data" not in event:
+            print(f"Got malformed channel event, no data: f{event}")
+            return
+        await self.handle_event(event["event_id"], event["data"])
+
+
+    async def handle_event(self, event_id: ChannelEventType, data: dict):
+        if event_id not in [p.value for p in ChannelEventType]:
+            print(f"Got malformed channel event, unknown event ID: {event_id}")
+
+        match event_id:
+            case ChannelEventType.REFRESH_MINE_STATE.value:
+                await self.send_mine_state()
+            case _:
+                print(f"Ignored event with ID {event_id}, no handler configured")
+                return
