@@ -71,6 +71,7 @@ class TeamMineAdmin(admin.ModelAdmin):
 
 class TeamMineItemAdmin(admin.ModelAdmin):
     list_display = ["team_mine", "item", "amount"]
+    list_filter = ["item", "team_mine"]
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "item":
@@ -81,6 +82,8 @@ class TeamMineItemAdmin(admin.ModelAdmin):
 class PlayerAdmin(admin.ModelAdmin):
     list_display = ["name", "card_uuid", "team", "section", "link"]
     inlines = [PlayerItemInline]
+    list_filter = ["name", "team", "section"]
+    search_fields = ["name"]
 
     @mark_safe
     def link(self, obj):
@@ -95,6 +98,7 @@ class ItemAdmin(admin.ModelAdmin):
 
 class PlayerItemAdmin(admin.ModelAdmin):
     list_display = ["item", "player", "amount", "item"]
+    list_filter = ["player__name", "item__name", "item__currency"]
 
 
 class PostAdmin(admin.ModelAdmin):
