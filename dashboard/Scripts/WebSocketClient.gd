@@ -1,8 +1,15 @@
 extends Node
 
 var socket = WebSocketPeer.new()
+var connected: bool = false;
+
+enum PacketServerType {
+	# data: mine ID
+	SetMine = 1,
+}
 
 enum PacketClientType {
+	# data: game state
 	GameState = 1,
 }
 
@@ -15,6 +22,12 @@ func _process(delta):
 	
 	var state = socket.get_ready_state()
 	if state == WebSocketPeer.STATE_OPEN:
+		# Call on_connected the first time we connect
+		if !self.connected:
+			self.connected = true;
+			self.on_connected();
+		
+		# Handle incoming packets
 		while socket.get_available_packet_count():
 			var packet_raw = socket.get_packet();
 			if packet_raw.is_empty():
@@ -34,14 +47,22 @@ func _process(delta):
 
 	elif state == WebSocketPeer.STATE_CLOSING:
 		# Keep polling to achieve proper close.
+		self.connected = false;
 		pass
 
 	elif state == WebSocketPeer.STATE_CLOSED:
+		self.connected = false;
+		
 		var code = socket.get_close_code()
 		var reason = socket.get_close_reason()
 		print("WebSocket closed with code: %d, reason %s. Clean: %s" % [code, reason, code != -1])
 		set_process(false) # Stop processing.
 		# TODO: reconnect on failure!
+
+
+func on_connected():
+	# Share client state with server
+	self.send_set_mine(Global.MINE_ID);
 
 
 func handle_raw_packet(packet: Dictionary):
@@ -66,3 +87,18 @@ func handle_packet(packet_id: int, data: Dictionary):
 
 func handle_game_state(state: Dictionary):
 	print("Got game state: ", str(state));
+
+
+func send_packet(packet_id: PacketServerType, data: Dictionary):
+	# TODO: ignore if not connected?
+	
+	var packet = {
+		"packet_id": packet_id,
+		"data": data,
+	};
+	print("Sending packet: ", str(packet));
+	self.socket.send_text(JSON.stringify(packet, "", false));
+
+
+func send_set_mine(mine_id: int):
+	send_packet(PacketServerType.SetMine, {"mine_id": mine_id});
