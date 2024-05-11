@@ -75,9 +75,7 @@ func process_stats(stats: Dictionary):
 
 
 func process_stats_team(team_id: Global.TeamId, team: Dictionary):
-	# Update money display
-	var money = team["money"];
-	self.money[team_id].set_money(money);
+	self.update_money(team_id, team["money"]);
 	
 	# Update miners
 	# TODO: add existing miners in a more efficient way
@@ -87,3 +85,7 @@ func process_stats_team(team_id: Global.TeamId, team: Dictionary):
 		var item = items[i];
 		var effective = item["effective"];
 		set_miners(team_id, i + 1, effective);
+
+
+func update_money(team_id: Global.TeamId, amount: int):
+	self.money[team_id].set_money(amount);

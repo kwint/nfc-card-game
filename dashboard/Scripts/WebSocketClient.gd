@@ -14,6 +14,7 @@ enum PacketClientType {
 	# data: game state
 	GameState = 1,
 	MineState = 2,
+	MineMoneyUpdate = 3,
 }
 
 func _ready():
@@ -86,6 +87,8 @@ func handle_packet(packet_id: int, data: Dictionary):
 			handle_game_state(data);
 		PacketClientType.MineState:
 			handle_mine_state(data);
+		PacketClientType.MineMoneyUpdate:
+			handle_mine_money_update(data);
 		_:
 			print("Failed to handle packet with ID ", str(packet_id), ", missing handler?");
 
@@ -96,6 +99,12 @@ func handle_game_state(_state: Dictionary):
 
 func handle_mine_state(state: Dictionary):
 	self.game_controller.process_stats(state);
+
+
+func handle_mine_money_update(state: Dictionary):
+	if state["mine_id"] != Global.MINE_ID:
+		return;
+	self.game_controller.update_money(state["team_id"], state["money"]);
 
 
 func send_packet(packet_id: PacketServerType, data: Dictionary):

@@ -66,6 +66,21 @@ def update_team_mine(team_mine: TeamMine):
     team_mine.money += profit
     team_mine.save()
 
+    # Broadcast for API clients: tick game loop
+    channel_layer = channels.layers.get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        api_consumer.CHANNEL_NAME,
+        {
+            "type": "event_handler",
+            "event_id": api_consumer.ChannelEventType.MINE_MONEY_UPDATE.value,
+            "data": {
+                "mine_id": team_mine.mine_id,
+                "team_id": team_mine.team_id,
+                "money": team_mine.money,
+            },
+        }
+    )
+
 
 def get_profit(amount: int, balance: int):
     in_balance_profit = balance * SETTINGS.base_miner_per_sec
