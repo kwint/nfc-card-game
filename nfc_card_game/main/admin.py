@@ -13,6 +13,7 @@ from nfc_card_game.main.models.trading import (
     TeamMine,
     Item,
     TeamMineItem,
+    TypeType,
 )
 
 from nfc_card_game.main.models.player import Team, Player

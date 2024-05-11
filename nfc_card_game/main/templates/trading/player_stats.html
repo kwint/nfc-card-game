@@ -14,84 +14,67 @@
 <body>
   <div class="container pt-2">
     <div class="card shadow">
-      <div class="card-body">
-        <span class="bi-minecart-loaded h1" style="filter: invert(0%)"></span>
+      <div class="card-header">
         {% if mine %}
-        <h4 class="card-title">Welkom bij de mine {{ mine.0.mine.get_currency_display }}{{ mine.0.mine.currency }}</h4>
-        {% if action.status == "ok" %}
-        <table class="table">
-          <thead class="thead-dark">
-            <tr>
-              <th scope="col">Geld gekregen:</th>
-              <th scope="col">Afgevelerd:</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              {% if action.bought.item != None %}
-              <td class="table-success">{{ action.bought.amount }}x {{action.bought.item.get_name_display}}{{ action.bought.item.name }}</td>
-              {% else %}
-                <td></td>
-              {% endif %}
-              {% for key, val in action.costs.items %}
-                {% if forloop.counter0 == 0 %}
-                {% else %}
-                <td></td>
-                {% endif %}
-                <td class="table-danger">{{ val.amount }}x {{ val.currency }}{{ val.name }}</td>
-              <tr>
-              {% endfor %}
-          </tbody>
-        </table>
-        {% else %}
-        <p>{{ action.status }}: {{ action.log }}</p>
+          <h4 class="card-title"><span class="bi-minecart-loaded h2" style="filter: invert(0%)"></span>  Welkom bij mine {{ mine.0.mine.get_currency_display }}{{ mine.0.mine.currency }}</h4>
+        {% elif post %}
+          <h4 class="card-title"><span class="bi-shop h2"></span> Welkom bij {{ post.0.post.sells.get_currency_display }}{{post.0.post.name }}</h4>
         {% endif %}
-        {% else %}
-        <h4 class="card-title">Welkom bij {{ post.0.post.sells.get_currency_display }}{{post.0.post.name }}</h4>
-        <h6>Hoeveel {{ post.0.post.sells.get_currency_display }}{{post.0.post.sells.name}} wil je kopen? Prijs: {{ price }}</h6>
-        <form method="post">
-          {% csrf_token %}
-          {% for amount, possible in buy_amounts.items %}
-          {% if possible %}
-          <button class="btn btn-primary my-2 d-block w-25" type="submit" name="amount" value="{{ amount }}">
-            {{ amount }}
-          </button>
+      </div>
+      <div class="card-body">
+        {% if mine %}
+            {% if action.status == "ok" %}
+              <table class="table">
+                <thead class="thead-dark">
+                  <tr>
+                    <th scope="col">Geld gekregen:</th>
+                    <th scope="col">Afgevelerd:</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    {% if action.bought.item != None %}
+                      <td class="table-success">{{ action.bought.amount }}x {{action.bought.item.get_name_display}}{{ action.bought.item.name }}</td>
+                    {% else %}
+                      <td></td>
+                    {% endif %}
+                    {% for key, val in action.costs.items %}
+                      {% if forloop.counter0 == 0 %}
+                      {% else %}
+                        <td></td>
+                      {% endif %}
+                      <td class="table-danger">{{ val.amount }}x {{ val.currency }}{{ val.name }}</td>
+                      <tr>
+                    {% endfor %}
+                </tbody>
+              </table>
           {% else %}
-          <button class="btn btn-secondary my-2 d-block w-25" disabled name="amount" value="{{ amount }}">
-            {{ amount }}
-          </button>
+            <p>{{ action.status }}: {{ action.log }}</p>
           {% endif %}
-          {% endfor %}
-        </form>
+        {% elif post %}
+          <h5>Hoeveel {{ post.0.post.sells.get_currency_display }}{{post.0.post.sells.get_name_display}} wil je kopen? Prijs: {{ price }}</h5>
+          <h5>{{ post.0.sells}}</h5>
+          <form method="post">
+            {% csrf_token %}
+            {% for amount, possible in buy_amounts.items %}
+              {% if possible %}
+                <button class="btn btn-primary my-2 d-block w-25" type="submit" name="amount" value="{{ amount }}">
+                  {{ amount }}
+                </button>
+              {% else %}
+                <button class="btn btn-secondary my-2 d-block w-25" disabled name="amount" value="{{ amount }}">
+                  {{ amount }}
+                </button>
+              {% endif %}
+            {% endfor %}
+          </form>
+        {% else %}
+          <h4 class="card-title"><span class="bi-cart4 h2" style="filter: invert(0%)"></span>         Deze items heb jij nu:</h4>
         {% endif %}
       </div>
     </div>
   </div>
-
-  <div class="container pt-2">
-    <div class="accordion card shadow">
-      <div class="card-header align-items-center">
-        <h4 class="m-0">{{ player.name }} | {{ player.section }} | Inventory</h4>
-      </div>
-      <div class="card-body">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th scope="col">Item</th>
-              <th scope="col">Hoeveelheid</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for item in items %}
-            <tr>
-              <td>{{item.item.get_currency_display}} {{ item.item.name }}</td>
-              <td>{{ item.amount }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
+{% include "trading/inventory.html" %}
 </body>
 
 
