@@ -4,14 +4,14 @@ extends Node
 const FETCH_STATS_INTERVAL: int = 60 * 1;
 
 @onready var stats_http_client = $StatsHttpClient;
-@onready var mines = [
-  $"../MinersLeft",
-  $"../MinersRight",
-];
-@onready var levels = [
-  $"../Viewport/BalanceGaugeLeft",
-  $"../Viewport/BalanceGaugeRight",
-];
+@onready var mines = {
+  Global.TeamId.TEAM1: $"../MinersTeam1",
+  Global.TeamId.TEAM2: $"../MinersTeam2",
+};
+@onready var levels = {
+  Global.TeamId.TEAM1: $"../Viewport/BalanceGaugeTeam1",
+  Global.TeamId.TEAM2: $"../Viewport/BalanceGaugeTeam2",
+};
 
 var fetch_stats_at;
 
@@ -35,22 +35,21 @@ func _process(_delta):
 		self.fetch_stats();
 
 
-func add_miner(left: bool, miner_type: Global.MinerType):
-	var i = 0 if left else 1;
-	self.mines[i].add(miner_type);
-	self.levels[i].add(miner_type);
+func add_miner(team_id: Global.TeamId, miner_type: Global.MinerType):
+	self.mines[team_id].add(miner_type);
+	self.levels[team_id].add(miner_type);
 
 
 func fetch_stats():
 	self.fetch_stats_at = Time.get_ticks_msec() / 1000 + FETCH_STATS_INTERVAL;
-	stats_http_client.request(Global.API_URL + Global.API_PATH_DASHBOARD);
+	stats_http_client.request(Global.API_URL + Global.API_PATH_DASHBOARD + "/" + str(Global.MINE_ID));
 
 
 func _on_stats_fetched(result, response_code, headers, body):
 	var json = JSON.parse_string(body.get_string_from_utf8())
 	
 	# TODO: set data for both teams
-	var team_data = json["mines"][Global.MINE_ID]["teams"]["1"];
+	var team_data = json["teams"][str(Global.TeamId.TEAM1)];
 	
 	# TODO: set money!
 	var money = team_data["money"];
@@ -60,14 +59,14 @@ func _on_stats_fetched(result, response_code, headers, body):
 	for item_stats in team_data["items"]:
 		var effective = item_stats["effective"];
 		for j in range(effective):
-			add_miner(true, i);
+			add_miner(Global.TeamId.TEAM1, i + 1);
 		i += 1;
 		
 	# TODO: do the same for the other team?
-	team_data = json["mines"][Global.MINE_ID]["teams"]["2"];
+	team_data = json["teams"][str(Global.TeamId.TEAM2)];
 	i = 0;
 	for item_stats in team_data["items"]:
 		var effective = item_stats["effective"];
 		for j in range(effective):
-			add_miner(false, i);
+			add_miner(Global.TeamId.TEAM2, i + 1);
 		i += 1;

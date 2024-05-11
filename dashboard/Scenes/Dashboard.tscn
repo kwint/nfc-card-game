@@ -65,12 +65,12 @@ layout_mode = 2
 split_offset = 576
 dragger_visibility = 1
 
-[node name="MinerGridLeft" type="ReferenceRect" parent="Viewport/AspectRatioContainer/HSplitContainer"]
+[node name="MinersTeam1" type="ReferenceRect" parent="Viewport/AspectRatioContainer/HSplitContainer"]
 layout_mode = 2
 border_color = Color(0, 0, 100, 1)
 border_width = 2.0
 
-[node name="MinerGridRight" type="ReferenceRect" parent="Viewport/AspectRatioContainer/HSplitContainer"]
+[node name="MinersTeam2" type="ReferenceRect" parent="Viewport/AspectRatioContainer/HSplitContainer"]
 layout_mode = 2
 border_color = Color(0, 100, 0, 1)
 border_width = 2.0
@@ -109,14 +109,14 @@ theme = ExtResource("2_1f4xi")
 text = "$123.456.789"
 horizontal_alignment = 2
 
-[node name="BalanceGaugeLeft" parent="Viewport" instance=ExtResource("3_oc27c")]
+[node name="BalanceGaugeTeam1" parent="Viewport" instance=ExtResource("3_oc27c")]
 layout_mode = 0
 offset_left = 33.0
 offset_top = 96.0
 offset_right = 83.0
 offset_bottom = 246.0
 
-[node name="BalanceGaugeRight" parent="Viewport" instance=ExtResource("3_oc27c")]
+[node name="BalanceGaugeTeam2" parent="Viewport" instance=ExtResource("3_oc27c")]
 layout_mode = 0
 offset_left = 1069.0
 offset_top = 96.0
@@ -181,16 +181,16 @@ allow_greater = true
 layout_mode = 2
 text = "Add"
 
-[node name="MinersLeft" type="Node2D" parent="." node_paths=PackedStringArray("reference_grid")]
+[node name="MinersTeam1" type="Node2D" parent="." node_paths=PackedStringArray("reference_grid")]
 script = ExtResource("3_gpr4m")
 color = Color(1, 0.5, 0.5, 1)
-reference_grid = NodePath("../Viewport/AspectRatioContainer/HSplitContainer/MinerGridLeft")
+reference_grid = NodePath("../Viewport/AspectRatioContainer/HSplitContainer/MinersTeam1")
 
-[node name="MinersRight" type="Node2D" parent="." node_paths=PackedStringArray("reference_grid")]
+[node name="MinersTeam2" type="Node2D" parent="." node_paths=PackedStringArray("reference_grid")]
 script = ExtResource("3_gpr4m")
 flipped = true
 color = Color(0.5, 0.5, 1, 1)
-reference_grid = NodePath("../Viewport/AspectRatioContainer/HSplitContainer/MinerGridRight")
+reference_grid = NodePath("../Viewport/AspectRatioContainer/HSplitContainer/MinersTeam2")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
