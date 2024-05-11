@@ -36,11 +36,11 @@ def dashboard(request: HttpRequest) -> JsonResponse:
     # mines -> teams -> items
     data_mines = {}
     for mine in Mine.objects.all():
-        data_mines[mine.id] = describe_mine(mine);
+        data_mines[mine.id] = describe_mine(mine)
 
     return JsonResponse({
         "mines": data_mines,
-    });
+    })
 
 
 def dashboard_mine(request: HttpRequest, mine_id: int) -> JsonResponse:
@@ -48,8 +48,8 @@ def dashboard_mine(request: HttpRequest, mine_id: int) -> JsonResponse:
     Expose stats of a specific mine to the dashboard.
     """
 
-    mine = Mine.objects.get(id=mine_id);
-    return JsonResponse(describe_mine(mine));
+    mine = Mine.objects.get(id=mine_id)
+    return JsonResponse(describe_mine(mine))
 
 
 def describe_mine(mine: Mine):
@@ -57,7 +57,7 @@ def describe_mine(mine: Mine):
     Describe the stats of a mine in a way that the dashboard understands.
     """
 
-    data_teams = {};
+    data_teams = {}
     for team_mine in mine.teammine_set.all():
         data_items = []
         for item in team_mine.teammineitem_set.all().order_by("item_id"):
@@ -66,14 +66,14 @@ def describe_mine(mine: Mine):
                 "amount": item.amount,
                 # TODO: expose effective amount here?
                 "effective": item.amount,
-            });
+            })
 
         data_teams[team_mine.team_id] = {
             "money": team_mine.money,
             "items": data_items,
-        };
+        }
 
     return {
         "name": mine.name,
         "teams": data_teams,
-    };
+    }
