@@ -84,7 +84,7 @@ func get_miner_position(type: Global.MinerType, index: int) -> Vector2:
 	
 	var rect = self.reference_grid.get_global_rect();
 	
-	var diagnal_position_factor = self.noise.get_noise_1d(float(index) * 100.0);
+	var diagnal_position_factor = self.noise.get_noise_1d((type * 100000.3) + float(index) * 100.0);
 	diagnal_position_factor = scale_float(diagnal_position_factor, -1.0, 1.0, 0.0, 1.0);
 	
 	var offset = rect.size * diagnal_position_factor;
