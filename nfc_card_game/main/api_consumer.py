@@ -125,8 +125,8 @@ class ApiConsumer(AsyncJsonWebsocketConsumer):
 
         match event_id:
             case ChannelEventType.GAME_LOOP_TICKED.value:
-                # TODO: do not send mine state on every game loop tick
-                await self.send_mine_state()
+                #await self.send_mine_state()
+                pass
             case ChannelEventType.MINE_MONEY_UPDATE.value:
                 if self.mine_id == data["mine_id"]:
                     await self.send_mine_money_update(data)
