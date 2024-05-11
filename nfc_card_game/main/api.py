@@ -32,15 +32,7 @@ def dashboard(request: HttpRequest) -> JsonResponse:
     Expose all game stats for the dashboard.
     """
 
-    # Extract and structure mine stats
-    # mines -> teams -> items
-    data_mines = {}
-    for mine in Mine.objects.all():
-        data_mines[mine.id] = describe_mine(mine)
-
-    return JsonResponse({
-        "mines": data_mines,
-    })
+    return JsonResponse(describe_mines())
 
 
 def dashboard_mine(request: HttpRequest, mine_id: int) -> JsonResponse:
@@ -50,6 +42,16 @@ def dashboard_mine(request: HttpRequest, mine_id: int) -> JsonResponse:
 
     mine = Mine.objects.get(id=mine_id)
     return JsonResponse(describe_mine(mine))
+
+
+def describe_mines():
+    """
+    Describe the stats for all mines in a way that the dashboard understands.
+    """
+    data_mines = {}
+    for mine in Mine.objects.all():
+        data_mines[mine.id] = describe_mine(mine)
+    return {"mines": data_mines}
 
 
 def describe_mine(mine: Mine):

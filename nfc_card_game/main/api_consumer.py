@@ -1,20 +1,25 @@
+import asyncio
 import json
-from channels.generic.websocket import AsyncWebsocketConsumer
+from asgiref.sync import async_to_sync, sync_to_async
+from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
+from . import api
 
-class ApiConsumer(AsyncWebsocketConsumer):
+class ApiConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         await self.accept()
         await self.channel_layer.group_add("broadcast", self.channel_name)
         print("Dashboard client connected to API socket")
 
-        await self.send(text_data='{"data": "test packet"}')
+        # Share current game state over websocket
+        async_describe_mines = sync_to_async(api.describe_mines)
+        mines = await async_describe_mines()
+        await self.send_json(content=mines)
 
-    async def receive(self, text_data):
-        if text_data:
-            text_data_json = json.loads(text_data)
-            message = text_data_json["message"]
-            await self.send(text_data=json.dumps({"message": message + "ECHO"}))
+
+    async def receive_json(self, content):
+        print("Received JSON message over API websocket: ", content)
+
 
     async def action_message(self, event):
         message = event.get("data")
