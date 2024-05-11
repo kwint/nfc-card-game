@@ -14,10 +14,14 @@ enum PacketClientType {
 	# data: game state
 	GameState = 1,
 	MineState = 2,
+	MineMoneyUpdate = 3,
+	MineMinersAdded = 4,
 }
+
 
 func _ready():
 	socket.connect_to_url(Global.WEBSOCKET_API_URL);
+
 
 func _process(_delta):
 	# Keep progressing the socket
@@ -86,6 +90,10 @@ func handle_packet(packet_id: int, data: Dictionary):
 			handle_game_state(data);
 		PacketClientType.MineState:
 			handle_mine_state(data);
+		PacketClientType.MineMoneyUpdate:
+			handle_mine_money_update(data);
+		PacketClientType.MineMinersAdded:
+			handle_mine_miners_added(data);
 		_:
 			print("Failed to handle packet with ID ", str(packet_id), ", missing handler?");
 
@@ -96,6 +104,18 @@ func handle_game_state(_state: Dictionary):
 
 func handle_mine_state(state: Dictionary):
 	self.game_controller.process_stats(state);
+
+
+func handle_mine_money_update(state: Dictionary):
+	if state["mine_id"] != Global.MINE_ID:
+		return;
+	self.game_controller.update_money(state["team_id"], state["money"]);
+
+
+func handle_mine_miners_added(state: Dictionary):
+	if state["mine_id"] != Global.MINE_ID:
+		return;
+	self.game_controller.add_miners(state["team_id"], state["miner_type"], state["amount"]);
 
 
 func send_packet(packet_id: PacketServerType, data: Dictionary):

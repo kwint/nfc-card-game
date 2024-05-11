@@ -1,7 +1,9 @@
 from typing import Any, Literal
 
 from asgiref.sync import async_to_sync
+import channels
 from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 from django.db.models import Sum
 from django.forms.models import model_to_dict
 from pydantic import BaseModel
@@ -20,6 +22,7 @@ from .models.trading import (
     TypeType
 )
 from .game_loop import SETTINGS
+from . import api_consumer
 
 MINE_OFFLOAD_PERCENT = 0.10
 
@@ -196,6 +199,23 @@ def handle_mine_scan(
                 "currency": item.item.get_currency_display(),
             }
 
+            # Broadcast for API clients: miners added
+            channel_layer = channels.layers.get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                api_consumer.CHANNEL_NAME,
+                {
+                    "type": api_consumer.CHANNEL_EVENT_HANDLER,
+                    "event_id": api_consumer.ChannelEventType.MINE_MINERS_ADDED.value,
+                    "data": {
+                        "mine_id": mine_item.team_mine.mine_id,
+                        "team_id": mine_item.team_mine.team_id,
+                        # TODO(timvisee): define proper type here!
+                        "miner_type": 1,
+                        "amount": item.amount,
+                    },
+                }
+            )
+
             changes.append(mine_item)
             changes.append(player_item)
 
@@ -205,6 +225,21 @@ def handle_mine_scan(
     received_money = round(team_mines[0].money * MINE_OFFLOAD_PERCENT)
     player_wallet.amount += received_money
     mine.money = mine.money - received_money
+
+    # Broadcast for API clients: mine money update
+    channel_layer = channels.layers.get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        api_consumer.CHANNEL_NAME,
+        {
+            "type": api_consumer.CHANNEL_EVENT_HANDLER,
+            "event_id": api_consumer.ChannelEventType.MINE_MONEY_UPDATE.value,
+            "data": {
+                "mine_id": mine.mine_id,
+                "team_id": mine.team_id,
+                "money": mine.money,
+            },
+        }
+    )
 
     changes.append(player_wallet)
     changes.append(mine)

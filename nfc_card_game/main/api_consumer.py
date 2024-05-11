@@ -8,6 +8,7 @@ from .models.trading import Mine
 from . import api
 
 CHANNEL_NAME = "api-state-broadcast"
+CHANNEL_EVENT_HANDLER = "event_handler"
 
 class PacketServerType(Enum):
     SET_MINE = 1
@@ -15,9 +16,13 @@ class PacketServerType(Enum):
 class PacketClientType(Enum):
     GAME_STATE = 1
     MINE_STATE = 2
+    MINE_MONEY_UPDATE = 3
+    MINE_MINERS_ADDED = 4
 
 class ChannelEventType(Enum):
     GAME_LOOP_TICKED = 1
+    MINE_MONEY_UPDATE = 2
+    MINE_MINERS_ADDED = 3
 
 
 class ApiConsumer(AsyncJsonWebsocketConsumer):
@@ -60,6 +65,14 @@ class ApiConsumer(AsyncJsonWebsocketConsumer):
         async_describe_mine = sync_to_async(api.describe_mine)
         mines = await async_describe_mine(mine_id or self.mine_id)
         await self.send_packet(PacketClientType.MINE_STATE, mines)
+
+
+    async def send_mine_money_update(self, data: dict):
+        await self.send_packet(PacketClientType.MINE_MONEY_UPDATE, data)
+
+
+    async def send_mine_miners_added(self, data: dict):
+        await self.send_packet(PacketClientType.MINE_MINERS_ADDED, data)
 
 
     async def handle_raw_packet(self, data: dict):
@@ -112,8 +125,14 @@ class ApiConsumer(AsyncJsonWebsocketConsumer):
 
         match event_id:
             case ChannelEventType.GAME_LOOP_TICKED.value:
-                # TODO: do not send mine state on every game loop tick
-                await self.send_mine_state()
+                #await self.send_mine_state()
+                pass
+            case ChannelEventType.MINE_MONEY_UPDATE.value:
+                if self.mine_id == data["mine_id"]:
+                    await self.send_mine_money_update(data)
+            case ChannelEventType.MINE_MINERS_ADDED.value:
+                if self.mine_id == data["mine_id"]:
+                    await self.send_mine_miners_added(data)
             case _:
                 print(f"Ignored event with ID {event_id}, no handler configured")
                 return
