@@ -64,31 +64,23 @@ function update_table(event){
 
 function update_chart(event) {
   var data = JSON.parse(event.data);
-  
-  if(data.data.costs != null){
-    var team_name = data.data.player.team_name;
-    var index = c.data.labels.findIndex(label => label === team_name);
-    var datasetIndex = c.data.datasets.findIndex(dataset => dataset.label === Object.values(data.data.costs)[0].post_name);
-    
-    if (datasetIndex !== -1) {
-      var cur_amount = c.data.datasets[datasetIndex].data[index];
-      c.data.datasets[datasetIndex].data[index] = parseInt(cur_amount) + parseInt(Object.values(data.data.costs)[0].amount);
-      
-      c.update();
-    }
-  }
+  var team_name = data.data.team;
+  var index = c.data.labels.findIndex(label=> label === team_name);
+  var datasetIndex = c.data.datasets.findIndex(dataset => dataset.label.includes(data.data.bought.item.currency));
 
-  if(data.data.costs != null){
-    var team_name = data.data.team;
+  var cur_amount = c.data.datasets[datasetIndex].data[index];
+  c.data.datasets[datasetIndex].data[index] = parseInt(cur_amount) - parseInt(data.data.bought.amount);
+  c.update();
+
+
+  for( item_name in data.data.costs){
+    let item = data.data.costs[item_name];
     var index = c2.data.labels.findIndex(label => label === team_name);
-    var datasetIndex = c2.data.datasets.findIndex(dataset => dataset.label === Object.values(data.data.costs)[0].post);
-    
-    if (datasetIndex !== -1) {
-      var cur_amount = c2.data.datasets[datasetIndex].data[index];
-      c2.data.datasets[datasetIndex].data[index] = parseInt(cur_amount) + parseInt(Object.values(data.data.costs)[0].amount);
-      
-      c2.update();
-    }
+    var datasetIndex = c2.data.datasets.findIndex(dataset => dataset.label.includes(item.post));
+
+    var cur_amount = c2.data.datasets[datasetIndex].data[index];
+    c2.data.datasets[datasetIndex].data[index] = parseInt(cur_amount) + parseInt(item.amount)
+    c2.update();
   }
 };
 
@@ -126,7 +118,6 @@ function init_miner_chart(){
       chartData.labels.push(item.team)
     }
 
-    console.log(item.item)
     if(!minerDatasets[item.item]){
       minerDatasets[item.item] = {
         label: item.item,
