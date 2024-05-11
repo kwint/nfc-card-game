@@ -28,8 +28,6 @@ from .models.trading import Mine, PlayerItem, Post, PostRecipe, TeamMine, TeamMi
 
 
 def dashboard(request: HttpRequest) -> JsonResponse:
-    mines = list(TeamMine.objects.values());
-
     # Extract and structure mine stats
     # mines -> teams -> items
     data_mines = {}
