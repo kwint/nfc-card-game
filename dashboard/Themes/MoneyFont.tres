@@ -1,9 +1,9 @@
 [gd_resource type="Theme" load_steps=3 format=3 uid="uid://n2sj11gmuqmo"]
 
-[ext_resource type="FontFile" uid="uid://f6vpfnshbl33" path="res://Themes/UbuntuMono-B.ttf" id="1_7xv7c"]
+[ext_resource type="FontFile" uid="uid://f6vpfnshbl33" path="res://Themes/UbuntuMono-B.ttf" id="1_woc0c"]
 
 [sub_resource type="FontVariation" id="FontVariation_h6oe6"]
-base_font = ExtResource("1_7xv7c")
+base_font = ExtResource("1_woc0c")
 variation_embolden = 1.0
 
 [resource]

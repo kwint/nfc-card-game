@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://spx3oh7upq1v" path="res://Sprites/mountain.png" id="1_tusvk"]
 [ext_resource type="Script" path="res://Scripts/GameController.gd" id="1_y0gn5"]
-[ext_resource type="Theme" uid="uid://n2sj11gmuqmo" path="res://Themes/Money font.tres" id="2_1f4xi"]
+[ext_resource type="Theme" uid="uid://n2sj11gmuqmo" path="res://Themes/MoneyFont.tres" id="2_1f4xi"]
 [ext_resource type="Script" path="res://Scripts/WebSocketClient.gd" id="2_tpx8r"]
 [ext_resource type="Script" path="res://Scripts/MinerGrid.gd" id="3_gpr4m"]
 [ext_resource type="Script" path="res://Scripts/MoneyDisplay.gd" id="3_o437a"]
