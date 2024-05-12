@@ -24,9 +24,8 @@ func add_miner(type: Global.MinerType = Global.MinerType.MINER1):
 	
 	if self.flipped:
 		miner.scale.x *= -1;
-		
 	if self.color != null:
-		miner.modulate = self.color;
+		miner.color = self.color;
 	
 	self._add_miner_to_list(type, miner);
 	
