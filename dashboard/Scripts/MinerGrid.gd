@@ -53,7 +53,7 @@ func _add_miner_to_list(type: Global.MinerType, miner):
 	self.miners[type].append(miner);
 
 
-func set_miners(type: Global.MinerType, amount: int):
+func set_miners(type: Global.MinerType, amount: int, animation: bool = false):
 	# TODO: do this in batches
 	
 	var delta = amount - self.count_miners(type);
@@ -61,7 +61,7 @@ func set_miners(type: Global.MinerType, amount: int):
 	# Add new miners
 	if delta > 0:
 		for _i in range(delta):
-			self.add_miner(type);
+			self.add_miner(type, animation);
 			
 	# Remove excess miners
 	if delta < 0:
