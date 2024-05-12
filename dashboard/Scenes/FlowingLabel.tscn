@@ -38,6 +38,7 @@ grow_vertical = 2
 layout_mode = 2
 
 [node name="Label" type="Label" parent="Center/Wrapper"]
+z_index = 10
 layout_mode = 2
 offset_left = -10.0
 offset_top = -12.0
