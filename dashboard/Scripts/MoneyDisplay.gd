@@ -1,8 +1,9 @@
 extends MarginContainer
 
 const FLOWING_LABEL_PREFAB = preload("res://Scenes/FlowingLabel.tscn");
-const FLOWING_LABEL_MARGIN = 30.0;
-const MONEY_PREFIX: String = "$";
+const FLOWING_LABEL_MARGIN: float = 10.0;
+const MONEY_SYMBOL: String = "$";
+const MONEY_SEPARATOR: String = " ";
 const FLASH_ANIMATION_LENGTH: float = 0.4;
 const COLOR_POSITIVE: Color = Color.GREEN;
 const COLOR_NEGATIVE: Color = Color.RED;
@@ -26,12 +27,32 @@ func set_money(money: int, animate: bool = true) -> void:
 	
 	# Update label
 	self.money = money;
-	self.label.text = MONEY_PREFIX + str(money);
+	self.label.text = self.format_money(money);
 
 	# Animations
 	if animate && diff != 0:
 		self.animate_flash(positive);
 		self.animate_flowing_label(diff);
+
+
+func format_money(amount: int, sign: bool = true, symbol: bool = true, positive_sign: bool = false) -> String:
+	var str = str(abs(amount));
+	var digits = str.length();
+	
+	# Add thousand separators
+	for chunk in range((digits - 1) / 3):
+		var i = digits - ((chunk + 1) * 3);
+		str = str.insert(i, MONEY_SEPARATOR);
+	
+	# Add symbols and signs
+	if symbol:
+		str = str.insert(0, str(MONEY_SYMBOL, MONEY_SEPARATOR));
+	if sign && amount < 0:
+		str = str.insert(0, str("-", MONEY_SEPARATOR));
+	if positive_sign && amount > 0:
+		str = str.insert(0, str("+", MONEY_SEPARATOR));
+	
+	return str;
 
 
 func animate_flash(positive: bool):
@@ -40,12 +61,12 @@ func animate_flash(positive: bool):
 		self.flash_tween.kill();
 	self.flash_tween = self.create_tween();
 	self.flash_tween.tween_property(self, "modulate", self.default_modulate, FLASH_ANIMATION_LENGTH);
-
+	
 
 func animate_flowing_label(diff: int):
 	# Detemrine label parameters
 	var positive = diff > 0;
-	var text = str("+ ", MONEY_PREFIX, diff) if positive else str("- ", MONEY_PREFIX, abs(diff));
+	var text = self.format_money(diff, true, true, true);
 	var color = COLOR_POSITIVE if positive else COLOR_NEGATIVE;
 	var label_direction = Vector2.RIGHT if !self.right else Vector2.LEFT;
 	var rect = self.label.get_global_rect();
