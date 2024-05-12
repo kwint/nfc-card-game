@@ -24,25 +24,25 @@ func set_money(money: int, flowing_label: bool = true) -> void:
 
 	# Spawn flow label
 	if flowing_label && diff != 0:
-		var direction = Vector2.RIGHT if !self.right else Vector2.LEFT;
+		var label_direction = Vector2.RIGHT if !self.right else Vector2.LEFT;
 		var rect = self.label.get_global_rect();
-		var position = rect.position + (rect.size * Vector2(0, 0.5));
+		var label_position = rect.position + (rect.size * Vector2(0, 0.5));
 		if !self.right:
-			position += rect.size * Vector2(1, 0);
-		position += direction * FLOWING_LABEL_MARGIN;
+			label_position += rect.size * Vector2(1, 0);
+		label_position += label_direction * FLOWING_LABEL_MARGIN;
 		
 		self.spawn_flowing_label(
 			str("+ ", MONEY_PREFIX, diff) if positive else str("- ", MONEY_PREFIX, abs(diff)),
 			Color.GREEN if positive else Color.RED,
-			position,
-			direction,
+			label_position,
+			label_direction,
 		);
 
-func spawn_flowing_label(text: String, color: Color, position: Vector2, direction: Vector2):
+func spawn_flowing_label(text: String, color: Color, label_position: Vector2, label_direction: Vector2):
 	var flowing_label = FLOWING_LABEL.instantiate();
 	flowing_label.text = text;
 	flowing_label.color = color;
-	flowing_label.direction = direction;
+	flowing_label.direction = label_direction;
 	
 	self.parent.add_child(flowing_label);
-	flowing_label.global_position = position;
+	flowing_label.global_position = label_position;
