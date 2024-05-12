@@ -55,7 +55,7 @@ func add_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: in
 func set_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: int):
 	self.mines[team_id].set_miners(miner_type, amount);
 	self.levels[team_id].set_level(miner_type, amount);
-	
+
 
 func fetch_stats():
 	@warning_ignore("integer_division")

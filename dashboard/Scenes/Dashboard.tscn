@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://ca1ddejybbu0g"]
+[gd_scene load_steps=12 format=3 uid="uid://ca1ddejybbu0g"]
 
 [ext_resource type="Texture2D" uid="uid://spx3oh7upq1v" path="res://Sprites/mountain.png" id="1_tusvk"]
 [ext_resource type="Script" path="res://Scripts/GameController.gd" id="1_y0gn5"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://c223vha4r3wq7" path="res://Scenes/BalanceGauge.tscn" id="3_oc27c"]
 [ext_resource type="Script" path="res://Scripts/Debug/Panel.gd" id="5_c15vj"]
 [ext_resource type="Script" path="res://Scripts/Debug/AddMiners.gd" id="6_gq5dx"]
+[ext_resource type="PackedScene" uid="uid://dnds5cruhe2uo" path="res://Scenes/Miner.tscn" id="10_vusuc"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w6uij"]
 
@@ -198,6 +199,9 @@ script = ExtResource("3_gpr4m")
 flipped = true
 color = Color(0.5, 0.5, 1, 1)
 reference_grid = NodePath("../Viewport/AspectRatioContainer/HSplitContainer/MinersTeam2")
+
+[node name="Miner2" parent="." instance=ExtResource("10_vusuc")]
+position = Vector2(205, 373)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
