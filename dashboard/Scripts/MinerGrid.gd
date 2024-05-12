@@ -1,6 +1,7 @@
 extends Node2D
 
 const MINER_PREFAB = preload("res://Scenes/Miner.tscn");
+const FLOWING_LABEL_PREFAB = preload("res://Scenes/FlowingLabel.tscn");
 
 @export var flipped: bool;
 @export var color: Color = Color.WHITE;
@@ -18,20 +19,25 @@ func _process(_delta):
 	pass
 	
 
-func add_miner(type: Global.MinerType = Global.MinerType.MINER1):
+func add_miner(type: Global.MinerType = Global.MinerType.MINER1, animation: bool = true):
 	var miner = MINER_PREFAB.instantiate();
-	miner.position = self.get_miner_position(type, self.count_miners(type));
+	var miner_position = self.get_miner_position(type, self.count_miners(type));
 	
 	if self.flipped:
 		miner.scale.x *= -1;
 	if self.color != null:
 		miner.color = self.color;
 	
-	self._add_miner_to_list(type, miner);
-	
+	miner.position = miner_position;
 	miner.type = type;
 	
+	self._add_miner_to_list(type, miner);
 	self.add_child(miner);
+	
+	if animation:
+		var flowing_label = FLOWING_LABEL_PREFAB.instantiate();
+		self.add_child(flowing_label);
+		flowing_label.position = miner_position;
 
 
 func remove_miner(type: Global.MinerType = Global.MinerType.MINER1):

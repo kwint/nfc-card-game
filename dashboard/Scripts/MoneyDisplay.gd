@@ -1,6 +1,6 @@
 extends MarginContainer
 
-const FLOWING_LABEL = preload("res://Scenes/FlowingLabel.tscn");
+const FLOWING_LABEL_PREFAB = preload("res://Scenes/FlowingLabel.tscn");
 const FLOWING_LABEL_MARGIN = 30.0;
 const MONEY_PREFIX: String = "$";
 
@@ -39,7 +39,7 @@ func set_money(money: int, flowing_label: bool = true) -> void:
 		);
 
 func spawn_flowing_label(text: String, color: Color, label_position: Vector2, label_direction: Vector2):
-	var flowing_label = FLOWING_LABEL.instantiate();
+	var flowing_label = FLOWING_LABEL_PREFAB.instantiate();
 	flowing_label.text = text;
 	flowing_label.color = color;
 	flowing_label.direction = label_direction;

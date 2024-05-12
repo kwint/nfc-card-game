@@ -1,8 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://dnds5cruhe2uo"]
+[gd_scene load_steps=3 format=3 uid="uid://dnds5cruhe2uo"]
 
 [ext_resource type="Script" path="res://Scripts/Miner.gd" id="1_61mcl"]
 [ext_resource type="SpriteFrames" uid="uid://cnyvuugqqjwti" path="res://Sprites/Miner/Miner.tres" id="1_dw4to"]
-[ext_resource type="PackedScene" uid="uid://ppjsf6smijm2" path="res://Scenes/FlowingLabel.tscn" id="3_b1ptq"]
 
 [node name="Miner" type="Node2D"]
 position = Vector2(287, 405)
@@ -12,9 +11,3 @@ script = ExtResource("1_61mcl")
 sprite_frames = ExtResource("1_dw4to")
 animation = &"miner2"
 autoplay = "miner1"
-
-[node name="FlowingLabel" parent="." instance=ExtResource("3_b1ptq")]
-offset_left = -21.0
-offset_top = -31.0
-offset_right = 19.0
-offset_bottom = 9.0
