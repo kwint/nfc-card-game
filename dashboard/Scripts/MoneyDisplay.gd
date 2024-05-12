@@ -35,24 +35,26 @@ func set_money(money: int, animate: bool = true) -> void:
 		self.animate_flowing_label(diff);
 
 
-func format_money(amount: int, sign: bool = true, symbol: bool = true, positive_sign: bool = false) -> String:
-	var str = str(abs(amount));
-	var digits = str.length();
+func format_money(amount: int, show_sign: bool = true, show_symbol: bool = true, show_positive_sign: bool = false) -> String:
+	var formatted = str(abs(amount));
+	var digits = formatted.length();
 	
 	# Add thousand separators
-	for chunk in range((digits - 1) / 3):
+	@warning_ignore("integer_division")
+	var divider_count = (digits - 1) / 3;
+	for chunk in range(divider_count):
 		var i = digits - ((chunk + 1) * 3);
-		str = str.insert(i, MONEY_SEPARATOR);
+		formatted = formatted.insert(i, MONEY_SEPARATOR);
 	
 	# Add symbols and signs
-	if symbol:
-		str = str.insert(0, str(MONEY_SYMBOL, MONEY_SEPARATOR));
-	if sign && amount < 0:
-		str = str.insert(0, str("-", MONEY_SEPARATOR));
-	if positive_sign && amount > 0:
-		str = str.insert(0, str("+", MONEY_SEPARATOR));
+	if show_symbol:
+		formatted = formatted.insert(0, str(MONEY_SYMBOL, MONEY_SEPARATOR));
+	if show_sign && amount < 0:
+		formatted = formatted.insert(0, str("-", MONEY_SEPARATOR));
+	if show_positive_sign && amount > 0:
+		formatted = formatted.insert(0, str("+", MONEY_SEPARATOR));
 	
-	return str;
+	return formatted;
 
 
 func animate_flash(positive: bool):
