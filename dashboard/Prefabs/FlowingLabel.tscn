@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://ppjsf6smijm2"]
 
-[ext_resource type="Script" path="res://Scripts/FlowingLabel.gd" id="1_topwf"]
-[ext_resource type="Theme" uid="uid://n2sj11gmuqmo" path="res://Themes/MoneyFont.tres" id="2_sipoj"]
+[ext_resource type="Script" path="res://Scripts/FlowingLabel.gd" id="1_thlw0"]
+[ext_resource type="Theme" uid="uid://n2sj11gmuqmo" path="res://Themes/MoneyFont.tres" id="2_d8sdw"]
 
 [node name="FlowingLabel" type="Control"]
 modulate = Color(0, 1, 0, 1)
@@ -19,7 +19,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-script = ExtResource("1_topwf")
+script = ExtResource("1_thlw0")
 
 [node name="Shifter" type="Control" parent="."]
 layout_mode = 1
@@ -48,7 +48,7 @@ grow_vertical = 2
 [node name="Label" type="Label" parent="Shifter/Center"]
 z_index = 10
 layout_mode = 2
-theme = ExtResource("2_sipoj")
+theme = ExtResource("2_d8sdw")
 theme_override_font_sizes/font_size = 20
 text = "+1"
 horizontal_alignment = 1

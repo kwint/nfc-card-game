@@ -1,7 +1,7 @@
 extends Node2D
 
-const MINER_PREFAB = preload("res://Scenes/Miner.tscn");
-const FLOWING_LABEL_PREFAB = preload("res://Scenes/FlowingLabel.tscn");
+const MINER_PREFAB = preload("res://Prefabs/Miner.tscn");
+const FLOWING_LABEL_PREFAB = preload("res://Prefabs/FlowingLabel.tscn");
 
 @export var flipped: bool;
 @export var color: Color = Color.WHITE;

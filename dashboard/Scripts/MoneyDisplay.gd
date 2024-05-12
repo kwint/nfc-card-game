@@ -1,6 +1,6 @@
 extends MarginContainer
 
-const FLOWING_LABEL_PREFAB = preload("res://Scenes/FlowingLabel.tscn");
+const FLOWING_LABEL_PREFAB = preload("res://Prefabs/FlowingLabel.tscn");
 const FLOWING_LABEL_MARGIN: float = 10.0;
 const MONEY_SYMBOL: String = "$";
 const MONEY_SEPARATOR: String = " ";
