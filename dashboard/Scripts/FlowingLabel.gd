@@ -9,6 +9,7 @@ extends Control
 const DURATION: float = 2.0;
 const DRIFT_LENGTH: float = 75.0;
 const DRIFT_ROTATION_RANGE: float = PI / 8.0;
+const DRIFT_SCALE: float = 0.6;
 
 func _ready():
 	self.label.text = text;
@@ -26,13 +27,13 @@ func _ready():
 	var offset = self.label.get_size() / 2.0 * self.direction.normalized();
 	self.shifter.position += offset;
 	
-	# Calculate new label position and hidden color
-	var new_pos = self.shifter.position + shift;
+	# Calcualte target value for some tweeners
 	var color_hidden = self.color;
 	color_hidden.a = 0;
 	
 	# Animate
 	var tween = self.create_tween();
 	tween.tween_property(self, "modulate", color_hidden, DURATION);
-	tween.parallel().tween_property(self.shifter, "position", new_pos, DURATION);
+	tween.parallel().tween_property(self.shifter, "position", self.shifter.position + shift, DURATION);
+	tween.parallel().tween_property(self.shifter, "scale", self.shifter.scale * DRIFT_SCALE, DURATION);
 	tween.tween_callback(self.queue_free);
