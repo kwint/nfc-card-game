@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Scripts/Miner.gd" id="1_61mcl"]
 [ext_resource type="SpriteFrames" uid="uid://cnyvuugqqjwti" path="res://Sprites/Miner/Miner.tres" id="1_dw4to"]
-[ext_resource type="Script" path="res://Scripts/FlowingLabel.gd" id="3_itaj5"]
+[ext_resource type="PackedScene" uid="uid://ppjsf6smijm2" path="res://Scenes/FlowingLabel.tscn" id="3_b1ptq"]
 
 [node name="Miner" type="Node2D"]
 position = Vector2(287, 405)
@@ -13,35 +13,8 @@ sprite_frames = ExtResource("1_dw4to")
 animation = &"miner2"
 autoplay = "miner1"
 
-[node name="FlowingLabel" type="CenterContainer" parent="."]
-modulate = Color(0, 1, 0, 1)
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
-grow_horizontal = 2
-grow_vertical = 2
-pivot_offset = Vector2(20, 20)
-size_flags_horizontal = 4
-size_flags_vertical = 4
-script = ExtResource("3_itaj5")
-
-[node name="Wrapper" type="Control" parent="FlowingLabel"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="FlowingLabel/Wrapper"]
-layout_mode = 2
-offset_left = -10.0
-offset_top = -12.0
-offset_right = 9.0
-offset_bottom = 11.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "+1"
-horizontal_alignment = 1
-vertical_alignment = 1
+[node name="FlowingLabel" parent="." instance=ExtResource("3_b1ptq")]
+offset_left = -21.0
+offset_top = -31.0
+offset_right = 19.0
+offset_bottom = 9.0

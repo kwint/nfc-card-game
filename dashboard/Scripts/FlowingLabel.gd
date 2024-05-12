@@ -1,21 +1,26 @@
 extends Control
 
-@onready var label = $Wrapper/Label;
+@export var text: String = "+1";
+@export var color: Color = Color.GREEN;
+@export var direction: Vector2 = Vector2.UP;
+@onready var label = $Center/Wrapper/Label;
 
 const DURATION: float = 2.0;
 const DRIFT_LENGTH: float = 75.0;
-const DRIFT_DIRECTION: Vector2 = Vector2.UP;
 const DRIFT_ROTATION_RANGE: float = PI / 8.0;
 
 func _ready():
+	self.label.text = text;
+	self.modulate = self.color;
+	
 	# Determine shift amount and add randomized rotation
-	var shift = DRIFT_DIRECTION * DRIFT_LENGTH;
+	var shift = DRIFT_LENGTH * self.direction;
 	var shift_rotation = randf_range(-DRIFT_ROTATION_RANGE, DRIFT_ROTATION_RANGE);
 	shift = shift.rotated(shift_rotation);
 	
 	# Calculate new label position and hidden color
 	var new_pos = label.position + shift;
-	var hidden = self.modulate;
+	var hidden = self.color;
 	hidden.a = 0;
 	
 	# Actually animate
