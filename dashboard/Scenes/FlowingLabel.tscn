@@ -37,7 +37,11 @@ grow_vertical = 2
 [node name="Wrapper" type="Control" parent="Center"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Center/Wrapper"]
+[node name="Shifter" type="Control" parent="Center/Wrapper"]
+layout_mode = 2
+anchors_preset = 0
+
+[node name="Label" type="Label" parent="Center/Wrapper/Shifter"]
 z_index = 10
 layout_mode = 2
 offset_left = -10.0

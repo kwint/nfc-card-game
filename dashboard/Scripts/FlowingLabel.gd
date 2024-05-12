@@ -3,7 +3,8 @@ extends Control
 @export var text: String = "+1";
 @export var color: Color = Color.GREEN;
 @export var direction: Vector2 = Vector2.UP;
-@onready var label = $Center/Wrapper/Label;
+@onready var shifter = $Center/Wrapper/Shifter;
+@onready var label = $Center/Wrapper/Shifter/Label;
 
 const DURATION: float = 2.0;
 const DRIFT_LENGTH: float = 75.0;
@@ -19,12 +20,12 @@ func _ready():
 	shift = shift.rotated(shift_rotation);
 	
 	# Calculate new label position and hidden color
-	var new_pos = label.position + shift;
+	var new_pos = self.shifter.position + shift;
 	var color_hidden = self.color;
 	color_hidden.a = 0;
 	
 	# Animate
 	var tween = self.create_tween();
 	tween.tween_property(self, "modulate", color_hidden, DURATION);
-	tween.parallel().tween_property(label, "position", new_pos, DURATION);
+	tween.parallel().tween_property(self.shifter, "position", new_pos, DURATION);
 	tween.tween_callback(self.queue_free);
