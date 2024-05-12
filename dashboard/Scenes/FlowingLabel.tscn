@@ -20,7 +20,17 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_topwf")
 
-[node name="Center" type="CenterContainer" parent="."]
+[node name="Shifter" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Center" type="CenterContainer" parent="Shifter"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -34,22 +44,9 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Wrapper" type="Control" parent="Center"]
-layout_mode = 2
-
-[node name="Shifter" type="Control" parent="Center/Wrapper"]
-layout_mode = 2
-anchors_preset = 0
-
-[node name="Label" type="Label" parent="Center/Wrapper/Shifter"]
+[node name="Label" type="Label" parent="Shifter/Center"]
 z_index = 10
 layout_mode = 2
-offset_left = -10.0
-offset_top = -12.0
-offset_right = 9.0
-offset_bottom = 11.0
-grow_horizontal = 2
-grow_vertical = 2
 text = "+1"
 horizontal_alignment = 1
 vertical_alignment = 1

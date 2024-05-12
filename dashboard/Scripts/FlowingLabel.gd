@@ -3,8 +3,8 @@ extends Control
 @export var text: String = "+1";
 @export var color: Color = Color.GREEN;
 @export var direction: Vector2 = Vector2.UP;
-@onready var shifter = $Center/Wrapper/Shifter;
-@onready var label = $Center/Wrapper/Shifter/Label;
+@onready var shifter = $Shifter;
+@onready var label = $Shifter/Center/Label;
 
 const DURATION: float = 2.0;
 const DRIFT_LENGTH: float = 75.0;
@@ -14,10 +14,17 @@ func _ready():
 	self.label.text = text;
 	self.modulate = self.color;
 	
+	# Update label size to fit text
+	self.label.reset_size()
+	
 	# Determine shift amount and add randomized rotation
-	var shift = DRIFT_LENGTH * self.direction;
+	var shift = DRIFT_LENGTH * self.direction.normalized();
 	var shift_rotation = randf_range(-DRIFT_ROTATION_RANGE, DRIFT_ROTATION_RANGE);
 	shift = shift.rotated(shift_rotation);
+	
+	# Shift label to account for own size
+	var offset = self.label.get_size() / 2.0 * self.direction.normalized();
+	self.shifter.position += offset;
 	
 	# Calculate new label position and hidden color
 	var new_pos = self.shifter.position + shift;
