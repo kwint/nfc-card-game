@@ -23,8 +23,8 @@ func _ready():
 	var color_hidden = self.color;
 	color_hidden.a = 0;
 	
-	# Actually animate
-	var tween = get_tree().create_tween();
+	# Animate
+	var tween = self.create_tween();
 	tween.tween_property(self, "modulate", color_hidden, DURATION);
 	tween.parallel().tween_property(label, "position", new_pos, DURATION);
-	tween.tween_callback(self.queue_free)
+	tween.tween_callback(self.queue_free);
