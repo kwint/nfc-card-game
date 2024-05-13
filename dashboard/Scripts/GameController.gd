@@ -41,19 +41,19 @@ func _process(_delta):
 		self.fetch_stats();
 
 
-func add_miner(team_id: Global.TeamId, miner_type: Global.MinerType):
-	self.mines[team_id].add_miner(miner_type, true);
+func add_miner(team_id: Global.TeamId, miner_type: Global.MinerType, animate_text = null):
+	self.mines[team_id].add_miner(miner_type, animate_text);
 	self.levels[team_id].add_level(miner_type);
 
 
-func add_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: int):
+func add_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: int, animate_text = null):
 	# TODO: add in batch!
 	for _i in range(amount):
-		self.add_miner(team_id, miner_type);
+		self.add_miner(team_id, miner_type, animate_text);
 
 
 func set_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: int):
-	self.mines[team_id].set_miners(miner_type, amount, false);
+	self.mines[team_id].set_miners(miner_type, amount, null);
 	self.levels[team_id].set_level(miner_type, amount);
 
 

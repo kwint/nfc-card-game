@@ -2,6 +2,7 @@ extends Node2D
 
 const MINER_PREFAB = preload("res://Prefabs/Miner.tscn");
 const FLOWING_LABEL_PREFAB = preload("res://Prefabs/FlowingLabel.tscn");
+const FLOWING_LABEL_TEXT_SCALE: float = 0.7;
 
 @export var flipped: bool;
 @export var color: Color = Color.WHITE;
@@ -19,7 +20,7 @@ func _process(_delta):
 	pass
 	
 
-func add_miner(type: Global.MinerType = Global.MinerType.MINER1, animate: bool = true):
+func add_miner(type: Global.MinerType = Global.MinerType.MINER1, animate_text = null):
 	var miner = MINER_PREFAB.instantiate();
 	var miner_position = self.get_miner_position(type, self.count_miners(type));
 	
@@ -28,15 +29,17 @@ func add_miner(type: Global.MinerType = Global.MinerType.MINER1, animate: bool =
 	if self.color != null:
 		miner.color = self.color;
 	
-	miner.animate = animate;
+	miner.animate = animate_text != null;
 	miner.position = miner_position;
 	miner.type = type;
 	
 	self._add_miner_to_list(type, miner);
 	self.add_child(miner);
 	
-	if animate:
+	if animate_text != null:
 		var flowing_label = FLOWING_LABEL_PREFAB.instantiate();
+		flowing_label.text = animate_text;
+		flowing_label.text_scale = FLOWING_LABEL_TEXT_SCALE;
 		self.add_child(flowing_label);
 		flowing_label.position = miner_position;
 
@@ -54,7 +57,7 @@ func _add_miner_to_list(type: Global.MinerType, miner):
 	self.miners[type].append(miner);
 
 
-func set_miners(type: Global.MinerType, amount: int, animation: bool = false):
+func set_miners(type: Global.MinerType, amount: int, animate_text = null):
 	# TODO: do this in batches
 	
 	var delta = amount - self.count_miners(type);
@@ -62,7 +65,7 @@ func set_miners(type: Global.MinerType, amount: int, animation: bool = false):
 	# Add new miners
 	if delta > 0:
 		for _i in range(delta):
-			self.add_miner(type, animation);
+			self.add_miner(type, animate_text);
 			
 	# Remove excess miners
 	if delta < 0:

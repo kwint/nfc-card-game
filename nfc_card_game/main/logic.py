@@ -211,6 +211,7 @@ def handle_mine_scan(
                         "team_id": mine_item.team_mine.team_id,
                         # TODO(timvisee): define proper type here!
                         "miner_type": 1,
+                        "miner_type_name": mine_item.item.get_name_display(),
                         "amount": item.amount,
                     },
                 }
