@@ -4,7 +4,7 @@ const MINER_PREFAB = preload("res://Prefabs/Miner.tscn");
 const FLOWING_LABEL_PREFAB = preload("res://Prefabs/FlowingLabel.tscn");
 const FLOWING_LABEL_TEXT_SCALE: float = 0.7;
 # Maximum number of miner instances per type
-const MAX_RENDERED_MINERS: int = 10_000;
+const MAX_RENDERED_MINERS: int = 5_000;
 
 @export var flipped: bool;
 @export var color: Color = Color.WHITE;
