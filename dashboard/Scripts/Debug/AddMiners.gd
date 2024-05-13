@@ -10,15 +10,12 @@ func _ready():
 
 
 func add1():
-	for i in range($SpinBox1.value):
-		game_controller.add_miner(Global.TeamId.TEAM1, Global.MinerType.MINER1, "+1");
+	game_controller.add_miners(Global.TeamId.TEAM1, Global.MinerType.MINER1, $SpinBox1.value, "+1");
 
 
 func add2():
-	for i in range($SpinBox2.value):
-		game_controller.add_miner(Global.TeamId.TEAM1, Global.MinerType.MINER2, "+1");
+	game_controller.add_miners(Global.TeamId.TEAM1, Global.MinerType.MINER2, $SpinBox2.value, "+1");
 
 
 func add3():
-	for i in range($SpinBox3.value):
-		game_controller.add_miner(Global.TeamId.TEAM1, Global.MinerType.MINER3, "+1");
+	game_controller.add_miners(Global.TeamId.TEAM1, Global.MinerType.MINER3, $SpinBox3.value, "+1");

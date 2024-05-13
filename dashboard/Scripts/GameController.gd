@@ -41,15 +41,9 @@ func _process(_delta):
 		self.fetch_stats();
 
 
-func add_miner(team_id: Global.TeamId, miner_type: Global.MinerType, animate_text = null):
-	self.mines[team_id].add_miner(miner_type, animate_text);
-	self.levels[team_id].add_level(miner_type);
-
-
 func add_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: int, animate_text = null):
-	# TODO: add in batch!
-	for _i in range(amount):
-		self.add_miner(team_id, miner_type, animate_text);
+	self.mines[team_id].add_miners(miner_type, amount, animate_text);
+	self.levels[team_id].add_levels(miner_type, amount);
 
 
 func set_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: int):
@@ -84,13 +78,11 @@ func process_stats_team(team_id: Global.TeamId, team: Dictionary):
 	self.update_money(team_id, team["money"], false);
 	
 	# Update miners
-	# TODO: add existing miners in a more efficient way
 	# TODO: derive miner types from global enum
 	var items = team["items"];
 	for i in range(items.size()):
 		var item = items[i];
-		var effective = item["effective"];
-		set_miners(team_id, i + 1, effective);
+		self.set_miners(team_id, i + 1, item["amount"]);
 
 
 func update_money(team_id: Global.TeamId, amount: int, flowing_label: bool = true):
