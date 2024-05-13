@@ -5,6 +5,8 @@ const FLOWING_LABEL_PREFAB = preload("res://Prefabs/FlowingLabel.tscn");
 const FLOWING_LABEL_TEXT_SCALE: float = 0.7;
 # Maximum number of miner instances per type
 const MAX_RENDERED_MINERS: int = 5_000;
+const MINER_HIGHEST_POSITION: float = 0.05;
+const MINER_LOWEST_POSITION: float = 0.9;
 
 @export var flipped: bool;
 @export var color: Color = Color.WHITE;
@@ -16,6 +18,7 @@ var miners = {};
 var miners_hidden = {};
 
 var noise = FastNoiseLite.new();
+var random = RandomNumberGenerator.new();
 
 
 func _ready():
@@ -137,19 +140,23 @@ func get_miner_position(type: Global.MinerType, index: int, hidden_amount = null
 	if self.reference_grid == null:
 		return Vector2.ZERO;
 	
+	# Pick a base seed based on the miner type
+	# This prevents overlapping of different miner types
+	var base_seed = MAX_RENDERED_MINERS * type;
+
 	# Offset index to prevent position jumps when removing old miners
 	if hidden_amount == null:
 		hidden_amount = self.miners_hidden.get(type, 0);
 	index += hidden_amount;
 	
 	# Height factor in rectangle [0, 1]
-	var height_factor = self.noise.get_noise_1d((type * 100000.3) + float(index) * 100.0);
-	height_factor = scale_float(height_factor, -1.0, 1.0, 0.0, 1.0);
+	self.random.set_seed(base_seed + index);
+	var height_factor = self.random.randf_range(MINER_HIGHEST_POSITION, MINER_LOWEST_POSITION);
 	
 	# Width factor in rectangle, within range of triangle
 	var width_factor_left = 1.0 - height_factor if !self.flipped else 0.0;
 	var width_factor_right = 1.0 if !self.flipped else height_factor;
-	var width_factor = self.noise.get_noise_1d(float(index) * 38.123);
+	var width_factor = self.noise.get_noise_1d(float(base_seed + index) * 38.123);
 	width_factor = scale_float(width_factor, -1.0, 1.0, width_factor_left, width_factor_right);
 	
 	# Scale width and height factor to the reference rectangle
