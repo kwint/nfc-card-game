@@ -52,6 +52,8 @@ func fetch_stats():
 
 func _on_stats_fetched(_result, _response_code, _headers, body):
 	var json = JSON.parse_string(body.get_string_from_utf8())
+	if json == null:
+		print("Got malformed JSON body: ", body);
 	self.process_stats(json);
 
 
