@@ -57,11 +57,17 @@ func remove_miner(type: Global.MinerType = Global.MinerType.MINER1):
 func _add_miner_to_list(type: Global.MinerType, miner):
 	if !self.miners.has(type):
 		self.miners[type] = [];
-	self.miners[type].append(miner);
+	var miners = self.miners[type];
 	
-	var overflow = max(self.miners[type].size() - MAX_RENDERED_MINERS, 0);
+	# List new miner
+	miners.append(miner);
+	
+	# Remove old miners when reaching miner limit
+	var overflow = max(miners.size() - MAX_RENDERED_MINERS, 0);
 	if overflow > 0:
-		self.miners[type].pop_front().destroy();
+		for i in range(overflow):
+			miners[i].destroy();
+		self.miners[type] = miners.slice(overflow, miners.size());
 		if !self.miner_offsets.has(type):
 			self.miner_offsets[type] = 0;
 		self.miner_offsets[type] += 1;
@@ -93,7 +99,7 @@ func count_miners(type: Global.MinerType) -> int:
 func reposition_miners():
 	for type in self.miners:
 		var miners = self.miners[type];
-		var index_offset = self.miner_offsets[type] if self.miner_offsets.has(type) else 0;
+		var index_offset = self.miner_offsets.get(type, 0);
 		for i in range(miners.size()):
 			miners[i].position = self.get_miner_position(type, i, index_offset);
 
@@ -103,10 +109,9 @@ func get_miner_position(type: Global.MinerType, index: int, index_offset = null)
 		return Vector2.ZERO;
 	
 	# Offset index to prevent position jumps when removing old miners
-	if index_offset == null && self.miner_offsets.has(type):
-		index_offset = self.miner_offsets[type];
-	if index_offset != null:
-		index += index_offset;
+	if index_offset == null:
+		index_offset = self.miner_offsets.get(type, 0);
+	index += index_offset;
 	
 	var rect = self.reference_grid.get_global_rect();
 	
