@@ -115,7 +115,13 @@ func handle_mine_money_update(state: Dictionary):
 func handle_mine_miners_added(state: Dictionary):
 	if state["mine_id"] != Global.MINE_ID:
 		return;
-	self.game_controller.add_miners(state["team_id"], state["miner_type"], state["amount"], state["miner_type_name"]);
+	self.game_controller.add_miners(
+		state["team_id"],
+		state["miner_type"],
+		state["amount"],
+		state["effective"],
+		state["miner_type_name"],
+	);
 
 
 func send_packet(packet_id: PacketServerType, data: Dictionary):

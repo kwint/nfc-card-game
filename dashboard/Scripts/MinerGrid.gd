@@ -3,24 +3,40 @@ extends Node2D
 const MINER_PREFAB = preload("res://Prefabs/Miner.tscn");
 const FLOWING_LABEL_PREFAB = preload("res://Prefabs/FlowingLabel.tscn");
 const FLOWING_LABEL_TEXT_SCALE: float = 0.7;
+# Maximum number of miner instances per type
+const MAX_RENDERED_MINERS: int = 5_000;
 
 @export var flipped: bool;
 @export var color: Color = Color.WHITE;
 @export var reference_grid: Control;
 
+# A dict per miner type, containing a list of miner instances.
 var miners = {};
-var noise = FastNoiseLite.new()
+# A dict of the number of hidden miners per type.
+var miners_hidden = {};
+
+var noise = FastNoiseLite.new();
 
 
 func _ready():
 	get_viewport().connect("size_changed", reposition_miners, CONNECT_DEFERRED);
 
 
-func _process(_delta):
-	pass
+# Add the given amount of miners
+# The amount rendered on screen may be limited for performance reasons
+func add_miners(type: Global.MinerType = Global.MinerType.MINER1, amount: int = 1, animate_text = null):
+	# Determine how many visible and hidden miners to add
+	var add_visible = min(amount, MAX_RENDERED_MINERS);
+	var add_hidden = max(amount - add_visible, 0);
 	
+	# Update the hidden count and add each visible miner
+	self._add_hidden_miners(type, add_hidden);
+	for _i in range(add_visible):
+		self._add_miner(type, animate_text);
 
-func add_miner(type: Global.MinerType = Global.MinerType.MINER1, animate_text = null):
+
+# Add a single visible miner instance
+func _add_miner(type: Global.MinerType = Global.MinerType.MINER1, animate_text = null):
 	var miner = MINER_PREFAB.instantiate();
 	var miner_position = self.get_miner_position(type, self.count_miners(type));
 	
@@ -42,54 +58,89 @@ func add_miner(type: Global.MinerType = Global.MinerType.MINER1, animate_text = 
 		flowing_label.text_scale = FLOWING_LABEL_TEXT_SCALE;
 		self.add_child(flowing_label);
 		flowing_label.position = miner_position;
-
-
-func remove_miner(type: Global.MinerType = Global.MinerType.MINER1):
-	var miner = self.miners[type].pop_back();
-	if miner == null:
-		return;
-	miner.destroy();
 	
 
 func _add_miner_to_list(type: Global.MinerType, miner):
 	if !self.miners.has(type):
 		self.miners[type] = [];
-	self.miners[type].append(miner);
+	var miners = self.miners[type];
+	
+	# List new miner
+	miners.append(miner);
+	
+	# Remove old miners when reaching miner limit
+	var overflow = max(miners.size() - MAX_RENDERED_MINERS, 0);
+	if overflow > 0:
+		for i in range(overflow):
+			miners[i].destroy();
+		self.miners[type] = miners.slice(overflow, miners.size());
+		self._add_hidden_miners(type, overflow);
+	
+
+# Add the given number of hidden miners.
+func _add_hidden_miners(type: Global.MinerType = Global.MinerType.MINER1, amount: int = 1):
+	if !self.miners_hidden.has(type):
+		self.miners_hidden[type] = 0;
+	self.miners_hidden[type] += amount;
+	
+
+# Get the number of hidden miners.
+func _get_hidden_miners(type: Global.MinerType = Global.MinerType.MINER1) -> int:
+	return self.miners_hidden.get(type, 0);
 
 
+# Remove the given number of miners.
+func remove_miners(type: Global.MinerType = Global.MinerType.MINER1, amount: int = 1):
+	# First remove hidden miners, it is more efficient
+	var remove_hidden = min(amount, self._get_hidden_miners(type));
+	self._add_hidden_miners(type, -remove_hidden);
+	amount -= remove_hidden;
+	
+	# Remove visible miner instances
+	var miners = self.miners[type];
+	for _i in range(amount):
+		var miner = miners.pop_back();
+		if miner == null:
+			break;
+		miner.destroy();
+	
+	# Reposition miners if we have removed hidden ones
+	if remove_hidden > 0:
+		self.reposition_miners();
+
+
+# Set the given number of miners, automatically adding or removing them as needed.
 func set_miners(type: Global.MinerType, amount: int, animate_text = null):
-	# TODO: do this in batches
-	
 	var delta = amount - self.count_miners(type);
-	
-	# Add new miners
 	if delta > 0:
-		for _i in range(delta):
-			self.add_miner(type, animate_text);
-			
-	# Remove excess miners
+		self.add_miners(type, delta, animate_text);
 	if delta < 0:
-		delta *= -1;
-		for _i in range(delta):
-			self.remove_miner(type);
-	
-	
+		self.remove_miners(type, delta * -1);
+
+
+# Count the miners of a type
+# Returns the true count, including both visible and invisible miners.
 func count_miners(type: Global.MinerType) -> int:
-	if !self.miners.has(type):
-		return 0;
-	return self.miners[type].size();
-	
-	
+	return self.miners.get(type, []).size() + self.miners_hidden.get(type, 0);
+
+
+# Reposition all visible miners based on our positioning logic.
 func reposition_miners():
 	for type in self.miners:
 		var miners = self.miners[type];
+		var index_offset = self.miners_hidden.get(type, 0);
 		for i in range(miners.size()):
-			miners[i].position = self.get_miner_position(type, i);
+			miners[i].position = self.get_miner_position(type, i, index_offset);
 
 
-func get_miner_position(type: Global.MinerType, index: int) -> Vector2:
+func get_miner_position(type: Global.MinerType, index: int, hidden_amount = null) -> Vector2:
 	if self.reference_grid == null:
 		return Vector2.ZERO;
+	
+	# Offset index to prevent position jumps when removing old miners
+	if hidden_amount == null:
+		hidden_amount = self.miners_hidden.get(type, 0);
+	index += hidden_amount;
 	
 	var rect = self.reference_grid.get_global_rect();
 	

@@ -24,13 +24,6 @@ func _ready():
 	# Connect stats HTTP client and fetch once
 	stats_http_client.request_completed.connect(_on_stats_fetched)
 	self.fetch_stats.call_deferred();
-	
-	# # Spawn random set of miners on start in debug builds
-	# if OS.has_feature("debug"):
-	# 	for i in range(1 + randi() % 4):
-	# 		self.add_miner.call_deferred(true, Global.MinerType.MINER1);
-	# 	for i in range(1 + randi() % 4):
-	# 		self.add_miner.call_deferred(false, Global.MinerType.MINER1);
 
 
 func _process(_delta):
@@ -41,20 +34,14 @@ func _process(_delta):
 		self.fetch_stats();
 
 
-func add_miner(team_id: Global.TeamId, miner_type: Global.MinerType, animate_text = null):
-	self.mines[team_id].add_miner(miner_type, animate_text);
-	self.levels[team_id].add_level(miner_type);
+func add_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: int, effective: int, animate_text = null):
+	self.mines[team_id].add_miners(miner_type, amount, animate_text);
+	self.levels[team_id].add_levels(miner_type, effective);
 
 
-func add_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: int, animate_text = null):
-	# TODO: add in batch!
-	for _i in range(amount):
-		self.add_miner(team_id, miner_type, animate_text);
-
-
-func set_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: int):
+func set_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: int, effective: int):
 	self.mines[team_id].set_miners(miner_type, amount, null);
-	self.levels[team_id].set_level(miner_type, amount);
+	self.levels[team_id].set_level(miner_type, effective);
 
 
 func fetch_stats():
@@ -84,13 +71,11 @@ func process_stats_team(team_id: Global.TeamId, team: Dictionary):
 	self.update_money(team_id, team["money"], false);
 	
 	# Update miners
-	# TODO: add existing miners in a more efficient way
 	# TODO: derive miner types from global enum
 	var items = team["items"];
 	for i in range(items.size()):
 		var item = items[i];
-		var effective = item["effective"];
-		set_miners(team_id, i + 1, effective);
+		self.set_miners(team_id, i + 1, item["amount"], item["effective"]);
 
 
 func update_money(team_id: Global.TeamId, amount: int, flowing_label: bool = true):
