@@ -1,8 +1,8 @@
 const ctx = document.getElementById('mineChart')
 const ctx2 = document.getElementById('minerChart')
 
-var base_url = "ws://"+ window.location.host + "/ws/"
-const websocket = new WebSocket('ws://localhost:8000/ws/');
+var base_url = "wss://"+ window.location.host + "/ws/"
+const websocket = new WebSocket(base_url);
 
 websocket.onopen = function(){
   console.log("COnnected!");
@@ -98,9 +98,9 @@ function items_to_string(items, newline=true){
 
 
 function get_color_from_currency(currency) {
-  if (currency.includes('BLAUW')) return "rgba(54, 162, 235, 0.5)";
-  if (currency.includes('ROOD')) return "rgba(255, 99, 132, 0.5)";
-  if (currency.includes('GROEN')) return "rgba(130, 255, 54, 0.5)";
+  if (currency.includes('Blauw')) return "rgba(54, 162, 235, 0.5)";
+  if (currency.includes('Rood')) return "rgba(255, 99, 132, 0.5)";
+  if (currency.includes('Groen')) return "rgba(130, 255, 54, 0.5)";
 }
 
 function init_miner_chart(){
