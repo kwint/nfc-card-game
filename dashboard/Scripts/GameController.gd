@@ -41,14 +41,14 @@ func _process(_delta):
 		self.fetch_stats();
 
 
-func add_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: int, animate_text = null):
+func add_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: int, effective: int, animate_text = null):
 	self.mines[team_id].add_miners(miner_type, amount, animate_text);
-	self.levels[team_id].add_levels(miner_type, amount);
+	self.levels[team_id].add_levels(miner_type, effective);
 
 
-func set_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: int):
+func set_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: int, effective: int):
 	self.mines[team_id].set_miners(miner_type, amount, null);
-	self.levels[team_id].set_level(miner_type, amount);
+	self.levels[team_id].set_level(miner_type, effective);
 
 
 func fetch_stats():
@@ -82,7 +82,7 @@ func process_stats_team(team_id: Global.TeamId, team: Dictionary):
 	var items = team["items"];
 	for i in range(items.size()):
 		var item = items[i];
-		self.set_miners(team_id, i + 1, item["amount"]);
+		self.set_miners(team_id, i + 1, item["amount"], item["effective"]);
 
 
 func update_money(team_id: Global.TeamId, amount: int, flowing_label: bool = true):
