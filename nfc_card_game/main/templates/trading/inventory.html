@@ -31,7 +31,7 @@
                 </thead>
                 <tbody class="table-group-divider">
                     {% for item in items %}
-                        {% if item.item.type != "COIN" %}
+                        {% if item.item.type != "COIN" and item.amount %}
                         <tr>
                         <td>{{ item.item.get_currency_display }} {{ item.item.get_name_display }}</td>
                         <td>{{ item.amount }}</td>
