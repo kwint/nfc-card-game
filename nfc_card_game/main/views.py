@@ -46,8 +46,8 @@ def index(request):
     return HttpResponse("Hello, world. You're at the main index.")
 
 
-def get_player_register(request: HttpRequest):
-    player_instance = Player.objects.get(card_uuid=request.path.split('/')[-1])
+def get_player_register(request: HttpRequest, card_uuid: str):
+    player_instance, _ = Player.objects.get_or_create(card_uuid=card_uuid)
     form = PlayerForm(instance=player_instance)
     return render(request, "register.html", {"form": form})
 
@@ -106,7 +106,9 @@ def handle_trading_player_post(request, player: Player, items, player_item):
 
 
 def handle_trading_player(request: HttpRequest, player: Player) -> HttpResponse:
-    player_items = PlayerItem.objects.filter(player=player).order_by("item__currency", "item__name")
+    player_items = PlayerItem.objects.filter(player=player).order_by(
+        "item__currency", "item__name"
+    )
     team_mines = TeamMine.objects.filter(team=player.team)
 
     if request.method == "POST":
@@ -171,8 +173,8 @@ def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
     except Player.DoesNotExist:
         player = None
 
-    if player is None or player.name == "" or player.team == None:
-        return get_player_register(request)
+    if player is None or player.name == "":
+        return get_player_register(request, card_uuid)
 
     if GameSettings.object().mode == GameSettings.GameMode.TRADING:
         return handle_trading_player(request, player)
@@ -185,7 +187,7 @@ def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
 
 
 def register_player(request: HttpRequest):
-    player_instance = Player.objects.get(card_uuid=request.POST['card_uuid'])
+    player_instance = Player.objects.get(card_uuid=request.POST["card_uuid"])
     if request.method == "POST":
         form = PlayerForm(request.POST, instance=player_instance)
         if form.is_valid():
