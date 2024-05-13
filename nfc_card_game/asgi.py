@@ -1,36 +1,30 @@
-"""
-ASGI config for nfc_card_game project.
-
-It exposes the ASGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/5.0/howto/deployment/asgi/
-"""
-
-import django
-from channels.routing import ProtocolTypeRouter, URLRouter
 import os
+
 from channels.auth import AuthMiddlewareStack
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.security.websocket import AllowedHostsOriginValidator
 from django.core.asgi import get_asgi_application
 from django.urls import path
-from nfc_card_game.main.consumers import MessageConsumer
-from nfc_card_game.main.api_consumer import ApiConsumer
+
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "nfc_card_game.settings")
+django_asgi_app = get_asgi_application()
 
-application = get_asgi_application()
-django.setup()
+from nfc_card_game.main.api_consumer import ApiConsumer
+from nfc_card_game.main.consumers import MessageConsumer
 
 
 application = ProtocolTypeRouter(
     {
-        "http": get_asgi_application(),
-        "websocket": AuthMiddlewareStack(
-            URLRouter(
-                [
-                    path("ws/", MessageConsumer.as_asgi()),
-                    path("api/ws", ApiConsumer.as_asgi()),
-                ]
+        "http": django_asgi_app,
+        "websocket": AllowedHostsOriginValidator(
+            AuthMiddlewareStack(
+                URLRouter(
+                    [
+                        path("ws/", MessageConsumer.as_asgi()),
+                        path("api/ws", ApiConsumer.as_asgi()),
+                    ]
+                )
             )
         ),
     }
