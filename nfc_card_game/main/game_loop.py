@@ -20,6 +20,14 @@ class GameSettings(BaseModel):
     # price increase factor (linear)
     unit_increase_factor: float = 0.01
     inbalance_inefficiency: float = 0.05
+    # miner IDs used in dashboard client
+    miner_type_ids: dict[str, int] = Field(
+        default={
+            MinerType.A.value: 1,
+            MinerType.B.value: 2,
+            MinerType.C.value: 3,
+        }
+    )
     miner_factors: dict[str, int] = Field(
         default={
             MinerType.A.value: 1,
