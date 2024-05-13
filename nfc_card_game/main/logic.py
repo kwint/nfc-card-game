@@ -223,7 +223,8 @@ def handle_mine_scan(
     player_wallet = player_items.get(
         item__currency=team_mines[0].mine.currency, item__type=TypeType.COIN
     )
-    received_money = round(team_mines[0].money * MINE_OFFLOAD_PERCENT)
+    mine_money = round(team_mines[0].money * MINE_OFFLOAD_PERCENT)
+    received_money = mine_money - player_wallet.amount if mine_money > player_wallet.amount else 0
     player_wallet.amount += received_money
     mine.money = mine.money - received_money
 
