@@ -1,12 +1,24 @@
 extends Node2D
 
+const FLASH_DURATION: float = 1.0;
+const FLASH_COLOR: Color = Color.GREEN;
+
 @export var type: Global.MinerType = Global.MinerType.MINER1;
+@export var color: Color = Color.WHITE;
+@export var animate: bool = true;
 
 @onready var sprite = $Sprite;
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	self.update_miner_type(self.type);
+	self.sprite.modulate = self.color;
+	
+	# Animate flash
+	if self.animate:
+		var tween = self.create_tween();
+		tween.tween_property(self.sprite, "modulate", self.sprite.modulate, 1.0);
+		self.sprite.modulate = FLASH_COLOR;
 
 
 func update_miner_type(type: Global.MinerType):

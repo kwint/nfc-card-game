@@ -42,7 +42,7 @@ func _process(_delta):
 
 
 func add_miner(team_id: Global.TeamId, miner_type: Global.MinerType):
-	self.mines[team_id].add_miner(miner_type);
+	self.mines[team_id].add_miner(miner_type, true);
 	self.levels[team_id].add_level(miner_type);
 
 
@@ -53,9 +53,9 @@ func add_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: in
 
 
 func set_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: int):
-	self.mines[team_id].set_miners(miner_type, amount);
+	self.mines[team_id].set_miners(miner_type, amount, false);
 	self.levels[team_id].set_level(miner_type, amount);
-	
+
 
 func fetch_stats():
 	@warning_ignore("integer_division")
@@ -81,7 +81,7 @@ func process_stats(stats: Dictionary):
 
 
 func process_stats_team(team_id: Global.TeamId, team: Dictionary):
-	self.update_money(team_id, team["money"]);
+	self.update_money(team_id, team["money"], false);
 	
 	# Update miners
 	# TODO: add existing miners in a more efficient way
@@ -93,5 +93,5 @@ func process_stats_team(team_id: Global.TeamId, team: Dictionary):
 		set_miners(team_id, i + 1, effective);
 
 
-func update_money(team_id: Global.TeamId, amount: int):
-	self.money[team_id].set_money(amount);
+func update_money(team_id: Global.TeamId, amount: int, flowing_label: bool = true):
+	self.money[team_id].set_money(amount, flowing_label);
