@@ -69,13 +69,6 @@ def update_team_mine(team_mine: TeamMine):
 
     # Broadcast for API clients: mine money update
     channel_layer = channels.layers.get_channel_layer()
-    miners = {
-        mine_item.item: {
-            "effective": SETTINGS.miner_factors[mine_item.item.name] * mine_item.amount,
-            "actual": mine_item.amount,
-        }
-        for mine_item in mine_items
-    }
     async_to_sync(channel_layer.group_send)(
         api_consumer.CHANNEL_NAME,
         {

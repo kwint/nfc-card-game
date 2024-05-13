@@ -213,8 +213,7 @@ def handle_mine_scan(
                         "miner_type": 1,
                         "miner_type_name": mine_item.item.get_name_display(),
                         "amount": item.amount,
-                        # TODO: expose effective amount here?
-                        "effective": item.amount,
+                        "effective": SETTINGS.miner_factors[mine_item.item.name] * item.amount,
                     },
                 }
             )
