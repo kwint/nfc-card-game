@@ -4,7 +4,7 @@ const FLOWING_LABEL_PREFAB = preload("res://Prefabs/FlowingLabel.tscn");
 const FLOWING_LABEL_MARGIN: float = 10.0;
 const MONEY_SYMBOL: String = "$";
 const MONEY_SEPARATOR: String = " ";
-const FLASH_ANIMATION_LENGTH: float = 0.4;
+const FLASH_DURATION: float = 0.4;
 const COLOR_POSITIVE: Color = Color.GREEN;
 const COLOR_NEGATIVE: Color = Color.RED;
 
@@ -62,7 +62,7 @@ func animate_flash(positive: bool):
 	if self.flash_tween != null && self.flash_tween.is_valid():
 		self.flash_tween.kill();
 	self.flash_tween = self.create_tween();
-	self.flash_tween.tween_property(self, "modulate", self.default_modulate, FLASH_ANIMATION_LENGTH);
+	self.flash_tween.tween_property(self, "modulate", self.default_modulate, FLASH_DURATION);
 	
 
 func animate_flowing_label(diff: int):

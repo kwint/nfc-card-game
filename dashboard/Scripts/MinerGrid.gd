@@ -19,7 +19,7 @@ func _process(_delta):
 	pass
 	
 
-func add_miner(type: Global.MinerType = Global.MinerType.MINER1, animation: bool = true):
+func add_miner(type: Global.MinerType = Global.MinerType.MINER1, animate: bool = true):
 	var miner = MINER_PREFAB.instantiate();
 	var miner_position = self.get_miner_position(type, self.count_miners(type));
 	
@@ -28,13 +28,14 @@ func add_miner(type: Global.MinerType = Global.MinerType.MINER1, animation: bool
 	if self.color != null:
 		miner.color = self.color;
 	
+	miner.animate = animate;
 	miner.position = miner_position;
 	miner.type = type;
 	
 	self._add_miner_to_list(type, miner);
 	self.add_child(miner);
 	
-	if animation:
+	if animate:
 		var flowing_label = FLOWING_LABEL_PREFAB.instantiate();
 		self.add_child(flowing_label);
 		flowing_label.position = miner_position;
