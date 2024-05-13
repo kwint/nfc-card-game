@@ -2,6 +2,7 @@ extends Node2D
 
 const MINER_PREFAB = preload("res://Prefabs/Miner.tscn");
 const FLOWING_LABEL_PREFAB = preload("res://Prefabs/FlowingLabel.tscn");
+const FLOWING_LABEL_TEXT_SCALE: float = 0.7;
 
 @export var flipped: bool;
 @export var color: Color = Color.WHITE;
@@ -37,6 +38,8 @@ func add_miner(type: Global.MinerType = Global.MinerType.MINER1, animate: bool =
 	
 	if animate:
 		var flowing_label = FLOWING_LABEL_PREFAB.instantiate();
+		flowing_label.text = Global.miner_type_name(type);
+		flowing_label.text_scale = FLOWING_LABEL_TEXT_SCALE;
 		self.add_child(flowing_label);
 		flowing_label.position = miner_position;
 

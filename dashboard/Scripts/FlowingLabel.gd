@@ -1,6 +1,7 @@
 extends Control
 
 @export var text: String = "+1";
+@export var text_scale: float = 1.0;
 @export var color: Color = Color.GREEN;
 @export var direction: Vector2 = Vector2.UP;
 @onready var shifter = $Shifter;
@@ -13,6 +14,8 @@ const DRIFT_SCALE: float = 0.6;
 
 func _ready():
 	self.label.text = text;
+	if self.text_scale != 1.0:
+		self.label.add_theme_font_size_override("font_size", self.label.get_theme_font_size("font_size") * self.text_scale);
 	self.modulate = self.color;
 	
 	# Update label size to fit text
