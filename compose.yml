@@ -13,6 +13,14 @@ services:
       timeout: 2s
       retries: 5
 
+  redis:
+    image: redis
+    restart: unless-stopped
+    volumes:
+      - redisdata:/data
+    ports:
+      - 6379:6379
+
   web:
     build: .
     image: nfc_card_game
@@ -30,3 +38,4 @@ volumes:
   postgres-data:
   staticfiles-data:
   media-data:
+  redisdata:

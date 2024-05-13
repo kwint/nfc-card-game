@@ -16,6 +16,7 @@ pydantic = "^2.6.4"
 schedule = "^1.2.1"
 daphne = "^4.1.2"
 channels = "^4.1.0"
+channels-redis = "^4.2.0"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.9.0"
