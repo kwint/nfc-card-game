@@ -25,6 +25,7 @@ from .logic import (
 )
 from .models.player import Player
 from .models.trading import Mine, PlayerItem, Post, PostRecipe, TeamMine, TeamMineItem
+from .game_loop import SETTINGS
 
 
 def dashboard(request: HttpRequest) -> JsonResponse:
@@ -70,8 +71,7 @@ def describe_mine(mine: Mine | int):
             data_items.append({
                 "name": item.item.name,
                 "amount": item.amount,
-                # TODO: expose effective amount here?
-                "effective": item.amount,
+                "effective": SETTINGS.miner_factors[item.item.name] * item.amount,
             })
 
         data_teams[team_mine.team_id] = {
