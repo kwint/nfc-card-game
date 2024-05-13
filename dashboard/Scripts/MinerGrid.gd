@@ -142,20 +142,19 @@ func get_miner_position(type: Global.MinerType, index: int, hidden_amount = null
 		hidden_amount = self.miners_hidden.get(type, 0);
 	index += hidden_amount;
 	
+	# Height factor in rectangle [0, 1]
+	var height_factor = self.noise.get_noise_1d((type * 100000.3) + float(index) * 100.0);
+	height_factor = scale_float(height_factor, -1.0, 1.0, 0.0, 1.0);
+	
+	# Width factor in rectangle, within range of triangle
+	var width_factor_left = 1.0 - height_factor if !self.flipped else 0.0;
+	var width_factor_right = 1.0 if !self.flipped else height_factor;
+	var width_factor = self.noise.get_noise_1d(float(index) * 38.123);
+	width_factor = scale_float(width_factor, -1.0, 1.0, width_factor_left, width_factor_right);
+	
+	# Scale width and height factor to the reference rectangle
 	var rect = self.reference_grid.get_global_rect();
-	
-	var diagnal_position_factor = self.noise.get_noise_1d((type * 100000.3) + float(index) * 100.0);
-	diagnal_position_factor = scale_float(diagnal_position_factor, -1.0, 1.0, 0.0, 1.0);
-	
-	var offset = rect.size * diagnal_position_factor;
-	# TODO: invert x, do this in a different way?
-	if !self.flipped:
-		offset.x = abs(offset.x - rect.size.x);
-	
-	var horizontal_shift = self.noise.get_noise_1d(float(index) * 38.123);
-	horizontal_shift = scale_float(horizontal_shift, -1.0, 1.0, -0.5, 0.5);
-	offset.x += rect.size.x * horizontal_shift;
-	
+	var offset = rect.size * Vector2(width_factor, height_factor);
 	return rect.position + offset;
 
 
