@@ -15,10 +15,10 @@ func add1():
 
 
 func add2():
-	var amount = $SpinBox1.value;
+	var amount = $SpinBox2.value;
 	game_controller.add_miners(Global.TeamId.TEAM1, Global.MinerType.MINER2, amount, 3 * amount, "Drilboor");
 
 
 func add3():
-	var amount = $SpinBox1.value;
+	var amount = $SpinBox3.value;
 	game_controller.add_miners(Global.TeamId.TEAM1, Global.MinerType.MINER3, amount, 10 * amount, "Bulldozer");
