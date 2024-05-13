@@ -153,6 +153,10 @@ func get_miner_position(type: Global.MinerType, index: int, hidden_amount = null
 	self.random.set_seed(base_seed + index);
 	var height_factor = self.random.randf_range(MINER_HIGHEST_POSITION, MINER_LOWEST_POSITION);
 	
+	# Slowly increase height range from center
+	if index < 45:
+		height_factor = scale_float(height_factor, 0.0, 1.0, max(0.45 - index * 0.01, 0.0), min(0.55 + index * 0.01, 1.0));
+	
 	# Width factor in rectangle, within range of triangle
 	var width_factor_left = 1.0 - height_factor if !self.flipped else 0.0;
 	var width_factor_right = 1.0 if !self.flipped else height_factor;
