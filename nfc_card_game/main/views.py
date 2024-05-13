@@ -47,7 +47,8 @@ def index(request):
 
 
 def get_player_register(request: HttpRequest):
-    form = PlayerForm(player)
+    player_instance = Player.objects.get(card_uuid=request.path.split('/')[-1])
+    form = PlayerForm(instance=player_instance)
     return render(request, "register.html", {"form": form})
 
 
@@ -170,7 +171,7 @@ def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
     except Player.DoesNotExist:
         player = None
 
-    if player is None or player.name == "":
+    if player is None or player.name == "" or player.team == None:
         return get_player_register(request)
 
     if GameSettings.object().mode == GameSettings.GameMode.TRADING:
@@ -184,8 +185,9 @@ def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
 
 
 def register_player(request: HttpRequest):
+    player_instance = Player.objects.get(card_uuid=request.POST['card_uuid'])
     if request.method == "POST":
-        form = PlayerForm(request.POST)
+        form = PlayerForm(request.POST, instance=player_instance)
         if form.is_valid():
             player = form.save()
             return HttpResponseRedirect(f"/player/{player.card_uuid}")

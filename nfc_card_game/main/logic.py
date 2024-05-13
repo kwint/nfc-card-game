@@ -247,7 +247,6 @@ def handle_mine_scan(
     changes.append(player_wallet)
     changes.append(mine)
     commit_changes(changes)
-    print(mine.mine.currency)
 
     return ActionInfo(
         log="Miner's afgeleverd",
