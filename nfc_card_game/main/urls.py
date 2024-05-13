@@ -13,6 +13,7 @@ urlpatterns = [
     path("register-player/", views.register_player, name="register-player"),
     path("stop-game-loop", game_loop.stop_scheduler, name="stop-game-loop"),
     path("start-game-loop", game_loop.start_scheduler, name="start-game-loop"),
+    path("clear-session", views.clear_session, name="clear-session"),
     path("api/dashboard", api.dashboard, name="api/dashboard"),
     path("api/dashboard/<int:mine_id>", api.dashboard_mine, name="api/dashboard-mine"),
 ]

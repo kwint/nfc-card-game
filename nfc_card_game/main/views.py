@@ -223,3 +223,9 @@ def dashboard(request: HttpRequest) -> HttpResponse:
     )
     data = {"player_items": pi, "team_mines": tm, "team_mine_items": tmi}
     return render(request, "trading/dashboard.html", data)
+
+
+def clear_session(request: HttpRequest) -> HttpRequest:
+    request.session.pop("post", None)
+    request.session.pop("mine", None)
+    return HttpResponse("Cleared session")
