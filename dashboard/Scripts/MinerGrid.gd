@@ -3,13 +3,16 @@ extends Node2D
 const MINER_PREFAB = preload("res://Prefabs/Miner.tscn");
 const FLOWING_LABEL_PREFAB = preload("res://Prefabs/FlowingLabel.tscn");
 const FLOWING_LABEL_TEXT_SCALE: float = 0.7;
+# Maximum number of miner instances per type
+const MAX_RENDERED_MINERS: int = 10_000;
 
 @export var flipped: bool;
 @export var color: Color = Color.WHITE;
 @export var reference_grid: Control;
 
 var miners = {};
-var noise = FastNoiseLite.new()
+var miner_offsets = {};
+var noise = FastNoiseLite.new();
 
 
 func _ready():
@@ -55,6 +58,13 @@ func _add_miner_to_list(type: Global.MinerType, miner):
 	if !self.miners.has(type):
 		self.miners[type] = [];
 	self.miners[type].append(miner);
+	
+	var overflow = max(self.miners[type].size() - MAX_RENDERED_MINERS, 0);
+	if overflow > 0:
+		self.miners[type].pop_front().destroy();
+		if !self.miner_offsets.has(type):
+			self.miner_offsets[type] = 0;
+		self.miner_offsets[type] += 1;
 
 
 func set_miners(type: Global.MinerType, amount: int, animate_text = null):
@@ -83,13 +93,20 @@ func count_miners(type: Global.MinerType) -> int:
 func reposition_miners():
 	for type in self.miners:
 		var miners = self.miners[type];
+		var index_offset = self.miner_offsets[type] if self.miner_offsets.has(type) else 0;
 		for i in range(miners.size()):
-			miners[i].position = self.get_miner_position(type, i);
+			miners[i].position = self.get_miner_position(type, i, index_offset);
 
 
-func get_miner_position(type: Global.MinerType, index: int) -> Vector2:
+func get_miner_position(type: Global.MinerType, index: int, index_offset = null) -> Vector2:
 	if self.reference_grid == null:
 		return Vector2.ZERO;
+	
+	# Offset index to prevent position jumps when removing old miners
+	if index_offset == null && self.miner_offsets.has(type):
+		index_offset = self.miner_offsets[type];
+	if index_offset != null:
+		index += index_offset;
 	
 	var rect = self.reference_grid.get_global_rect();
 	
