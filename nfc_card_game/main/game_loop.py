@@ -117,14 +117,12 @@ def start_scheduler(request):
     scheduler = Scheduler()
     scheduler.every().second.do(game_loop)
     cease_continuous_run = scheduler.run_continuously()
-    return render(request, "msg.html", {"text": "started!"})
+    return render(request, "msg.html", {"text": "Game loop started"})
 
 
 @login_required
 def stop_scheduler(request):
     global cease_continuous_run
-    if not request.user.is_authenticated:
-        raise render(request, "msg.html", {"text": "started!"})
 
     if cease_continuous_run is None:
         raise ValueError("Game loop was not running")
@@ -132,7 +130,7 @@ def stop_scheduler(request):
     cease_continuous_run.set()
     logger.info("Stopped game loop")
     cease_continuous_run = None
-    return render(request, "msg.html", {"text": "Stopped game loop"})
+    return render(request, "msg.html", {"text": "Game loop stopped"})
 
 
 def run_continuously(self, interval=1) -> threading.Event:
