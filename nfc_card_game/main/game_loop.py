@@ -1,4 +1,5 @@
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
+from django.shortcuts import render
 from schedule import Scheduler
 from asgiref.sync import async_to_sync
 import channels
@@ -7,7 +8,7 @@ import time
 from pydantic import BaseModel, Field
 from nfc_card_game.main.models.trading import MinerType, TeamMine, TeamMineItem
 import logging
-
+from django.contrib.auth.decorators import login_required
 from . import api_consumer
 
 logger = logging.getLogger(__name__)
@@ -49,7 +50,7 @@ def update_team_mines():
             "type": "event_handler",
             "event_id": api_consumer.ChannelEventType.GAME_LOOP_TICKED.value,
             "data": {},
-        }
+        },
     )
 
 
@@ -78,7 +79,7 @@ def update_team_mine(team_mine: TeamMine):
                 "team_id": team_mine.team_id,
                 "money": team_mine.money,
             },
-        }
+        },
     )
 
 
@@ -100,8 +101,15 @@ def get_profit(amount: int, balance: int):
 cease_continuous_run: threading.Event | None = None
 
 
-def start_scheduler(_):
+def block_if_not_authenticated(request):
+    if not request.user.is_authenticated:
+        return render(request, "msg.html", {"text": "Not authenticated!"})
+
+
+@login_required
+def start_scheduler(request):
     global cease_continuous_run
+
     if cease_continuous_run is not None:
         raise ValueError("Game loop is already running")
 
@@ -109,18 +117,22 @@ def start_scheduler(_):
     scheduler = Scheduler()
     scheduler.every().second.do(game_loop)
     cease_continuous_run = scheduler.run_continuously()
-    return HttpResponse("started!")
+    return render(request, "msg.html", {"text": "started!"})
 
 
-def stop_scheduler(_):
+@login_required
+def stop_scheduler(request):
     global cease_continuous_run
+    if not request.user.is_authenticated:
+        raise render(request, "msg.html", {"text": "started!"})
+
     if cease_continuous_run is None:
         raise ValueError("Game loop was not running")
 
     cease_continuous_run.set()
     logger.info("Stopped game loop")
     cease_continuous_run = None
-    return HttpResponse("Stopped game loop")
+    return render(request, "msg.html", {"text": "Stopped game loop"})
 
 
 def run_continuously(self, interval=1) -> threading.Event:

@@ -228,4 +228,4 @@ def dashboard(request: HttpRequest) -> HttpResponse:
 def clear_session(request: HttpRequest) -> HttpRequest:
     request.session.pop("post", None)
     request.session.pop("mine", None)
-    return HttpResponse("Cleared session")
+    return render(request, "msg.html", {"text": "Cleared session"})
