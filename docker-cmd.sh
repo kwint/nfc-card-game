@@ -9,7 +9,5 @@ if [ "$1" = "--debug" ]; then
 else
   # Gunicorn
   exec daphne -p 8000 "nfc_card_game.wsgi:application" \
-    --workers "$GUNICORN_WORKERS" \
-    --http-timeout "$GUNICORN_TIMEOUT" \
-    --log-level "$GUNICORN_LOG_LEVEL"
+    --http-timeout "$GUNICORN_TIMEOUT"
 fi
