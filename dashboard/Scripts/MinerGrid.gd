@@ -160,7 +160,7 @@ func get_miner_position(type: Global.MinerType, index: int, hidden_amount = null
 	# Width factor in rectangle, within range of triangle
 	var width_factor_left = 1.0 - height_factor if !self.flipped else 0.0;
 	var width_factor_right = 1.0 if !self.flipped else height_factor;
-	var width_factor = self.noise.get_noise_1d(float(base_seed + index) * 38.123);
+	var width_factor = self.noise.get_noise_1d(base_seed + index);
 	width_factor = scale_float(width_factor, -1.0, 1.0, width_factor_left, width_factor_right);
 	
 	# Scale width and height factor to the reference rectangle
