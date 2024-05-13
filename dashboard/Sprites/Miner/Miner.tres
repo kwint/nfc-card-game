@@ -1,7 +1,7 @@
 [gd_resource type="SpriteFrames" load_steps=16 format=3 uid="uid://cnyvuugqqjwti"]
 
 [ext_resource type="Texture2D" uid="uid://bol0t2c4nfnu7" path="res://Sprites/Warrior_1/Attack_1.png" id="1_v7avr"]
-[ext_resource type="Texture2D" uid="uid://byhl5oi3cbehn" path="res://Sprites/Warrior_1/Attack_2.png" id="2_qbske"]
+[ext_resource type="Texture2D" uid="uid://63yl260n2bji" path="res://Sprites/Drill/drill_sheet.png" id="2_stmcw"]
 [ext_resource type="Texture2D" uid="uid://ccmjo23hx2kyu" path="res://Sprites/Warrior_1/Attack_3.png" id="3_ki554"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hpmc0"]
@@ -20,21 +20,21 @@ region = Rect2(192, 0, 96, 96)
 atlas = ExtResource("1_v7avr")
 region = Rect2(288, 0, 96, 96)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_bvaka"]
-atlas = ExtResource("2_qbske")
-region = Rect2(0, 0, 96, 96)
+[sub_resource type="AtlasTexture" id="AtlasTexture_vt5fi"]
+atlas = ExtResource("2_stmcw")
+region = Rect2(99, 0, 33, 27)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_gwtxu"]
-atlas = ExtResource("2_qbske")
-region = Rect2(96, 0, 96, 96)
+[sub_resource type="AtlasTexture" id="AtlasTexture_pxmol"]
+atlas = ExtResource("2_stmcw")
+region = Rect2(66, 0, 33, 27)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_a306i"]
-atlas = ExtResource("2_qbske")
-region = Rect2(192, 0, 96, 96)
+[sub_resource type="AtlasTexture" id="AtlasTexture_a5hvd"]
+atlas = ExtResource("2_stmcw")
+region = Rect2(33, 0, 33, 27)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_0dk40"]
-atlas = ExtResource("2_qbske")
-region = Rect2(288, 0, 96, 96)
+[sub_resource type="AtlasTexture" id="AtlasTexture_hmaul"]
+atlas = ExtResource("2_stmcw")
+region = Rect2(0, 0, 33, 27)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2cwn3"]
 atlas = ExtResource("3_ki554")
@@ -73,20 +73,20 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_bvaka")
+"texture": SubResource("AtlasTexture_vt5fi")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_gwtxu")
+"texture": SubResource("AtlasTexture_pxmol")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_a306i")
+"texture": SubResource("AtlasTexture_a5hvd")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_0dk40")
+"texture": SubResource("AtlasTexture_hmaul")
 }],
 "loop": true,
 "name": &"miner2",
-"speed": 5.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
