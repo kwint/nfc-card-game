@@ -70,6 +70,8 @@ def describe_mine(mine: Mine | int):
         for item in team_mine.teammineitem_set.all().order_by("item_id"):
             data_items.append({
                 "name": item.item.name,
+                "miner_type": SETTINGS.miner_type_ids[item.item.name],
+                "miner_type_name": item.item.get_name_display(),
                 "amount": item.amount,
                 "effective": SETTINGS.miner_factors[item.item.name] * item.amount,
             })

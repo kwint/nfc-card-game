@@ -209,8 +209,7 @@ def handle_mine_scan(
                     "data": {
                         "mine_id": mine_item.team_mine.mine_id,
                         "team_id": mine_item.team_mine.team_id,
-                        # TODO(timvisee): define proper type here!
-                        "miner_type": 1,
+                        "miner_type": SETTINGS.miner_type_ids[mine_item.item.name],
                         "miner_type_name": mine_item.item.get_name_display(),
                         "amount": item.amount,
                         "effective": SETTINGS.miner_factors[mine_item.item.name] * item.amount,

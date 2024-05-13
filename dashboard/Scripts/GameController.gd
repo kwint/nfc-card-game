@@ -73,11 +73,10 @@ func process_stats_team(team_id: Global.TeamId, team: Dictionary):
 	self.update_money(team_id, team["money"], false);
 	
 	# Update miners
-	# TODO: derive miner types from global enum
 	var items = team["items"];
 	for i in range(items.size()):
 		var item = items[i];
-		self.set_miners(team_id, i + 1, item["amount"], item["effective"]);
+		self.set_miners(team_id, item["miner_type"], item["amount"], item["effective"]);
 
 
 func update_money(team_id: Global.TeamId, amount: int, flowing_label: bool = true):
