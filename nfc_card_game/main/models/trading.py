@@ -11,9 +11,9 @@ class TypeType(models.TextChoices):
 
 
 class CoinType(models.TextChoices):
-    BLAUW = "Blauw", u"\U0001F535"
-    GROEN = "Groen", u"\U0001F7E2"
-    ROOD = "Rood", u"\U0001F534"
+    BLAUW = "Blauw", "\U0001f535"
+    GROEN = "Groen", "\U0001f7e2"
+    ROOD = "Rood", "\U0001f534"
 
 
 class ResourceType(models.TextChoices):
@@ -53,7 +53,7 @@ class Item(models.Model):
 class PlayerItem(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
-    amount = models.IntegerField()
+    amount = models.BigIntegerField()
 
     class Meta:
         unique_together = ("player", "item")
@@ -84,7 +84,7 @@ class Mine(models.Model):
 class TeamMine(models.Model):
     mine = models.ForeignKey(Mine, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    money = models.IntegerField()
+    money = models.BigIntegerField()
 
     class Meta:
         unique_together = ("mine", "team")
@@ -96,7 +96,7 @@ class TeamMine(models.Model):
 class TeamMineItem(models.Model):
     team_mine = models.ForeignKey(TeamMine, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    amount = models.IntegerField(default=0)
+    amount = models.BigIntegerField(default=0)
 
     class Meta:
         unique_together = ("team_mine", "item")
