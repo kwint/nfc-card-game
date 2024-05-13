@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ccmjo23hx2kyu"
-path="res://.godot/imported/Attack_3.png-1be034fe33645a57bad50c4790c7147d.ctex"
+uid="uid://2gdfs0vqwefv"
+path="res://.godot/imported/bulldozer_sheet.png-6a6e5d5dfad54e9822aa94f096989d04.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/Warrior_1/Attack_3.png"
-dest_files=["res://.godot/imported/Attack_3.png-1be034fe33645a57bad50c4790c7147d.ctex"]
+source_file="res://Sprites/Bulldozer/bulldozer_sheet.png"
+dest_files=["res://.godot/imported/bulldozer_sheet.png-6a6e5d5dfad54e9822aa94f096989d04.ctex"]
 
 [params]
 

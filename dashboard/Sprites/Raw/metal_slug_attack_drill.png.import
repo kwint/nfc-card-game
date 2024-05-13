@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bol0t2c4nfnu7"
-path="res://.godot/imported/Attack_1.png-a4e258e02b9d13d92e3e542af023cf3f.ctex"
+uid="uid://0jllhvdx48b2"
+path="res://.godot/imported/metal_slug_attack_drill.png-7f41e6e344f91ecffb97db1a76a9b5c1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/Warrior_1/Attack_1.png"
-dest_files=["res://.godot/imported/Attack_1.png-a4e258e02b9d13d92e3e542af023cf3f.ctex"]
+source_file="res://Sprites/Raw/metal_slug_attack_drill.png"
+dest_files=["res://.godot/imported/metal_slug_attack_drill.png-7f41e6e344f91ecffb97db1a76a9b5c1.ctex"]
 
 [params]
 

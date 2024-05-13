@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://byhl5oi3cbehn"
-path="res://.godot/imported/Attack_2.png-baeb08a73f5375bdb4faf2f35cb78ce1.ctex"
+uid="uid://63yl260n2bji"
+path="res://.godot/imported/drill_sheet.png-25574385f761c06352521bffa3d8c927.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/Warrior_1/Attack_2.png"
-dest_files=["res://.godot/imported/Attack_2.png-baeb08a73f5375bdb4faf2f35cb78ce1.ctex"]
+source_file="res://Sprites/Drill/drill_sheet.png"
+dest_files=["res://.godot/imported/drill_sheet.png-25574385f761c06352521bffa3d8c927.ctex"]
 
 [params]
 
