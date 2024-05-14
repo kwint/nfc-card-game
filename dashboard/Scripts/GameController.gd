@@ -2,7 +2,7 @@ extends Node
 
 # TODO: change to 60*10 on release?
 const FETCH_STATS_INTERVAL: int = 60 * 1;
-const FETCH_STATS_RETRY_INTERVAL: int = 10;
+const FETCH_STATS_FAIL_RETRY_DELAY: int = 10;
 
 @onready var stats_http_client = $StatsHttpClient;
 @onready var mines = {
@@ -51,8 +51,8 @@ func fetch_stats():
 func _on_stats_fetched(result, _response_code, _headers, body):
 	# Handle request failures
 	if result != HTTPRequest.RESULT_SUCCESS:
-		print("Failed to request mine stats (result: ", result, "), retrying in ", FETCH_STATS_RETRY_INTERVAL, " seconds...");
-		self.fetch_stats_at = Global.now() + FETCH_STATS_RETRY_INTERVAL;
+		print("Failed to request mine stats (result: ", result, "), retrying in ", FETCH_STATS_FAIL_RETRY_DELAY, " seconds...");
+		self.fetch_stats_at = Global.now() + FETCH_STATS_FAIL_RETRY_DELAY;
 		return;
 	
 	body = body.get_string_from_utf8();
