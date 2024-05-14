@@ -79,5 +79,5 @@ func process_stats_team(team_id: Global.TeamId, team: Dictionary):
 		self.set_miners(team_id, item["miner_type"], item["amount"], item["effective"]);
 
 
-func update_money(team_id: Global.TeamId, amount: int, flowing_label: bool = true):
-	self.money[team_id].set_money(amount, flowing_label);
+func update_money(team_id: Global.TeamId, amount: int, flowing_label: bool = true, label = null):
+	self.money[team_id].set_money(amount, flowing_label, label);

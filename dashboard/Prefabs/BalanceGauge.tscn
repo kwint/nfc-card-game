@@ -10,7 +10,6 @@ alignment = 1
 script = ExtResource("1_jtrf0")
 
 [node name="Gauge1" type="ProgressBar" parent="."]
-modulate = Color(1, 0, 0, 1)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -19,7 +18,6 @@ fill_mode = 3
 show_percentage = false
 
 [node name="Gauge2" type="ProgressBar" parent="."]
-modulate = Color(0, 1, 0, 1)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -28,7 +26,6 @@ fill_mode = 3
 show_percentage = false
 
 [node name="Gauge3" type="ProgressBar" parent="."]
-modulate = Color(0, 0, 1, 1)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1

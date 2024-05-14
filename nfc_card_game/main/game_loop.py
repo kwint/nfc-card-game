@@ -72,6 +72,9 @@ def update_team_mine(team_mine: TeamMine):
 
     balance = min(miners.values())
     profit = sum(get_profit(amount, balance) for amount in miners.values())
+    if profit <= 0:
+        return
+
     team_mine.money += profit
     team_mine.save()
 
@@ -86,7 +89,6 @@ def update_team_mine(team_mine: TeamMine):
                 "mine_id": team_mine.mine_id,
                 "team_id": team_mine.team_id,
                 "money": team_mine.money,
-                "miners": miners,
             },
         },
     )

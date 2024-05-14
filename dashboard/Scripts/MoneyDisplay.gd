@@ -21,7 +21,7 @@ func _ready():
 	self.set_money(0);
 
 
-func set_money(money: int, animate: bool = true) -> void:
+func set_money(money: int, animate: bool = true, label = null) -> void:
 	var diff = money - self.money;
 	var positive = diff > 0;
 	
@@ -32,7 +32,7 @@ func set_money(money: int, animate: bool = true) -> void:
 	# Animations
 	if animate && diff != 0:
 		self.animate_flash(positive);
-		self.animate_flowing_label(diff);
+		self.animate_flowing_label(diff, label);
 
 
 func format_money(amount: int, show_sign: bool = true, show_symbol: bool = true, show_positive_sign: bool = false) -> String:
@@ -65,10 +65,15 @@ func animate_flash(positive: bool):
 	self.flash_tween.tween_property(self, "modulate", self.default_modulate, FLASH_DURATION);
 	
 
-func animate_flowing_label(diff: int):
+func animate_flowing_label(diff: int, label = null):
 	# Detemrine label parameters
 	var positive = diff > 0;
 	var text = self.format_money(diff, true, true, true);
+	if label != null:
+		if !self.right:
+			text = str(text, " → ", label);
+		else:
+			text = str(label, " ← ", text);
 	var color = COLOR_POSITIVE if positive else COLOR_NEGATIVE;
 	var label_direction = Vector2.RIGHT if !self.right else Vector2.LEFT;
 	var rect = self.label.get_global_rect();
