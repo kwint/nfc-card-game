@@ -5,6 +5,8 @@ from django.db.models import Sum
 from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_list_or_404, get_object_or_404, render
 
+from django.db import connection
+
 from nfc_card_game.main.color import (
     COLOR_HOME_UUID,
     COLOR_JOKER_UUID,
@@ -109,7 +111,9 @@ def handle_trading_player(request: HttpRequest, player: Player) -> HttpResponse:
     player_items = PlayerItem.objects.filter(player=player).order_by(
         "item__currency", "item__name"
     )
+    connection.force_debug_cursor = False
     team_mines = TeamMine.objects.filter(team=player.team)
+    connection.force_debug_cursor = False
 
     if request.method == "POST":
         return handle_trading_player_post(request, player, player_items, player_items)
@@ -184,6 +188,7 @@ def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
 
     if GameSettings.object().mode == GameSettings.GameMode.COLOR:
         return handle_color_player(request, player)
+    print("\n"*10)
 
 
 def register_player(request: HttpRequest):
