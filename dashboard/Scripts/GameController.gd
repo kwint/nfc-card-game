@@ -29,7 +29,7 @@ func _ready():
 
 func _process(_delta):
 	# Keep fetching stats to prevent game desync
-	if self.fetch_stats_at <= self.now():
+	if self.fetch_stats_at <= Global.now():
 		self.fetch_stats();
 
 
@@ -44,7 +44,7 @@ func set_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: in
 
 
 func fetch_stats():
-	self.fetch_stats_at = self.now() + FETCH_STATS_INTERVAL;
+	self.fetch_stats_at = Global.now() + FETCH_STATS_INTERVAL;
 	stats_http_client.request(Global.API_URL + Global.API_PATH_DASHBOARD + "/" + str(Global.MINE_ID));
 
 
@@ -52,7 +52,7 @@ func _on_stats_fetched(result, _response_code, _headers, body):
 	# Handle request failures
 	if result != HTTPRequest.RESULT_SUCCESS:
 		print("Failed to request mine stats (result: ", result, "), retrying in ", FETCH_STATS_RETRY_INTERVAL, " seconds...");
-		self.fetch_stats_at = self.now() + FETCH_STATS_RETRY_INTERVAL;
+		self.fetch_stats_at = Global.now() + FETCH_STATS_RETRY_INTERVAL;
 		return;
 	
 	body = body.get_string_from_utf8();
@@ -92,8 +92,3 @@ func process_stats_team(team_id: Global.TeamId, team: Dictionary):
 
 func update_money(team_id: Global.TeamId, amount: int, flowing_label: bool = true, label = null):
 	self.money[team_id].set_money(amount, flowing_label, label);
-
-
-func now() -> int:
-	@warning_ignore("integer_division")
-	return Time.get_ticks_msec() / 1000;
