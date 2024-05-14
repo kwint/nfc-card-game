@@ -200,22 +200,23 @@ def handle_mine_scan(
             }
 
             # Broadcast for API clients: miners added
-            channel_layer = channels.layers.get_channel_layer()
-            async_to_sync(channel_layer.group_send)(
-                api_consumer.CHANNEL_NAME,
-                {
-                    "type": api_consumer.CHANNEL_EVENT_HANDLER,
-                    "event_id": api_consumer.ChannelEventType.MINE_MINERS_ADDED.value,
-                    "data": {
-                        "mine_id": mine_item.team_mine.mine_id,
-                        "team_id": mine_item.team_mine.team_id,
-                        "miner_type": SETTINGS.miner_type_ids[mine_item.item.name],
-                        "miner_type_name": mine_item.item.get_name_display(),
-                        "amount": item.amount,
-                        "effective": SETTINGS.miner_factors[mine_item.item.name] * item.amount,
-                    },
-                }
-            )
+            if item.amount != 0:
+                channel_layer = channels.layers.get_channel_layer()
+                async_to_sync(channel_layer.group_send)(
+                    api_consumer.CHANNEL_NAME,
+                    {
+                        "type": api_consumer.CHANNEL_EVENT_HANDLER,
+                        "event_id": api_consumer.ChannelEventType.MINE_MINERS_ADDED.value,
+                        "data": {
+                            "mine_id": mine_item.team_mine.mine_id,
+                            "team_id": mine_item.team_mine.team_id,
+                            "miner_type": SETTINGS.miner_type_ids[mine_item.item.name],
+                            "miner_type_name": mine_item.item.get_name_display(),
+                            "amount": item.amount,
+                            "effective": SETTINGS.miner_factors[mine_item.item.name] * item.amount,
+                        },
+                    }
+                )
 
             changes.append(mine_item)
             changes.append(player_item)
@@ -229,19 +230,20 @@ def handle_mine_scan(
     mine.money = mine.money - received_money
 
     # Broadcast for API clients: mine money update
-    channel_layer = channels.layers.get_channel_layer()
-    async_to_sync(channel_layer.group_send)(
-        api_consumer.CHANNEL_NAME,
-        {
-            "type": api_consumer.CHANNEL_EVENT_HANDLER,
-            "event_id": api_consumer.ChannelEventType.MINE_MONEY_UPDATE.value,
-            "data": {
-                "mine_id": mine.mine_id,
-                "team_id": mine.team_id,
-                "money": mine.money,
-            },
-        }
-    )
+    if mine.money != 0:
+        channel_layer = channels.layers.get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            api_consumer.CHANNEL_NAME,
+            {
+                "type": api_consumer.CHANNEL_EVENT_HANDLER,
+                "event_id": api_consumer.ChannelEventType.MINE_MONEY_UPDATE.value,
+                "data": {
+                    "mine_id": mine.mine_id,
+                    "team_id": mine.team_id,
+                    "money": mine.money,
+                },
+            }
+        )
 
     changes.append(player_wallet)
     changes.append(mine)
