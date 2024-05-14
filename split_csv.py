@@ -2,7 +2,7 @@ from pathlib import Path
 from itertools import batched
 
 SPLIT_LINES = 50
-FILE = "sc20-nfc-card.csv"
+FILE = "card-export-v2.csv"
 
 with Path(FILE).open("r") as fp:
     lines = fp.readlines()
