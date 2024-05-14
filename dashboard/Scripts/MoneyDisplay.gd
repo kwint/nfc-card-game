@@ -70,7 +70,10 @@ func animate_flowing_label(diff: int, label = null):
 	var positive = diff > 0;
 	var text = self.format_money(diff, true, true, true);
 	if label != null:
-		text = str(text, " → ", label);
+		if !self.right:
+			text = str(text, " → ", label);
+		else:
+			text = str(label, " ← ", text);
 	var color = COLOR_POSITIVE if positive else COLOR_NEGATIVE;
 	var label_direction = Vector2.RIGHT if !self.right else Vector2.LEFT;
 	var rect = self.label.get_global_rect();
