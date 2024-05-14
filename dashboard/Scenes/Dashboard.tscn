@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://ca1ddejybbu0g"]
+[gd_scene load_steps=12 format=3 uid="uid://ca1ddejybbu0g"]
 
 [ext_resource type="Texture2D" uid="uid://spx3oh7upq1v" path="res://Sprites/mountain.png" id="1_tusvk"]
 [ext_resource type="Script" path="res://Scripts/GameController.gd" id="1_y0gn5"]
 [ext_resource type="Theme" uid="uid://n2sj11gmuqmo" path="res://Themes/MoneyFont.tres" id="2_1f4xi"]
 [ext_resource type="Script" path="res://Scripts/WebSocketClient.gd" id="2_tpx8r"]
+[ext_resource type="Texture2D" uid="uid://dvnie2pckbp4y" path="res://Sprites/Raw/felt2.jpg" id="3_2mjhd"]
 [ext_resource type="Script" path="res://Scripts/MinerGrid.gd" id="3_gpr4m"]
 [ext_resource type="Script" path="res://Scripts/MoneyDisplay.gd" id="3_o437a"]
 [ext_resource type="PackedScene" uid="uid://c223vha4r3wq7" path="res://Prefabs/BalanceGauge.tscn" id="3_oc27c"]
@@ -32,14 +33,16 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Background" type="ColorRect" parent="Viewport"]
+[node name="Background" type="TextureRect" parent="Viewport"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.180392, 0.192157, 0.345098, 1)
+texture = ExtResource("3_2mjhd")
+expand_mode = 1
+stretch_mode = 6
 
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="Viewport"]
 layout_mode = 1
