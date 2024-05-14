@@ -2,6 +2,7 @@ extends Node
 
 # TODO: change to 60*10 on release?
 const FETCH_STATS_INTERVAL: int = 60 * 1;
+const FETCH_STATS_FAIL_RETRY_DELAY: int = 10;
 
 @onready var stats_http_client = $StatsHttpClient;
 @onready var mines = {
@@ -28,9 +29,7 @@ func _ready():
 
 func _process(_delta):
 	# Keep fetching stats to prevent game desync
-	@warning_ignore("integer_division")
-	var now = Time.get_ticks_msec() / 1000;
-	if self.fetch_stats_at <= now:
+	if self.fetch_stats_at <= Global.now():
 		self.fetch_stats();
 
 
@@ -45,15 +44,27 @@ func set_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: in
 
 
 func fetch_stats():
-	@warning_ignore("integer_division")
-	self.fetch_stats_at = Time.get_ticks_msec() / 1000 + FETCH_STATS_INTERVAL;
+	self.fetch_stats_at = Global.now() + FETCH_STATS_INTERVAL;
 	stats_http_client.request(Global.API_URL + Global.API_PATH_DASHBOARD + "/" + str(Global.MINE_ID));
 
 
-func _on_stats_fetched(_result, _response_code, _headers, body):
-	var json = JSON.parse_string(body.get_string_from_utf8())
-	if json == null:
-		print("Got malformed JSON body: ", body);
+func _on_stats_fetched(result, _response_code, _headers, body):
+	# Handle request failures
+	if result != HTTPRequest.RESULT_SUCCESS:
+		print("Failed to request mine stats (result: ", result, "), retrying in ", FETCH_STATS_FAIL_RETRY_DELAY, " seconds...");
+		self.fetch_stats_at = Global.now() + FETCH_STATS_FAIL_RETRY_DELAY;
+		return;
+	
+	body = body.get_string_from_utf8();
+	if body.is_empty():
+		print("Got malformed JSON body, ignoring: ", body);
+		return;
+	
+	var json = JSON.parse_string(body);
+	if !json:
+		print("Got malformed JSON body, ignoring: ", body);
+		return;
+		
 	self.process_stats(json);
 
 
