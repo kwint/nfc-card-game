@@ -86,7 +86,6 @@ def update_team_mine(team_mine: TeamMine):
                 "mine_id": team_mine.mine_id,
                 "team_id": team_mine.team_id,
                 "money": team_mine.money,
-                "miners": miners,
             },
         },
     )
