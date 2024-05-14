@@ -241,6 +241,7 @@ def handle_mine_scan(
                     "mine_id": mine.mine_id,
                     "team_id": mine.team_id,
                     "money": mine.money,
+                    "label": player.name or None,
                 },
             }
         )

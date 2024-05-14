@@ -109,7 +109,7 @@ func handle_mine_state(state: Dictionary):
 func handle_mine_money_update(state: Dictionary):
 	if state["mine_id"] != Global.MINE_ID:
 		return;
-	self.game_controller.update_money(state["team_id"], state["money"]);
+	self.game_controller.update_money(state["team_id"], state["money"], true, state.get("label"));
 
 
 func handle_mine_miners_added(state: Dictionary):
