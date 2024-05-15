@@ -44,7 +44,7 @@ func reconnect():
 	
 	# Initialize and connect new socket instance
 	self.socket = WebSocketPeer.new();
-	self.socket.connect_to_url(Settings.WEBSOCKET_API_URL);
+	self.socket.connect_to_url(Settings.get_websocket_api_url());
 	
 	
 func poll_socket():
