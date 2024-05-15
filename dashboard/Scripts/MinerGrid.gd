@@ -6,7 +6,7 @@ const FLOWING_LABEL_TEXT_SCALE: float = 0.7;
 # Maximum number of miner instances per type
 const MAX_RENDERED_MINERS: int = 5_000;
 const MINER_HIGHEST_POSITION: float = 0.05;
-const MINER_LOWEST_POSITION: float = 0.9;
+const MINER_LOWEST_POSITION: float = 0.92;
 
 @export var flipped: bool;
 @export var color: Color = Color.WHITE;
