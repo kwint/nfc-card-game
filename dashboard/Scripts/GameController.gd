@@ -31,9 +31,13 @@ func _ready():
 
 
 func _process(_delta):
-	# Cycle mines
+	# Refresh current mine or cycle to next mine
+	if Input.is_action_just_pressed("reconnect"):
+		self.reconnect();
+		return;
 	if Input.is_action_just_pressed("next_mine"):
 		self.cycle_mine();
+		return;
 	
 	# Keep fetching stats to prevent game desync
 	if self.fetch_stats_at <= Global.now():
@@ -54,7 +58,7 @@ func update_money(team_id: Global.TeamId, amount: int, flowing_label: bool = tru
 	self.money[team_id].set_money(amount, flowing_label, label);
 
 
-func switch_mine(mine_id: int):
+func reconnect():
 	# Reset current visuals
 	for team_id in Global.TeamId.values():
 		self.update_money(team_id, 0, false);
@@ -62,9 +66,15 @@ func switch_mine(mine_id: int):
 			self.set_miners(team_id, miner_type, 0, 0);
 	
 	# Update miner ID and reconnect
-	self.mine_id = mine_id;
 	self.fetch_stats();
 	self.websocket_client.reconnect();
+
+
+func switch_mine(mine_id: int):
+	if !Global.MINE_IDS.has(mine_id):
+		assert(false, "Unknown mine ID");
+	self.mine_id = mine_id;
+	self.reconnect();
 
 
 func cycle_mine():
