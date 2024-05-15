@@ -55,7 +55,7 @@ func _ready():
 	stats_http_client.request_completed.connect(_on_stats_fetched)
 	
 	# Connect on start
-	self.switch_mine.call_deferred(Settings.MINE_IDS[0]);
+	self.switch_mine.call_deferred(Settings.get_default_mine());
 
 
 func _process(_delta):
@@ -136,7 +136,7 @@ func get_mine_index() -> int:
 func fetch_stats():
 	self.fetch_stats_at = Settings.now() + FETCH_STATS_INTERVAL;
 	self.stats_http_client.cancel_request();
-	self.stats_http_client.request(Settings.API_URL + Settings.API_PATH_DASHBOARD + "/" + str(self.mine_id));
+	self.stats_http_client.request(Settings.get_api_url() + Settings.API_PATH_DASHBOARD + "/" + str(self.mine_id));
 
 
 func _on_stats_fetched(result, _response_code, _headers, body):
