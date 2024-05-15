@@ -55,8 +55,8 @@ func _ready():
 func _process(_delta):
 	# Refresh current mine or cycle to next mine
 	if Input.is_action_just_pressed("reconnect"):
+		self.render_status("Reconnect");
 		self.reconnect();
-		self.render_status("Reconnecting");
 		return;
 	if Input.is_action_just_pressed("next_mine"):
 		self.cycle_mine();
@@ -111,7 +111,7 @@ func switch_mine(mine_id: int):
 func cycle_mine():
 	var next_mine_id = Settings.MINE_IDS[(get_mine_index() + 1) % Settings.MINE_IDS.size()];
 	self.switch_mine(next_mine_id);
-	self.render_status("Switched mine");
+	self.render_status(str("Mine ", next_mine_id));
 
 
 func get_mine_index() -> int:
