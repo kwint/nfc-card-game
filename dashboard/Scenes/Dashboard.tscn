@@ -87,13 +87,30 @@ size_flags_horizontal = 3
 border_color = Color(0, 100, 0, 1)
 border_width = 2.0
 
-[node name="TeamPanelLeft" parent="Viewport" instance=ExtResource("5_120pg")]
+[node name="MinersLeft" type="Node2D" parent="." node_paths=PackedStringArray("reference_grid")]
+script = ExtResource("3_gpr4m")
+reference_grid = NodePath("../Viewport/AspectRatio/Columns/MinersLeft")
+
+[node name="MinersRight" type="Node2D" parent="." node_paths=PackedStringArray("reference_grid")]
+script = ExtResource("3_gpr4m")
+flipped = true
+reference_grid = NodePath("../Viewport/AspectRatio/Columns/MinersRight")
+
+[node name="HUD" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TeamPanelLeft" parent="HUD" instance=ExtResource("5_120pg")]
 layout_mode = 0
 
-[node name="Grid" parent="Viewport/TeamPanelLeft/Rows/Debug/Margin" index="0" node_paths=PackedStringArray("game_controller")]
+[node name="Grid" parent="HUD/TeamPanelLeft/Rows/Debug/Margin" index="0" node_paths=PackedStringArray("game_controller")]
 game_controller = NodePath("../../../../../../GameController")
 
-[node name="TeamPanelRight" parent="Viewport" instance=ExtResource("5_120pg")]
+[node name="TeamPanelRight" parent="HUD" instance=ExtResource("5_120pg")]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -103,36 +120,27 @@ offset_right = 0.0
 offset_bottom = 428.0
 grow_horizontal = 0
 
-[node name="Label" parent="Viewport/TeamPanelRight/Rows/Name/Margin" index="0"]
+[node name="Label" parent="HUD/TeamPanelRight/Rows/Name/Margin" index="0"]
 size_flags_horizontal = 8
 text = "Team 2"
 
-[node name="Margin" parent="Viewport/TeamPanelRight/Rows/Money" index="0"]
+[node name="Margin" parent="HUD/TeamPanelRight/Rows/Money" index="0"]
 right = true
 
-[node name="Label" parent="Viewport/TeamPanelRight/Rows/Money/Margin" index="0"]
+[node name="Label" parent="HUD/TeamPanelRight/Rows/Money/Margin" index="0"]
 size_flags_horizontal = 8
 
-[node name="Balance" parent="Viewport/TeamPanelRight/Rows" index="2"]
+[node name="Balance" parent="HUD/TeamPanelRight/Rows" index="2"]
 size_flags_horizontal = 8
 
-[node name="Gauge" parent="Viewport/TeamPanelRight/Rows/Balance/Margin/BalanceGauge/Gauge1" index="1"]
-fill_mode = 1
-
-[node name="Gauge" parent="Viewport/TeamPanelRight/Rows/Balance/Margin/BalanceGauge/Gauge2" index="1"]
-fill_mode = 1
-
-[node name="Gauge" parent="Viewport/TeamPanelRight/Rows/Balance/Margin/BalanceGauge/Gauge3" index="1"]
-fill_mode = 1
-
-[node name="Debug" parent="Viewport/TeamPanelRight/Rows" index="3"]
+[node name="Debug" parent="HUD/TeamPanelRight/Rows" index="3"]
 size_flags_horizontal = 8
 
-[node name="Grid" parent="Viewport/TeamPanelRight/Rows/Debug/Margin" index="0" node_paths=PackedStringArray("game_controller")]
+[node name="Grid" parent="HUD/TeamPanelRight/Rows/Debug/Margin" index="0" node_paths=PackedStringArray("game_controller")]
 game_controller = NodePath("../../../../../../GameController")
 team = 2
 
-[node name="Mine" type="MarginContainer" parent="Viewport"]
+[node name="Mine" type="MarginContainer" parent="HUD"]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -149,17 +157,17 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="Name" type="PanelContainer" parent="Viewport/Mine"]
+[node name="Name" type="PanelContainer" parent="HUD/Mine"]
 layout_mode = 2
 
-[node name="Margin" type="MarginContainer" parent="Viewport/Mine/Name"]
+[node name="Margin" type="MarginContainer" parent="HUD/Mine/Name"]
 layout_mode = 2
 theme_override_constants/margin_left = 15
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 15
 theme_override_constants/margin_bottom = 10
 
-[node name="Label" type="Label" parent="Viewport/Mine/Name/Margin"]
+[node name="Label" type="Label" parent="HUD/Mine/Name/Margin"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
@@ -170,18 +178,8 @@ theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxTexture_w6uij")
 text = "-"
 
-[node name="MinersLeft" type="Node2D" parent="." node_paths=PackedStringArray("reference_grid")]
-script = ExtResource("3_gpr4m")
-reference_grid = NodePath("../Viewport/AspectRatio/Columns/MinersLeft")
-
-[node name="MinersRight" type="Node2D" parent="." node_paths=PackedStringArray("reference_grid")]
-script = ExtResource("3_gpr4m")
-flipped = true
-reference_grid = NodePath("../Viewport/AspectRatio/Columns/MinersRight")
-
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
 
-[editable path="Viewport/TeamPanelLeft"]
-[editable path="Viewport/TeamPanelRight"]
-[editable path="Viewport/TeamPanelRight/Rows/Balance/Margin/BalanceGauge"]
+[editable path="HUD/TeamPanelLeft"]
+[editable path="HUD/TeamPanelRight"]
