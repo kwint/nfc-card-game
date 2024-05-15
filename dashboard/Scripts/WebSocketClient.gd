@@ -1,9 +1,7 @@
 extends Node
 
-@onready var game_controller = $"../../GameController";
-
-var socket = WebSocketPeer.new()
-var connected: bool = false;
+# If the websocket connection fails, reconnect in 5 seconds
+const WEBSOCKET_FAIL_RETRY_DELAY: int = 5;
 
 enum PacketServerType {
 	# data: mine ID
@@ -18,16 +16,44 @@ enum PacketClientType {
 	MineMinersAdded = 4,
 }
 
+@onready var game_controller = $"../../GameController";
+
+var socket = WebSocketPeer.new();
+var connected: bool = false;
+
+# Time in seconds at which we reconnect
+var reconnect_at = null;
+
 
 func _ready():
-	socket.connect_to_url(Global.WEBSOCKET_API_URL);
-
-
-func _process(_delta):
-	# Keep progressing the socket
-	socket.poll()
+	self.reconnect();
 	
-	var state = socket.get_ready_state()
+	
+func _process(_delta):
+	if self.reconnect_at != null && self.reconnect_at <= Global.now():
+		self.reconnect();
+	if self.socket != null:
+		self.poll_socket();
+	
+
+# Initialize and connect the websocket.
+func reconnect():
+	self.reconnect_at = null;
+	
+	# Close any existing socket
+	if self.socket != null:
+		self.socket.close(0, "Reconnecting");
+		self.socket = null;
+	
+	# Initialize and connect new socket instance
+	self.socket = WebSocketPeer.new();
+	self.socket.connect_to_url(Global.WEBSOCKET_API_URL);
+	
+	
+func poll_socket():
+	self.socket.poll()
+	
+	var state = self.socket.get_ready_state()
 	if state == WebSocketPeer.STATE_OPEN:
 		# Call on_connected the first time we connect
 		if !self.connected:
@@ -35,8 +61,8 @@ func _process(_delta):
 			self.on_connected();
 		
 		# Handle incoming packets
-		while socket.get_available_packet_count():
-			var packet_raw = socket.get_packet();
+		while self.socket.get_available_packet_count():
+			var packet_raw = self.socket.get_packet();
 			if packet_raw.is_empty():
 				continue;
 
@@ -60,16 +86,23 @@ func _process(_delta):
 	elif state == WebSocketPeer.STATE_CLOSED:
 		self.connected = false;
 		
-		var code = socket.get_close_code()
-		var reason = socket.get_close_reason()
+		var code = self.socket.get_close_code()
+		var reason = self.socket.get_close_reason()
 		print("WebSocket closed with code: %d, reason %s. Clean: %s" % [code, reason, code != -1])
-		set_process(false) # Stop processing.
-		# TODO: reconnect on failure!
+		self.socket = null;
+		
+		self.on_disconnected();
 
 
 func on_connected():
-	# Share client state with server
+	print("Websocket connected, syncing game state...");
 	self.send_set_mine(Global.MINE_ID);
+
+
+func on_disconnected():
+	# Schedule reconnecting
+	print("Websocket disconnected, reconnecting in ", WEBSOCKET_FAIL_RETRY_DELAY, " seconds...");
+	self.reconnect_at = Global.now() + WEBSOCKET_FAIL_RETRY_DELAY;
 
 
 func handle_raw_packet(packet: Dictionary):
@@ -109,7 +142,7 @@ func handle_mine_state(state: Dictionary):
 func handle_mine_money_update(state: Dictionary):
 	if state["mine_id"] != Global.MINE_ID:
 		return;
-	self.game_controller.update_money(state["team_id"], state["money"]);
+	self.game_controller.update_money(state["team_id"], state["money"], true, state.get("label"));
 
 
 func handle_mine_miners_added(state: Dictionary):

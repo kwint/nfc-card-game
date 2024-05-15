@@ -1,7 +1,7 @@
 <div class="container pt-2">
     <div class="accordion card shadow">
         <div class="card-header align-items-center">
-            <h4 class="m-0">{{ player.name }}'s inventory</h4>
+            <h4 class="m-0">{{ player.name }} | {{ player.section }} | {{ player.team }}</h4>
         </div>
         <div class="card-body">
             <table class="table table-striped table-m">
@@ -13,17 +13,17 @@
                 </thead>
                 <tbody class="table-group-divider">
                     {% for item in items %}
-                        {% if item.item.type == "COIN" %}
+                    {% if item.item.type == "COIN" %}
                     <tr>
-                            <td>{{ item.item.get_currency_display }} {{ item.item.name }}</td>
-                            <td>{{ item.amount}}</td>
+                        <td>{{ item.item.get_currency_display }} {{ item.item.name }}</td>
+                        <td>{{ item.amount}}</td>
                     </tr>
-                        {% endif %}
+                    {% endif %}
                     {% endfor %}
                 </tbody>
             </table>
             <table class="table table-striped">
-                <thead >
+                <thead>
                     <tr>
                         <th scope="col" class="col-2">Item</th>
                         <th scope="col" class="col-1">Hoeveelheid</th>
@@ -31,12 +31,12 @@
                 </thead>
                 <tbody class="table-group-divider">
                     {% for item in items %}
-                        {% if item.item.type != "COIN" and item.amount %}
-                        <tr>
+                    {% if item.item.type != "COIN" and item.amount %}
+                    <tr>
                         <td>{{ item.item.get_currency_display }} {{ item.item.get_name_display }}</td>
                         <td>{{ item.amount }}</td>
-                        </tr>
-                        {% endif %}
+                    </tr>
+                    {% endif %}
                     {% endfor %}
                 </tbody>
             </table>

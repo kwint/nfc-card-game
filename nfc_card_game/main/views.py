@@ -95,7 +95,8 @@ def handle_color_player(request: HttpRequest, player: Player) -> HttpResponse:
 def handle_trading_player_post(request, player: Player, items, player_item):
     selected_amount = int(request.POST.get("amount", 1))
     price = request.session.get("price")
-    context = {"buy_amount": selected_amount, "items": items}
+    player.name = player.name.split(" ")[0]
+    context = {"buy_amount": selected_amount, "items": items, "player": player}
     if post_uuid := request.session.get("post"):
         post = PostRecipe.objects.filter(post__card_uuid=post_uuid)
         context["post"] = post
@@ -121,6 +122,7 @@ def handle_trading_player(request: HttpRequest, player: Player) -> HttpResponse:
     if request.method == "POST":
         return handle_trading_player_post(request, player, player_items, player_items)
 
+    player.name = player.name.split(" ")[0]
     context = {"player": player, "items": player_items}
     request.session.pop("price", None)
     sell_options = copy(SELL_OPTIONS)
@@ -180,7 +182,7 @@ def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
     except Player.DoesNotExist:
         player = None
 
-    if player is None or player.name == "":
+    if player is None or player.name == "" or player.team == None:
         return get_player_register(request, card_uuid)
 
     if GameSettings.object().mode == GameSettings.GameMode.TRADING:
