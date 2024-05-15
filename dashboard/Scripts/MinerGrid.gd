@@ -19,9 +19,14 @@ var miners_hidden = {};
 
 var noise = FastNoiseLite.new();
 var random = RandomNumberGenerator.new();
+var random_base: int = 0;
 
 
 func _ready():
+	# Pick a random base number for random miner spread
+	self.random.randomize();
+	self.random_base = self.random.randi();
+	
 	get_viewport().connect("size_changed", reposition_miners, CONNECT_DEFERRED);
 
 
@@ -142,7 +147,7 @@ func get_miner_position(type: Global.MinerType, index: int, hidden_amount = null
 	
 	# Pick a base seed based on the miner type
 	# This prevents overlapping of different miner types
-	var base_seed = MAX_RENDERED_MINERS * type;
+	var base_seed = MAX_RENDERED_MINERS * type + self.random_base;
 
 	# Offset index to prevent position jumps when removing old miners
 	if hidden_amount == null:
