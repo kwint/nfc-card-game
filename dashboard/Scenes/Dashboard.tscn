@@ -195,13 +195,11 @@ text = "Add"
 
 [node name="MinersTeam1" type="Node2D" parent="." node_paths=PackedStringArray("reference_grid")]
 script = ExtResource("3_gpr4m")
-color = Color(1, 0.5, 0.5, 1)
 reference_grid = NodePath("../Viewport/AspectRatioContainer/HSplitContainer/MinersTeam1")
 
 [node name="MinersTeam2" type="Node2D" parent="." node_paths=PackedStringArray("reference_grid")]
 script = ExtResource("3_gpr4m")
 flipped = true
-color = Color(0.5, 0.5, 1, 1)
 reference_grid = NodePath("../Viewport/AspectRatioContainer/HSplitContainer/MinersTeam2")
 
 [node name="Camera2D" type="Camera2D" parent="."]
