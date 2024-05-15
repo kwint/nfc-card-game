@@ -1,12 +1,15 @@
-[gd_scene load_steps=8 format=3 uid="uid://ca1ddejybbu0g"]
+[gd_scene load_steps=10 format=3 uid="uid://ca1ddejybbu0g"]
 
 [ext_resource type="Script" path="res://Scripts/GameController.gd" id="1_y0gn5"]
+[ext_resource type="Theme" uid="uid://n2sj11gmuqmo" path="res://Themes/MoneyFont.tres" id="2_1f4xi"]
 [ext_resource type="Script" path="res://Scripts/WebSocketClient.gd" id="2_tpx8r"]
 [ext_resource type="Script" path="res://Scripts/MinerGrid.gd" id="3_gpr4m"]
 [ext_resource type="Texture2D" uid="uid://cq153cuh0k6uv" path="res://Sprites/Mountain/sky1.jpg" id="3_ikvi8"]
 [ext_resource type="Texture2D" uid="uid://cnsgveexu0abx" path="res://Sprites/Mountain/mountain1.png" id="4_ca4uh"]
 [ext_resource type="PackedScene" uid="uid://njrfi5t72vqk" path="res://Prefabs/TeamPanel.tscn" id="5_120pg"]
 [ext_resource type="Script" path="res://Scripts/WindowManager.gd" id="11_6qksi"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w6uij"]
 
 [node name="Root" type="Node"]
 
@@ -128,6 +131,44 @@ size_flags_horizontal = 8
 [node name="Grid" parent="Viewport/TeamPanelRight/Rows/Debug/Margin" index="0" node_paths=PackedStringArray("game_controller")]
 game_controller = NodePath("../../../../../../GameController")
 team = 2
+
+[node name="Mine" type="MarginContainer" parent="Viewport"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -41.0
+offset_top = -83.0
+offset_right = 41.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Name" type="PanelContainer" parent="Viewport/Mine"]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Viewport/Mine/Name"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 10
+
+[node name="Label" type="Label" parent="Viewport/Mine/Name/Margin"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+theme = ExtResource("2_1f4xi")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_w6uij")
+text = "-"
 
 [node name="MinersLeft" type="Node2D" parent="." node_paths=PackedStringArray("reference_grid")]
 script = ExtResource("3_gpr4m")
