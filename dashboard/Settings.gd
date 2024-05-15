@@ -31,3 +31,7 @@ static func get_api_url() -> String:
 
 static func get_websocket_api_url() -> String:
 	return WEBSOCKET_API_URL;
+
+
+static func is_default_fullscreen() -> bool:
+	return !OS.has_feature("debug");
