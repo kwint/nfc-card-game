@@ -23,10 +23,6 @@ var connected: bool = false;
 
 # Time in seconds at which we reconnect
 var reconnect_at = null;
-
-
-func _ready():
-	self.reconnect();
 	
 	
 func _process(_delta):

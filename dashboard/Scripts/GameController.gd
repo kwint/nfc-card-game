@@ -27,7 +27,9 @@ var fetch_stats_at: int;
 func _ready():
 	# Connect stats HTTP client and fetch once
 	stats_http_client.request_completed.connect(_on_stats_fetched)
-	self.fetch_stats.call_deferred();
+	
+	# Connect on start
+	self.reconnect.call_deferred();
 
 
 func _process(_delta):
