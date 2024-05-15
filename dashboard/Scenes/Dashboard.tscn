@@ -113,6 +113,15 @@ size_flags_horizontal = 8
 [node name="Balance" parent="Viewport/TeamPanelRight/Rows" index="2"]
 size_flags_horizontal = 8
 
+[node name="Gauge" parent="Viewport/TeamPanelRight/Rows/Balance/Margin/BalanceGauge/Gauge1" index="1"]
+fill_mode = 1
+
+[node name="Gauge" parent="Viewport/TeamPanelRight/Rows/Balance/Margin/BalanceGauge/Gauge2" index="1"]
+fill_mode = 1
+
+[node name="Gauge" parent="Viewport/TeamPanelRight/Rows/Balance/Margin/BalanceGauge/Gauge3" index="1"]
+fill_mode = 1
+
 [node name="Debug" parent="Viewport/TeamPanelRight/Rows" index="3"]
 size_flags_horizontal = 8
 
@@ -134,3 +143,4 @@ anchor_mode = 0
 
 [editable path="Viewport/TeamPanelLeft"]
 [editable path="Viewport/TeamPanelRight"]
+[editable path="Viewport/TeamPanelRight/Rows/Balance/Margin/BalanceGauge"]
