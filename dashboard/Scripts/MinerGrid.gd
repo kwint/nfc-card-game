@@ -6,6 +6,7 @@ const FLOWING_LABEL_TEXT_SCALE: float = 0.7;
 # Maximum number of miner instances per type
 const MAX_VISIBLE_MINERS: int = 5_000;
 # Maximum number of miners to spawn per player operation
+@warning_ignore("integer_division")
 const MAX_VISIBLE_MINERS_ONCE: int = MAX_VISIBLE_MINERS / 10;
 const MINER_HIGHEST_POSITION: float = 0.05;
 const MINER_LOWEST_POSITION: float = 0.92;

@@ -120,10 +120,10 @@ func cycle_mine():
 	var next_mine_id = Settings.MINE_IDS[(get_mine_index() + 1) % Settings.MINE_IDS.size()];
 	self.switch_mine(next_mine_id);
 	
-	var name = str(next_mine_id);
+	var mine_name = str(next_mine_id);
 	if !self.mine_names.is_empty():
-		name = self.mine_names[self.get_mine_index() % self.mine_names.size()];
-	self.render_status(str("Mine: ", name));
+		mine_name = self.mine_names[self.get_mine_index() % self.mine_names.size()];
+	self.render_status(str("Mine: ", mine_name));
 
 
 func get_mine_index() -> int:
