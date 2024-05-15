@@ -13,7 +13,8 @@ config_version=5
 config/name="NFC card game dashboard"
 run/main_scene="res://Scenes/Dashboard.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
-config/icon="res://icon.svg"
+boot_splash/image="res://Sprites/Logo/icon512.png"
+config/icon="res://Sprites/Logo/icon.svg"
 
 [debug]
 
