@@ -5,6 +5,7 @@ const FETCH_STATS_INTERVAL: int = 60 * 1;
 const FETCH_STATS_FAIL_RETRY_DELAY: int = 10;
 
 @onready var stats_http_client = $StatsHttpClient;
+@onready var websocket_client = $WebSocketClient;
 @onready var mines = {
   Global.TeamId.TEAM1: $"../MinersTeam1",
   Global.TeamId.TEAM2: $"../MinersTeam2",
@@ -18,6 +19,8 @@ const FETCH_STATS_FAIL_RETRY_DELAY: int = 10;
   Global.TeamId.TEAM2: $"../Viewport/BalanceGaugeTeam2",
 };
 
+var mine_id: int = Global.MINE_IDS[0];
+
 var fetch_stats_at: int;
 
 
@@ -28,6 +31,10 @@ func _ready():
 
 
 func _process(_delta):
+	# Cycle mines
+	if Input.is_action_just_pressed("next_mine"):
+		self.cycle_mine();
+	
 	# Keep fetching stats to prevent game desync
 	if self.fetch_stats_at <= Global.now():
 		self.fetch_stats();
@@ -43,9 +50,34 @@ func set_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: in
 	self.levels[team_id].set_level(miner_type, effective);
 
 
+func update_money(team_id: Global.TeamId, amount: int, flowing_label: bool = true, label = null):
+	self.money[team_id].set_money(amount, flowing_label, label);
+
+
+func switch_mine(mine_id: int):
+	# Reset current visuals
+	for team_id in Global.TeamId.values():
+		self.update_money(team_id, 0, false);
+		for miner_type in Global.MinerType.values():
+			self.set_miners(team_id, miner_type, 0, 0);
+	
+	# Update miner ID and reconnect
+	self.mine_id = mine_id;
+	self.fetch_stats();
+	self.websocket_client.reconnect();
+
+
+func cycle_mine():
+	var current_index = Global.MINE_IDS.find(self.mine_id);
+	if current_index == -1:
+		assert(false, "Unknown mine ID");
+	var next_mine_id = Global.MINE_IDS[(current_index + 1) % Global.MINE_IDS.size()];
+	self.switch_mine(next_mine_id);
+
+
 func fetch_stats():
 	self.fetch_stats_at = Global.now() + FETCH_STATS_INTERVAL;
-	stats_http_client.request(Global.API_URL + Global.API_PATH_DASHBOARD + "/" + str(Global.MINE_ID));
+	stats_http_client.request(Global.API_URL + Global.API_PATH_DASHBOARD + "/" + str(self.mine_id));
 
 
 func _on_stats_fetched(result, _response_code, _headers, body):
@@ -88,7 +120,3 @@ func process_stats_team(team_id: Global.TeamId, team: Dictionary):
 	for i in range(items.size()):
 		var item = items[i];
 		self.set_miners(team_id, item["miner_type"], item["amount"], item["effective"]);
-
-
-func update_money(team_id: Global.TeamId, amount: int, flowing_label: bool = true, label = null):
-	self.money[team_id].set_money(amount, flowing_label, label);
