@@ -19,3 +19,15 @@ enum MinerType { MINER1 = 1, MINER2 = 2, MINER3 = 3 };
 static func now() -> int:
 	@warning_ignore("integer_division")
 	return Time.get_ticks_msec() / 1000;
+
+
+static func get_default_mine() -> int:
+	return MINE_IDS[0];
+
+
+static func get_api_url() -> String:
+	return API_URL;
+
+
+static func get_websocket_api_url() -> String:
+	return WEBSOCKET_API_URL;
