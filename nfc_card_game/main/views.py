@@ -29,7 +29,8 @@ from .logic import (
 from .models.player import Player
 from .models.trading import Mine, PlayerItem, Post, PostRecipe, TeamMine, TeamMineItem
 
-SELL_OPTIONS = [1, 5, 10, 20, 50, 100, 500, 1000, 5000, 10000]
+ABS_SELL_OPTIONS = [1, 5, 10, 20, 50, 100, 500, 1000, 5000, 10000]
+REL_SELL_OPTIONS = {1: "100%", 0.5: "50%", 0.25: "25%"}
 
 
 def index(request):
@@ -108,7 +109,8 @@ def handle_trading_player(request: HttpRequest, player: Player) -> HttpResponse:
     player.name = player.name.split(" ")[0]
     context = {"player": player, "items": player_items}
     request.session.pop("price", None)
-    possible_sell_options = {}
+    absolute_sell_options = {}
+    relative_sell_options = {}
 
     if post_uuid := request.session.get("post"):
         post = PostRecipe.objects.filter(post__card_uuid=post_uuid)
@@ -123,15 +125,16 @@ def handle_trading_player(request: HttpRequest, player: Player) -> HttpResponse:
             price = get_resource_price(team_mines, post[0].post.sells)
             context["price"] = price
             request.session["price"] = price
-            for sell_option in SELL_OPTIONS:
-                if sell_option * price <= total_money:
-                    possible_sell_options[sell_option] = ""
+            for sell_option in ABS_SELL_OPTIONS:
+                costs = sell_option * price
+                if costs <= total_money:
+                    absolute_sell_options[sell_option] = costs
 
-            possible_sell_options[math.floor(total_money / price)] = "max"
-            possible_sell_options[math.floor(total_money / price / 2)] = "50%"
+            for factor, text in REL_SELL_OPTIONS.items():
+                relative_sell_options[math.floor(total_money / price) * factor] = text
 
         if post[0].post.type == TypeType.MINER:
-            for sell_option in SELL_OPTIONS:
+            for sell_option in ABS_SELL_OPTIONS:
                 for recipe in post:
                     resource_items = player_items.filter(
                         item__type=TypeType.RESOURCE, item=recipe.item
@@ -141,8 +144,11 @@ def handle_trading_player(request: HttpRequest, player: Player) -> HttpResponse:
                     else:
                         item_amount = 0
 
-                    if sell_option * recipe.price <= item_amount:
-                        possible_sell_options[sell_option] = ""
+                    costs = sell_option * recipe.price
+                    if costs <= item_amount:
+                        absolute_sell_options[sell_option] = costs
+                    else:
+                        absolute_sell_options.pop(sell_option, None)
 
     if mine_uuid := request.session.get("mine"):
         mine = TeamMine.objects.filter(mine__card_uuid=mine_uuid, team=player.team)
@@ -157,8 +163,10 @@ def handle_trading_player(request: HttpRequest, player: Player) -> HttpResponse:
         action_dict = action.model_dump() if action else None
         context["action"] = action_dict
 
-    possible_sell_options.pop(0, None)
-    context["buy_amounts"] = sorted(possible_sell_options.items())
+    absolute_sell_options.pop(0, None)
+    relative_sell_options.pop(0, None)
+    context["buy_amounts_abs"] = sorted(absolute_sell_options.items())
+    context["buy_amounts_rel"] = sorted(relative_sell_options.items())
 
     return render(request, "trading/player_stats.html", context)
 
