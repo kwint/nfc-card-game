@@ -8,6 +8,7 @@ from django.db.models import Sum
 from django.forms.models import model_to_dict
 from pydantic import BaseModel
 from django.db.models.query import QuerySet
+from django.db import transaction
 from .models.player import Player, Team
 from .models.trading import (
     CoinType,
@@ -64,7 +65,14 @@ class ActionInfo(BaseModel):
 def commit_changes(changes: list):
     for obj in changes:
         obj.save()
-
+    # try:
+    #     with transaction.atomic():
+    #         for obj in changes:
+    #             obj.save()
+    # except Exception as e:
+    #     print("EEEEEEEEEEROOOOOOOOOOOOOOOOOOOOOORRRR"*5)
+    #     print(e)
+    #
 
 def handle_post_scan(
     player: Player,
