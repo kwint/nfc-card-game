@@ -135,7 +135,7 @@ offset_top = 96.0
 offset_right = 1119.0
 offset_bottom = 246.0
 
-[node name="DebugPanel" type="PanelContainer" parent="Viewport"]
+[node name="DebugPanel1" type="PanelContainer" parent="Viewport"]
 layout_mode = 2
 offset_left = 133.0
 offset_top = 92.0
@@ -143,53 +143,112 @@ offset_right = 279.0
 offset_bottom = 242.0
 script = ExtResource("5_c15vj")
 
-[node name="MarginContainer" type="MarginContainer" parent="Viewport/DebugPanel"]
+[node name="MarginContainer" type="MarginContainer" parent="Viewport/DebugPanel1"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="AddMiners" type="GridContainer" parent="Viewport/DebugPanel/MarginContainer" node_paths=PackedStringArray("game_controller")]
+[node name="AddMiners" type="GridContainer" parent="Viewport/DebugPanel1/MarginContainer" node_paths=PackedStringArray("game_controller")]
 layout_mode = 2
 columns = 2
 script = ExtResource("6_gq5dx")
 game_controller = NodePath("../../../../GameController")
 
-[node name="Label" type="Label" parent="Viewport/DebugPanel/MarginContainer/AddMiners"]
+[node name="Label" type="Label" parent="Viewport/DebugPanel1/MarginContainer/AddMiners"]
 layout_mode = 2
 text = "Debug"
 
-[node name="Control" type="Control" parent="Viewport/DebugPanel/MarginContainer/AddMiners"]
+[node name="Control" type="Control" parent="Viewport/DebugPanel1/MarginContainer/AddMiners"]
 layout_mode = 2
 
-[node name="SpinBox1" type="SpinBox" parent="Viewport/DebugPanel/MarginContainer/AddMiners"]
+[node name="SpinBox1" type="SpinBox" parent="Viewport/DebugPanel1/MarginContainer/AddMiners"]
 layout_mode = 2
 min_value = 1.0
 value = 1.0
 allow_greater = true
 
-[node name="Button1" type="Button" parent="Viewport/DebugPanel/MarginContainer/AddMiners"]
+[node name="Button1" type="Button" parent="Viewport/DebugPanel1/MarginContainer/AddMiners"]
 layout_mode = 2
 text = "Add"
 
-[node name="SpinBox2" type="SpinBox" parent="Viewport/DebugPanel/MarginContainer/AddMiners"]
+[node name="SpinBox2" type="SpinBox" parent="Viewport/DebugPanel1/MarginContainer/AddMiners"]
 layout_mode = 2
 min_value = 1.0
 value = 1.0
 allow_greater = true
 
-[node name="Button2" type="Button" parent="Viewport/DebugPanel/MarginContainer/AddMiners"]
+[node name="Button2" type="Button" parent="Viewport/DebugPanel1/MarginContainer/AddMiners"]
 layout_mode = 2
 text = "Add"
 
-[node name="SpinBox3" type="SpinBox" parent="Viewport/DebugPanel/MarginContainer/AddMiners"]
+[node name="SpinBox3" type="SpinBox" parent="Viewport/DebugPanel1/MarginContainer/AddMiners"]
 layout_mode = 2
 min_value = 1.0
 value = 1.0
 allow_greater = true
 
-[node name="Button3" type="Button" parent="Viewport/DebugPanel/MarginContainer/AddMiners"]
+[node name="Button3" type="Button" parent="Viewport/DebugPanel1/MarginContainer/AddMiners"]
+layout_mode = 2
+text = "Add"
+
+[node name="DebugPanel2" type="PanelContainer" parent="Viewport"]
+layout_mode = 2
+offset_left = 874.0
+offset_top = 92.0
+offset_right = 1020.0
+offset_bottom = 242.0
+script = ExtResource("5_c15vj")
+
+[node name="MarginContainer" type="MarginContainer" parent="Viewport/DebugPanel2"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="AddMiners" type="GridContainer" parent="Viewport/DebugPanel2/MarginContainer" node_paths=PackedStringArray("game_controller")]
+layout_mode = 2
+columns = 2
+script = ExtResource("6_gq5dx")
+game_controller = NodePath("../../../../GameController")
+team = 2
+
+[node name="Label" type="Label" parent="Viewport/DebugPanel2/MarginContainer/AddMiners"]
+layout_mode = 2
+text = "Debug"
+
+[node name="Control" type="Control" parent="Viewport/DebugPanel2/MarginContainer/AddMiners"]
+layout_mode = 2
+
+[node name="SpinBox1" type="SpinBox" parent="Viewport/DebugPanel2/MarginContainer/AddMiners"]
+layout_mode = 2
+min_value = 1.0
+value = 1.0
+allow_greater = true
+
+[node name="Button1" type="Button" parent="Viewport/DebugPanel2/MarginContainer/AddMiners"]
+layout_mode = 2
+text = "Add"
+
+[node name="SpinBox2" type="SpinBox" parent="Viewport/DebugPanel2/MarginContainer/AddMiners"]
+layout_mode = 2
+min_value = 1.0
+value = 1.0
+allow_greater = true
+
+[node name="Button2" type="Button" parent="Viewport/DebugPanel2/MarginContainer/AddMiners"]
+layout_mode = 2
+text = "Add"
+
+[node name="SpinBox3" type="SpinBox" parent="Viewport/DebugPanel2/MarginContainer/AddMiners"]
+layout_mode = 2
+min_value = 1.0
+value = 1.0
+allow_greater = true
+
+[node name="Button3" type="Button" parent="Viewport/DebugPanel2/MarginContainer/AddMiners"]
 layout_mode = 2
 text = "Add"
 
