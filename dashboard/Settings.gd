@@ -3,10 +3,12 @@ class_name Settings
 # Available mine IDs
 const MINE_IDS = [1, 2, 3];
 
-const API_URL: String = "http://localhost:8000/api";
+#const API_URL: String = "http://localhost:8000/api";
+const API_URL: String = "https://nfc.qvdijk.nl/api";
 const API_PATH_DASHBOARD: String = "/dashboard";
 
-const WEBSOCKET_API_URL: String = "ws://localhost:8000/api/ws";
+#const WEBSOCKET_API_URL: String = "ws://localhost:8000/api/ws";
+const WEBSOCKET_API_URL: String = "wss://nfc.qvdijk.nl/api/ws";
 
 enum TeamId { TEAM1 = 1, TEAM2 = 2 }
 
