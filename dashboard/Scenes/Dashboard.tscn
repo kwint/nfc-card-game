@@ -88,7 +88,7 @@ border_width = 2.0
 layout_mode = 1
 offset_right = 121.0
 offset_bottom = 43.0
-theme_override_constants/margin_left = 85
+theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 script = ExtResource("3_o437a")
 
@@ -109,7 +109,7 @@ offset_left = -111.0
 offset_bottom = 40.0
 grow_horizontal = 0
 theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 85
+theme_override_constants/margin_right = 20
 script = ExtResource("3_o437a")
 right = true
 
