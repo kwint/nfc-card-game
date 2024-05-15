@@ -1,0 +1,132 @@
+[gd_scene load_steps=7 format=3 uid="uid://njrfi5t72vqk"]
+
+[ext_resource type="Theme" uid="uid://n2sj11gmuqmo" path="res://Themes/MoneyFont.tres" id="1_w1qy7"]
+[ext_resource type="Script" path="res://Scripts/MoneyDisplay.gd" id="2_ub0rg"]
+[ext_resource type="PackedScene" uid="uid://cxftknt52fvxt" path="res://Prefabs/BalanceGauge.tscn" id="3_njec7"]
+[ext_resource type="Script" path="res://Scripts/Debug/Panel.gd" id="4_tn050"]
+[ext_resource type="Script" path="res://Scripts/Debug/AddMiners.gd" id="5_72im0"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w6uij"]
+
+[node name="TeamPanel" type="MarginContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Rows" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Name" type="PanelContainer" parent="Rows"]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Rows/Name"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 10
+
+[node name="Label" type="Label" parent="Rows/Name/Margin"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = ExtResource("1_w1qy7")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_styles/normal = SubResource("StyleBoxTexture_w6uij")
+text = "Team 1"
+
+[node name="Money" type="PanelContainer" parent="Rows"]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Rows/Money"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 10
+script = ExtResource("2_ub0rg")
+
+[node name="Label" type="Label" parent="Rows/Money/Margin"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = ExtResource("1_w1qy7")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_styles/normal = SubResource("StyleBoxTexture_w6uij")
+text = "$ 123"
+
+[node name="Balance" type="PanelContainer" parent="Rows"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Margin" type="MarginContainer" parent="Rows/Balance"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="BalanceGauge" parent="Rows/Balance/Margin" instance=ExtResource("3_njec7")]
+layout_mode = 2
+
+[node name="Debug" type="PanelContainer" parent="Rows"]
+layout_mode = 2
+size_flags_horizontal = 0
+script = ExtResource("4_tn050")
+
+[node name="Margin" type="MarginContainer" parent="Rows/Debug"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Grid" type="GridContainer" parent="Rows/Debug/Margin"]
+layout_mode = 2
+columns = 2
+script = ExtResource("5_72im0")
+
+[node name="Label" type="Label" parent="Rows/Debug/Margin/Grid"]
+layout_mode = 2
+theme = ExtResource("1_w1qy7")
+theme_override_font_sizes/font_size = 16
+text = "Debug:"
+
+[node name="Control" type="Control" parent="Rows/Debug/Margin/Grid"]
+layout_mode = 2
+
+[node name="SpinBox1" type="SpinBox" parent="Rows/Debug/Margin/Grid"]
+layout_mode = 2
+min_value = 1.0
+value = 1.0
+allow_greater = true
+
+[node name="Button1" type="Button" parent="Rows/Debug/Margin/Grid"]
+layout_mode = 2
+text = "Add"
+
+[node name="SpinBox2" type="SpinBox" parent="Rows/Debug/Margin/Grid"]
+layout_mode = 2
+min_value = 1.0
+value = 1.0
+allow_greater = true
+
+[node name="Button2" type="Button" parent="Rows/Debug/Margin/Grid"]
+layout_mode = 2
+text = "Add"
+
+[node name="SpinBox3" type="SpinBox" parent="Rows/Debug/Margin/Grid"]
+layout_mode = 2
+min_value = 1.0
+value = 1.0
+allow_greater = true
+
+[node name="Button3" type="Button" parent="Rows/Debug/Margin/Grid"]
+layout_mode = 2
+text = "Add"

@@ -10,16 +10,16 @@ const FLOWING_LABEL_TEXT_COLOR: Color = Color.LIGHT_BLUE;
 @onready var stats_http_client = $StatsHttpClient;
 @onready var websocket_client = $WebSocketClient;
 @onready var mines = {
-  Settings.TeamId.TEAM1: $"../MinersTeam1",
-  Settings.TeamId.TEAM2: $"../MinersTeam2",
+  Settings.TeamId.TEAM1: $"../MinersTeamLeft",
+  Settings.TeamId.TEAM2: $"../MinersTeamRight",
 };
 @onready var money = {
   Settings.TeamId.TEAM1: $"../Viewport/TeamPanelLeft/Rows/Money/Margin",
-  Settings.TeamId.TEAM2: $"../Viewport/MoneyTeam2",
+  Settings.TeamId.TEAM2: $"../Viewport/TeamPanelRight/Rows/Money/Margin",
 };
 @onready var levels = {
   Settings.TeamId.TEAM1: $"../Viewport/TeamPanelLeft/Rows/Balance/Margin/BalanceGauge",
-  Settings.TeamId.TEAM2: $"../Viewport/BalanceGauge",
+  Settings.TeamId.TEAM2: $"../Viewport/TeamPanelRight/Rows/Balance/Margin/BalanceGauge",
 };
 @onready var background = $"../Viewport/Background";
 @onready var mountain = $"../Viewport/AspectRatioContainer/ReferenceRect/Mountain";
