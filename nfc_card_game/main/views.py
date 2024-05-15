@@ -230,12 +230,21 @@ def post_color(request, card_uuid: str) -> HttpResponse:
     return render(request, "msg.html", {"text": "Geen kleur gevonden op deze kaart!"})
 
 
+def post_activities(request: HttpRequest, card_uuid: str) -> HttpResponse:
+    activity = get_object_or_404(Activity, card_uuid=card_uuid)
+    request.session["post"] = card_uuid
+    return render(request, "msg.html", {"text": f"logged in as {activity.name}"})
+
+
 def post(request: HttpRequest, card_uuid: str) -> HttpResponse:
     if GameSettings.object().mode == GameSettings.GameMode.TRADING:
         return post_trading(request, card_uuid)
 
     if GameSettings.object().mode == GameSettings.GameMode.COLOR:
         return post_color(request, card_uuid)
+
+    if GameSettings.object().mode == GameSettings.GameMode.ACTIVITIES:
+        return post_activities(request, card_uuid)
 
 
 def dashboard(request: HttpRequest) -> HttpResponse:
