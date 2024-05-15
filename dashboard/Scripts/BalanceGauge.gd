@@ -8,9 +8,9 @@ const ORIGIN: float = 0.5;
 	Settings.MinerType.MINER3: 0,
 };
 @onready var levels = {
-	Settings.MinerType.MINER1: $Gauge1,
-	Settings.MinerType.MINER2: $Gauge2,
-	Settings.MinerType.MINER3: $Gauge3,
+	Settings.MinerType.MINER1: $Gauge1/Gauge,
+	Settings.MinerType.MINER2: $Gauge2/Gauge,
+	Settings.MinerType.MINER3: $Gauge3/Gauge,
 };
 
 
