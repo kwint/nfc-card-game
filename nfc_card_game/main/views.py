@@ -1,4 +1,5 @@
 from copy import copy
+import math
 
 from django.core import serializers
 from django.db.models import Sum
@@ -28,18 +29,7 @@ from .logic import (
 from .models.player import Player
 from .models.trading import Mine, PlayerItem, Post, PostRecipe, TeamMine, TeamMineItem
 
-SELL_OPTIONS = {
-    1: True,
-    5: True,
-    10: True,
-    # 20: True,
-    # 50: True,
-    # 100: True,
-    # 500: True,
-    # 1000: True,
-    # 5000: True,
-    # 10000: True,
-}
+SELL_OPTIONS = [1, 5, 10, 20, 50, 100, 500, 1000, 5000, 10000]
 
 
 def index(request):
@@ -118,7 +108,7 @@ def handle_trading_player(request: HttpRequest, player: Player) -> HttpResponse:
     player.name = player.name.split(" ")[0]
     context = {"player": player, "items": player_items}
     request.session.pop("price", None)
-    sell_options = copy(SELL_OPTIONS)
+    possible_sell_options = {}
 
     if post_uuid := request.session.get("post"):
         post = PostRecipe.objects.filter(post__card_uuid=post_uuid)
@@ -133,12 +123,15 @@ def handle_trading_player(request: HttpRequest, player: Player) -> HttpResponse:
             price = get_resource_price(team_mines, post[0].post.sells)
             context["price"] = price
             request.session["price"] = price
-            for sell_option in sell_options:
-                if sell_option * price > total_money:
-                    sell_options[sell_option] = False
+            for sell_option in SELL_OPTIONS:
+                if sell_option * price <= total_money:
+                    possible_sell_options[sell_option] = ""
+
+            possible_sell_options[math.floor(total_money / price)] = "max"
+            possible_sell_options[math.floor(total_money / price / 2)] = "50%"
 
         if post[0].post.type == TypeType.MINER:
-            for sell_option in sell_options:
+            for sell_option in SELL_OPTIONS:
                 for recipe in post:
                     resource_items = player_items.filter(
                         item__type=TypeType.RESOURCE, item=recipe.item
@@ -148,8 +141,8 @@ def handle_trading_player(request: HttpRequest, player: Player) -> HttpResponse:
                     else:
                         item_amount = 0
 
-                    if sell_option * recipe.price > item_amount:
-                        sell_options[sell_option] = False
+                    if sell_option * recipe.price <= item_amount:
+                        possible_sell_options[sell_option] = ""
 
     if mine_uuid := request.session.get("mine"):
         mine = TeamMine.objects.filter(mine__card_uuid=mine_uuid, team=player.team)
@@ -164,7 +157,7 @@ def handle_trading_player(request: HttpRequest, player: Player) -> HttpResponse:
         action_dict = action.model_dump() if action else None
         context["action"] = action_dict
 
-    context["buy_amounts"] = sell_options
+    context["buy_amounts"] = sorted(possible_sell_options.items())
 
     return render(request, "trading/player_stats.html", context)
 

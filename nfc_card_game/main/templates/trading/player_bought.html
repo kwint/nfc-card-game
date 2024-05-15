@@ -19,8 +19,8 @@
       <div class="card-body">
         <form method="post">
           {% csrf_token %}
-          {% for amount in buy_amounts %}
-            <button type="submit" name="amount" value="{{ amount }}">{{ amount }}</button>
+          {% for amount, text in buy_amounts %}
+            <button type="submit" name="amount" value="{{ amount }}">{{ amount }}{% if text %}({{ text }}){% endif %}</button>
           {% endfor %}
         </form>
         {% if action.status == "ok" %}

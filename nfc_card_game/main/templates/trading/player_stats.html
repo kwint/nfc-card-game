@@ -57,16 +57,10 @@
           <h5>{{ post.0.sells}}</h5>
           <form method="post">
             {% csrf_token %}
-            {% for amount, possible in buy_amounts.items %}
-              {% if possible %}
-                <button class="btn btn-primary my-2 d-block w-25" type="submit" name="amount" value="{{ amount }}">
-                  {{ amount }}
-                </button>
-              {% else %}
-                <button class="btn btn-secondary my-2 d-block w-25" disabled name="amount" value="{{ amount }}">
-                  {{ amount }}
-                </button>
-              {% endif %}
+            {% for amount, text in buy_amounts %}
+              <button class="btn btn-primary my-2 d-block w-25" type="submit" name="amount" value="{{ amount }}">
+                {{ amount }}{% if text %} ({{ text }}) {% endif %}
+              </button>
             {% endfor %}
           </form>
         {% else %}
