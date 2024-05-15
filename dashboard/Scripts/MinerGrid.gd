@@ -160,29 +160,19 @@ func get_miner_position(type: Settings.MinerType, index: int, hidden_amount = nu
 	# Height factor in rectangle [0, 1], slowly spread from center
 	var height_factor = self.random.randf_range(MINER_HIGHEST_POSITION, MINER_LOWEST_POSITION);
 	if index < 45:
-		height_factor = scale_float(height_factor, 0.0, 1.0, max(0.45 - index * 0.01, 0.0), min(0.55 + index * 0.01, 1.0));
+		height_factor = Helpers.scale_float(height_factor, 0.0, 1.0, max(0.45 - index * 0.01, 0.0), min(0.55 + index * 0.01, 1.0));
 	
 	# Width factor in rectangle [0, 1], slowly spread from center
 	var width_factor = self.random.randf_range(0.0, 1.0);
 	if index < 45:
-		width_factor = scale_float(width_factor, 0.0, 1.0, max(0.45 - index * 0.01, 0.0), min(0.55 + index * 0.01, 1.0));
+		width_factor = Helpers.scale_float(width_factor, 0.0, 1.0, max(0.45 - index * 0.01, 0.0), min(0.55 + index * 0.01, 1.0));
 	
 	# Keep width within rectangle of mountain
 	var width_factor_left = 1.0 - height_factor if !self.flipped else 0.0;
 	var width_factor_right = 1.0 if !self.flipped else height_factor;
-	width_factor = scale_float(width_factor, 0.0, 1.0, width_factor_left, width_factor_right);
+	width_factor = Helpers.scale_float(width_factor, 0.0, 1.0, width_factor_left, width_factor_right);
 	
 	# Scale width and height factor to the reference rectangle
 	var rect = self.reference_grid.get_global_rect();
 	var offset = rect.size * Vector2(width_factor, height_factor);
 	return rect.position + offset;
-
-
-func scale_float(value: float, from_min: float, from_max: float, to_min: float, to_max: float) -> float:
-	value = clampf(value, from_min, from_max);
-	
-	var from_diff = from_max - from_min;
-	var to_diff = to_max - to_min;
-	var factor = (value - from_min) / from_diff;
-	
-	return to_min + to_diff * factor;
