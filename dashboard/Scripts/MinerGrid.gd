@@ -25,7 +25,12 @@ var random_base: int = 0;
 func _ready():
 	# Pick a random base number for random miner spread
 	self.random.randomize();
-	self.random_base = self.random.randi();
+	self.random_base = self.random.randi() % 999999;
+	
+	# Set up noise generator
+	self.noise.set_seed(self.random_base);
+	self.noise.set_noise_type(FastNoiseLite.TYPE_SIMPLEX);
+	self.noise.set_frequency(0.5);
 	
 	get_viewport().connect("size_changed", reposition_miners, CONNECT_DEFERRED);
 
