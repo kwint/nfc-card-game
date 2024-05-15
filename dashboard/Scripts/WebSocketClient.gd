@@ -35,6 +35,7 @@ func _process(_delta):
 # Initialize and connect the websocket.
 func reconnect():
 	self.reconnect_at = null;
+	self.connected = false;
 	
 	# Close any existing socket
 	if self.socket != null:
