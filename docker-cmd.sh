@@ -10,5 +10,5 @@ else
   # Gunicorn
   exec daphne "nfc_card_game.asgi:application" \
     -p 8000 \
-    -t "$GUNICORN_TIMEOUT" \
+    -t "$GUNICORN_TIMEOUT"
 fi
