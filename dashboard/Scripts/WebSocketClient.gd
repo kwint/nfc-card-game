@@ -23,10 +23,6 @@ var connected: bool = false;
 
 # Time in seconds at which we reconnect
 var reconnect_at = null;
-
-
-func _ready():
-	self.reconnect();
 	
 	
 func _process(_delta):
@@ -96,7 +92,7 @@ func poll_socket():
 
 func on_connected():
 	print("Websocket connected, syncing game state...");
-	self.send_set_mine(Global.MINE_ID);
+	self.send_set_mine(self.get_mine_id());
 
 
 func on_disconnected():
@@ -140,13 +136,13 @@ func handle_mine_state(state: Dictionary):
 
 
 func handle_mine_money_update(state: Dictionary):
-	if state["mine_id"] != Global.MINE_ID:
+	if state["mine_id"] != self.get_mine_id():
 		return;
 	self.game_controller.update_money(state["team_id"], state["money"], true, state.get("label"));
 
 
 func handle_mine_miners_added(state: Dictionary):
-	if state["mine_id"] != Global.MINE_ID:
+	if state["mine_id"] != self.get_mine_id():
 		return;
 	self.game_controller.add_miners(
 		state["team_id"],
@@ -170,3 +166,7 @@ func send_packet(packet_id: PacketServerType, data: Dictionary):
 
 func send_set_mine(mine_id: int):
 	send_packet(PacketServerType.SetMine, {"mine_id": mine_id});
+
+
+func get_mine_id() -> int:
+	return self.game_controller.mine_id;

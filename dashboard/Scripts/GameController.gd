@@ -5,6 +5,7 @@ const FETCH_STATS_INTERVAL: int = 60 * 1;
 const FETCH_STATS_FAIL_RETRY_DELAY: int = 10;
 
 @onready var stats_http_client = $StatsHttpClient;
+@onready var websocket_client = $WebSocketClient;
 @onready var mines = {
   Global.TeamId.TEAM1: $"../MinersTeam1",
   Global.TeamId.TEAM2: $"../MinersTeam2",
@@ -17,17 +18,46 @@ const FETCH_STATS_FAIL_RETRY_DELAY: int = 10;
   Global.TeamId.TEAM1: $"../Viewport/BalanceGaugeTeam1",
   Global.TeamId.TEAM2: $"../Viewport/BalanceGaugeTeam2",
 };
+@onready var background = $"../Viewport/Background";
+@onready var mountain = $"../Viewport/AspectRatioContainer/ReferenceRect/Mountain";
 
+@export var background_textures: Array[Texture2D] = [
+	preload("res://Sprites/Mountain/sky1.jpg"),
+	preload("res://Sprites/Mountain/sky2.jpg"),
+	preload("res://Sprites/Mountain/sky3.jpg"),
+];
+@export var mountain_textures: Array[Texture2D] = [
+	preload("res://Sprites/Mountain/mountain1.png"),
+	preload("res://Sprites/Mountain/mountain2.png"),
+	preload("res://Sprites/Mountain/mountain3.png"),
+];
+@export var mountain_colors: Array[Color] = [
+	Color(0.3, 0.5, 1.0),
+	Color(0.4, 1.0, 0.5),
+	Color(1.0, 0.6, 0.5),
+];
+
+var mine_id: int;
 var fetch_stats_at: int;
 
 
 func _ready():
 	# Connect stats HTTP client and fetch once
 	stats_http_client.request_completed.connect(_on_stats_fetched)
-	self.fetch_stats.call_deferred();
+	
+	# Connect on start
+	self.switch_mine.call_deferred(Global.MINE_IDS[0]);
 
 
 func _process(_delta):
+	# Refresh current mine or cycle to next mine
+	if Input.is_action_just_pressed("reconnect"):
+		self.reconnect();
+		return;
+	if Input.is_action_just_pressed("next_mine"):
+		self.cycle_mine();
+		return;
+	
 	# Keep fetching stats to prevent game desync
 	if self.fetch_stats_at <= Global.now():
 		self.fetch_stats();
@@ -43,9 +73,53 @@ func set_miners(team_id: Global.TeamId, miner_type: Global.MinerType, amount: in
 	self.levels[team_id].set_level(miner_type, effective);
 
 
+func update_money(team_id: Global.TeamId, amount: int, flowing_label: bool = true, label = null):
+	self.money[team_id].set_money(amount, flowing_label, label);
+
+
+func reconnect():
+	# Reset current visuals
+	for team_id in Global.TeamId.values():
+		self.update_money(team_id, 0, false);
+		for miner_type in Global.MinerType.values():
+			self.set_miners(team_id, miner_type, 0, 0);
+	
+	# Update miner ID and reconnect
+	self.fetch_stats();
+	self.websocket_client.reconnect();
+
+
+func switch_mine(mine_id: int):
+	if !Global.MINE_IDS.has(mine_id):
+		assert(false, "Unknown mine ID");
+	self.mine_id = mine_id;
+	self.reconnect();
+	
+	# Update textures and colors
+	if !self.background_textures.is_empty():
+		self.background.texture = self.background_textures[self.get_mine_index() % self.background_textures.size()];
+	if !self.mountain_textures.is_empty():
+		self.mountain.texture = self.mountain_textures[self.get_mine_index() % self.mountain_textures.size()];
+	if !self.mountain_colors.is_empty():
+		self.mountain.modulate = self.mountain_colors[self.get_mine_index() % self.mountain_colors.size()];
+
+
+func cycle_mine():
+	var next_mine_id = Global.MINE_IDS[(get_mine_index() + 1) % Global.MINE_IDS.size()];
+	self.switch_mine(next_mine_id);
+
+
+func get_mine_index() -> int:
+	var i = Global.MINE_IDS.find(self.mine_id);
+	if i == -1:
+		assert(false, "Unknown mine ID");
+	return i;
+
+
 func fetch_stats():
 	self.fetch_stats_at = Global.now() + FETCH_STATS_INTERVAL;
-	stats_http_client.request(Global.API_URL + Global.API_PATH_DASHBOARD + "/" + str(Global.MINE_ID));
+	self.stats_http_client.cancel_request();
+	self.stats_http_client.request(Global.API_URL + Global.API_PATH_DASHBOARD + "/" + str(self.mine_id));
 
 
 func _on_stats_fetched(result, _response_code, _headers, body):
@@ -88,7 +162,3 @@ func process_stats_team(team_id: Global.TeamId, team: Dictionary):
 	for i in range(items.size()):
 		var item = items[i];
 		self.set_miners(team_id, item["miner_type"], item["amount"], item["effective"]);
-
-
-func update_money(team_id: Global.TeamId, amount: int, flowing_label: bool = true, label = null):
-	self.money[team_id].set_money(amount, flowing_label, label);
