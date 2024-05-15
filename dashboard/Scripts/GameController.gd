@@ -100,7 +100,8 @@ func get_mine_index() -> int:
 
 func fetch_stats():
 	self.fetch_stats_at = Global.now() + FETCH_STATS_INTERVAL;
-	stats_http_client.request(Global.API_URL + Global.API_PATH_DASHBOARD + "/" + str(self.mine_id));
+	self.stats_http_client.cancel_request();
+	self.stats_http_client.request(Global.API_URL + Global.API_PATH_DASHBOARD + "/" + str(self.mine_id));
 
 
 func _on_stats_fetched(result, _response_code, _headers, body):
