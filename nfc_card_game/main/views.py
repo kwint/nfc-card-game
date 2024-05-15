@@ -7,6 +7,7 @@ from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_list_or_404, get_object_or_404, render
 
 from nfc_card_game.main.color import (
+    ALL_COLOR_UUID,
     COLOR_HOME_UUID,
     COLOR_JOKER_UUID,
     COLOR_UUID,
@@ -210,13 +211,31 @@ def mine(request: HttpRequest, card_uuid: str) -> HttpResponse:
     return render(request, "trading/mine.html", {"mine": mine})
 
 
-def post(request: HttpRequest, card_uuid: str) -> HttpResponse:
+def post_trading(request, card_uuid: str) -> HttpResponse:
     post = get_object_or_404(Post, card_uuid=card_uuid)
     buys = get_list_or_404(PostRecipe, post=post.pk)
     request.session["post"] = post.card_uuid
     request.session.pop("mine", None)
 
     return render(request, "trading/post.html", {"post": post, "buys": buys})
+
+
+def post_color(request, card_uuid: str) -> HttpResponse:
+    if card_uuid in ALL_COLOR_UUID:
+        request.session["post"] = card_uuid
+        return render(
+            request, "msg.html", {"text": f"logged in as {ALL_COLOR_UUID[card_uuid]}"}
+        )
+
+    return render(request, "msg.html", {"text": "Geen kleur gevonden op deze kaart!"})
+
+
+def post(request: HttpRequest, card_uuid: str) -> HttpResponse:
+    if GameSettings.object().mode == GameSettings.GameMode.TRADING:
+        return post_trading(request, card_uuid)
+
+    if GameSettings.object().mode == GameSettings.GameMode.COLOR:
+        return post_color(request, card_uuid)
 
 
 def dashboard(request: HttpRequest) -> HttpResponse:

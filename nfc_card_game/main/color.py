@@ -16,6 +16,11 @@ COLOR_UUID = {
     "yellow": Player.Color.YELLOW,
 }
 
+ALL_COLOR_UUID = {
+    **COLOR_UUID,
+    COLOR_HOME_UUID: "home",
+    COLOR_JOKER_UUID: "joker",
+}
 
 # COLOR_UUID = {
 #     "2cac4ad8": Player.Color.RED,
