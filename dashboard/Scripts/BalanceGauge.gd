@@ -31,7 +31,8 @@ func _ready():
 
 func update_levels():
 	var miner_types = self.levels.keys();
-	var avg = self.values.values().map(func(n): return float(n)).reduce(func(a, b): return a + b) / 3.0;
+	var sum = self.values.values().map(func(n): return float(n)).reduce(func(a, b): return a + b);
+	var avg = sum / 3.0;
 	
 	# Calculate deltas to determine proportions
 	var deltas = {}
@@ -39,6 +40,8 @@ func update_levels():
 		deltas[miner_type] = float(self.values[miner_type]) - avg;
 	var delta_max = deltas.values().max();
 	var delta_scale = delta_max / avg;
+	if is_nan(delta_scale):
+		delta_scale = 0.0;
 	
 	# Determine offsets between [-1, 1], scale them to gauge range
 	var offsets = {
@@ -59,10 +62,11 @@ func update_levels():
 		# - Turn red in the range [0.1, 0.35]
 		# - Turn green when maximum delta is within 10%
 		var color = GAUGE_BASE_COLOR;
-		if value < GAUGE_BAD_HIGHEST:
-			color = GAUGE_BAD_COLOR.lerp(GAUGE_BASE_COLOR, Helpers.scale_float(value, GAUGE_BAD_LOWEST, GAUGE_BAD_HIGHEST, 0.0, 1.0));
-		elif delta_scale < GAUGE_GOOD_DELTA_MAX:
-			color = GAUGE_GOOD_COLOR.lerp(GAUGE_BASE_COLOR, Helpers.scale_float(delta_scale, 0.0, GAUGE_GOOD_DELTA_MAX, 0.0, 1.0));
+		if sum > 0:
+			if value < GAUGE_BAD_HIGHEST:
+				color = GAUGE_BAD_COLOR.lerp(GAUGE_BASE_COLOR, Helpers.scale_float(value, GAUGE_BAD_LOWEST, GAUGE_BAD_HIGHEST, 0.0, 1.0));
+			elif delta_scale < GAUGE_GOOD_DELTA_MAX:
+				color = GAUGE_GOOD_COLOR.lerp(GAUGE_BASE_COLOR, Helpers.scale_float(delta_scale, 0.0, GAUGE_GOOD_DELTA_MAX, 0.0, 1.0));
 		self.containers[miner_type].modulate = color;
 
 

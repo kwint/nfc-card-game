@@ -87,13 +87,6 @@ border_width = 2.0
 [node name="TeamPanelLeft" parent="Viewport" instance=ExtResource("5_120pg")]
 layout_mode = 0
 
-[node name="BalanceGauge" parent="Viewport/TeamPanelLeft/Rows/Balance/Margin" index="0"]
-values = {
-1: 0,
-2: 0,
-3: 0
-}
-
 [node name="Grid" parent="Viewport/TeamPanelLeft/Rows/Debug/Margin" index="0" node_paths=PackedStringArray("game_controller")]
 game_controller = NodePath("../../../../../../GameController")
 
@@ -120,13 +113,6 @@ size_flags_horizontal = 8
 [node name="Balance" parent="Viewport/TeamPanelRight/Rows" index="2"]
 size_flags_horizontal = 8
 
-[node name="BalanceGauge" parent="Viewport/TeamPanelRight/Rows/Balance/Margin" index="0"]
-values = {
-1: 0,
-2: 0,
-3: 0
-}
-
 [node name="Gauge" parent="Viewport/TeamPanelRight/Rows/Balance/Margin/BalanceGauge/Gauge1" index="1"]
 fill_mode = 1
 
@@ -145,16 +131,11 @@ team = 2
 
 [node name="MinersLeft" type="Node2D" parent="." node_paths=PackedStringArray("reference_grid")]
 script = ExtResource("3_gpr4m")
-flipped = null
-color = null
-animate_color = null
 reference_grid = NodePath("../Viewport/AspectRatio/Columns/MinersLeft")
 
 [node name="MinersRight" type="Node2D" parent="." node_paths=PackedStringArray("reference_grid")]
 script = ExtResource("3_gpr4m")
 flipped = true
-color = null
-animate_color = null
 reference_grid = NodePath("../Viewport/AspectRatio/Columns/MinersRight")
 
 [node name="Camera2D" type="Camera2D" parent="."]
