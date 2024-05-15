@@ -1,14 +1,12 @@
-[gd_scene load_steps=14 format=3 uid="uid://ca1ddejybbu0g"]
+[gd_scene load_steps=12 format=3 uid="uid://ca1ddejybbu0g"]
 
 [ext_resource type="Script" path="res://Scripts/GameController.gd" id="1_y0gn5"]
 [ext_resource type="Theme" uid="uid://n2sj11gmuqmo" path="res://Themes/MoneyFont.tres" id="2_1f4xi"]
 [ext_resource type="Script" path="res://Scripts/WebSocketClient.gd" id="2_tpx8r"]
-[ext_resource type="Texture2D" uid="uid://b42udxqeucn7a" path="res://Sprites/Mountain/mountain2.png" id="3_5al7l"]
 [ext_resource type="Texture2D" uid="uid://dlpgymkkdtcdc" path="res://Sprites/Mountain/sky.webp" id="3_f71f4"]
 [ext_resource type="Script" path="res://Scripts/MinerGrid.gd" id="3_gpr4m"]
 [ext_resource type="Script" path="res://Scripts/MoneyDisplay.gd" id="3_o437a"]
 [ext_resource type="PackedScene" uid="uid://c223vha4r3wq7" path="res://Prefabs/BalanceGauge.tscn" id="3_oc27c"]
-[ext_resource type="Texture2D" uid="uid://clmxjx3r3lipd" path="res://Sprites/Mountain/mountain3.png" id="4_bhlf6"]
 [ext_resource type="Texture2D" uid="uid://cnsgveexu0abx" path="res://Sprites/Mountain/mountain1.png" id="4_ca4uh"]
 [ext_resource type="Script" path="res://Scripts/Debug/Panel.gd" id="5_c15vj"]
 [ext_resource type="Script" path="res://Scripts/Debug/AddMiners.gd" id="6_gq5dx"]
@@ -19,7 +17,6 @@
 
 [node name="GameController" type="Node" parent="."]
 script = ExtResource("1_y0gn5")
-mountain_textures = Array[Texture2D]([ExtResource("4_ca4uh"), ExtResource("3_5al7l"), ExtResource("4_bhlf6")])
 
 [node name="StatsHttpClient" type="HTTPRequest" parent="GameController"]
 body_size_limit = 24000000

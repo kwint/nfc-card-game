@@ -21,10 +21,23 @@ const FETCH_STATS_FAIL_RETRY_DELAY: int = 10;
 @onready var background = $"../Viewport/Background";
 @onready var mountain = $"../Viewport/AspectRatioContainer/ReferenceRect/Mountain";
 
-@export var mountain_textures: Array[Texture2D] = [];
+@export var background_colors: Array[Color] = [
+	Color.WHITE,
+	Color(0.3, 1.5, 0.3),
+	Color(1.5, 0.3, 0.3),
+];
+@export var mountain_textures: Array[Texture2D] = [
+	preload("res://Sprites/Mountain/mountain1.png"),
+	preload("res://Sprites/Mountain/mountain2.png"),
+	preload("res://Sprites/Mountain/mountain3.png"),
+];
+@export var mountain_colors: Array[Color] = [
+	Color(0.3, 0.5, 1.0),
+	Color(0.4, 1.0, 0.5),
+	Color(1.0, 0.6, 0.5),
+];
 
-var mine_id: int = Global.MINE_IDS[0];
-
+var mine_id: int;
 var fetch_stats_at: int;
 
 
@@ -33,7 +46,7 @@ func _ready():
 	stats_http_client.request_completed.connect(_on_stats_fetched)
 	
 	# Connect on start
-	self.reconnect.call_deferred();
+	self.switch_mine.call_deferred(Global.MINE_IDS[0]);
 
 
 func _process(_delta):
@@ -82,8 +95,13 @@ func switch_mine(mine_id: int):
 	self.mine_id = mine_id;
 	self.reconnect();
 	
+	# Update textures and colors
+	if !self.background_colors.is_empty():
+		self.background.modulate = self.background_colors[self.get_mine_index() % self.background_colors.size()];
 	if !self.mountain_textures.is_empty():
 		self.mountain.texture = self.mountain_textures[self.get_mine_index() % self.mountain_textures.size()];
+	if !self.mountain_colors.is_empty():
+		self.mountain.modulate = self.mountain_colors[self.get_mine_index() % self.mountain_colors.size()];
 
 
 func cycle_mine():
