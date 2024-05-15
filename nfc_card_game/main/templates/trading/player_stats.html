@@ -55,10 +55,10 @@
           <h5>Hoeveel {{ post.0.post.sells.get_currency_display }}{{post.0.post.sells.get_name_display}} wil je kopen?</h5>
           {% if price %} <h5>Prijs: {{ price }}</h5>{% endif %}
           <h5>{{ post.0.sells}}</h5>
-          <form method="post">
+          <form method="post" class="d-flex align-items-start justify-content-start flex-row flex-wrap">
             {% csrf_token %}
             {% for amount, text in buy_amounts %}
-              <button class="btn btn-primary my-2 d-block w-25" type="submit" name="amount" value="{{ amount }}">
+              <button class="btn btn-primary m-2 d-block w-25" type="submit" name="amount" value="{{ amount }}">
                 {{ amount }}{% if text %} ({{ text }}) {% endif %}
               </button>
             {% endfor %}
