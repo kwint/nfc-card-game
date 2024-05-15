@@ -9,6 +9,7 @@ if [ "$1" = "--debug" ]; then
 else
   # Gunicorn
   exec daphne "nfc_card_game.asgi:application" \
+    -b "0.0.0.0" \ 
     -p 8000 \
     -t "$GUNICORN_TIMEOUT"
 fi
