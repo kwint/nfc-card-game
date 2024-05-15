@@ -17,12 +17,6 @@
           <h4 class="card-title"><span class="bi-cart-check-fill h3"></span> {{ post.0.post.sells.get_currency_display }}{{ post.0.post.name }}</h4>
         </div>
       <div class="card-body">
-        <form method="post">
-          {% csrf_token %}
-          {% for amount, text in buy_amounts %}
-            <button type="submit" name="amount" value="{{ amount }}">{{ amount }}{% if text %}({{ text }}){% endif %}</button>
-          {% endfor %}
-        </form>
         {% if action.status == "ok" %}
         <h4>Je hebt {{ buy_amount }}x {{ action.bought.item.get_currency_display }}{{ action.bought.item.get_name_display }} gekocht!</h4>
         <table class="table">
