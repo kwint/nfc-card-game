@@ -8,9 +8,7 @@ if [ "$1" = "--debug" ]; then
   exec python manage.py runserver 0.0.0.0:8000
 else
   # Gunicorn
-  exec gunicorn "nfc_card_game.wsgi:application" \
-    --bind "0.0.0.0:8000" \
-    --workers "$GUNICORN_WORKERS" \
-    --timeout "$GUNICORN_TIMEOUT" \
-    --log-level "$GUNICORN_LOG_LEVEL"
+  exec daphne "nfc_card_game.asgi:application" \
+    -p 8000 \
+    -t "$GUNICORN_TIMEOUT" \
 fi

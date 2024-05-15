@@ -13,14 +13,13 @@ import os
 from channels.auth import AuthMiddlewareStack
 from django.core.asgi import get_asgi_application
 from django.urls import path
-from nfc_card_game.main.consumers import MessageConsumer
-from nfc_card_game.main.api_consumer import ApiConsumer
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "nfc_card_game.settings")
 
-application = get_asgi_application()
 django.setup()
 
+from nfc_card_game.main.consumers import MessageConsumer
+from nfc_card_game.main.api_consumer import ApiConsumer
 
 application = ProtocolTypeRouter(
     {
