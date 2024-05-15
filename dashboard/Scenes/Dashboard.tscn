@@ -1,12 +1,13 @@
-[gd_scene load_steps=11 format=3 uid="uid://ca1ddejybbu0g"]
+[gd_scene load_steps=12 format=3 uid="uid://ca1ddejybbu0g"]
 
-[ext_resource type="Texture2D" uid="uid://spx3oh7upq1v" path="res://Sprites/mountain.png" id="1_tusvk"]
 [ext_resource type="Script" path="res://Scripts/GameController.gd" id="1_y0gn5"]
 [ext_resource type="Theme" uid="uid://n2sj11gmuqmo" path="res://Themes/MoneyFont.tres" id="2_1f4xi"]
 [ext_resource type="Script" path="res://Scripts/WebSocketClient.gd" id="2_tpx8r"]
+[ext_resource type="Texture2D" uid="uid://dlpgymkkdtcdc" path="res://Sprites/Mountain/sky.webp" id="3_f71f4"]
 [ext_resource type="Script" path="res://Scripts/MinerGrid.gd" id="3_gpr4m"]
 [ext_resource type="Script" path="res://Scripts/MoneyDisplay.gd" id="3_o437a"]
 [ext_resource type="PackedScene" uid="uid://c223vha4r3wq7" path="res://Prefabs/BalanceGauge.tscn" id="3_oc27c"]
+[ext_resource type="Texture2D" uid="uid://cnsgveexu0abx" path="res://Sprites/Mountain/mountain1.png" id="4_ca4uh"]
 [ext_resource type="Script" path="res://Scripts/Debug/Panel.gd" id="5_c15vj"]
 [ext_resource type="Script" path="res://Scripts/Debug/AddMiners.gd" id="6_gq5dx"]
 
@@ -32,14 +33,16 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Background" type="ColorRect" parent="Viewport"]
+[node name="Background" type="TextureRect" parent="Viewport"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.180392, 0.192157, 0.345098, 1)
+texture = ExtResource("3_f71f4")
+expand_mode = 3
+stretch_mode = 6
 
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="Viewport"]
 layout_mode = 1
@@ -56,13 +59,14 @@ layout_mode = 2
 border_width = 2.0
 
 [node name="Mountain" type="TextureRect" parent="Viewport/AspectRatioContainer/ReferenceRect"]
+modulate = Color(0.3, 0.5, 1, 1)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("1_tusvk")
+texture = ExtResource("4_ca4uh")
 expand_mode = 3
 
 [node name="HSplitContainer" type="HSplitContainer" parent="Viewport/AspectRatioContainer"]
@@ -84,7 +88,7 @@ border_width = 2.0
 layout_mode = 1
 offset_right = 121.0
 offset_bottom = 43.0
-theme_override_constants/margin_left = 85
+theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 script = ExtResource("3_o437a")
 
@@ -105,7 +109,7 @@ offset_left = -111.0
 offset_bottom = 40.0
 grow_horizontal = 0
 theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 85
+theme_override_constants/margin_right = 20
 script = ExtResource("3_o437a")
 right = true
 
@@ -131,7 +135,7 @@ offset_top = 96.0
 offset_right = 1119.0
 offset_bottom = 246.0
 
-[node name="DebugPanel" type="PanelContainer" parent="Viewport"]
+[node name="DebugPanel1" type="PanelContainer" parent="Viewport"]
 layout_mode = 2
 offset_left = 133.0
 offset_top = 92.0
@@ -139,65 +143,122 @@ offset_right = 279.0
 offset_bottom = 242.0
 script = ExtResource("5_c15vj")
 
-[node name="MarginContainer" type="MarginContainer" parent="Viewport/DebugPanel"]
+[node name="MarginContainer" type="MarginContainer" parent="Viewport/DebugPanel1"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="AddMiners" type="GridContainer" parent="Viewport/DebugPanel/MarginContainer" node_paths=PackedStringArray("game_controller")]
+[node name="AddMiners" type="GridContainer" parent="Viewport/DebugPanel1/MarginContainer" node_paths=PackedStringArray("game_controller")]
 layout_mode = 2
 columns = 2
 script = ExtResource("6_gq5dx")
 game_controller = NodePath("../../../../GameController")
 
-[node name="Label" type="Label" parent="Viewport/DebugPanel/MarginContainer/AddMiners"]
+[node name="Label" type="Label" parent="Viewport/DebugPanel1/MarginContainer/AddMiners"]
 layout_mode = 2
 text = "Debug"
 
-[node name="Control" type="Control" parent="Viewport/DebugPanel/MarginContainer/AddMiners"]
+[node name="Control" type="Control" parent="Viewport/DebugPanel1/MarginContainer/AddMiners"]
 layout_mode = 2
 
-[node name="SpinBox1" type="SpinBox" parent="Viewport/DebugPanel/MarginContainer/AddMiners"]
+[node name="SpinBox1" type="SpinBox" parent="Viewport/DebugPanel1/MarginContainer/AddMiners"]
 layout_mode = 2
 min_value = 1.0
 value = 1.0
 allow_greater = true
 
-[node name="Button1" type="Button" parent="Viewport/DebugPanel/MarginContainer/AddMiners"]
+[node name="Button1" type="Button" parent="Viewport/DebugPanel1/MarginContainer/AddMiners"]
 layout_mode = 2
 text = "Add"
 
-[node name="SpinBox2" type="SpinBox" parent="Viewport/DebugPanel/MarginContainer/AddMiners"]
+[node name="SpinBox2" type="SpinBox" parent="Viewport/DebugPanel1/MarginContainer/AddMiners"]
 layout_mode = 2
 min_value = 1.0
 value = 1.0
 allow_greater = true
 
-[node name="Button2" type="Button" parent="Viewport/DebugPanel/MarginContainer/AddMiners"]
+[node name="Button2" type="Button" parent="Viewport/DebugPanel1/MarginContainer/AddMiners"]
 layout_mode = 2
 text = "Add"
 
-[node name="SpinBox3" type="SpinBox" parent="Viewport/DebugPanel/MarginContainer/AddMiners"]
+[node name="SpinBox3" type="SpinBox" parent="Viewport/DebugPanel1/MarginContainer/AddMiners"]
 layout_mode = 2
 min_value = 1.0
 value = 1.0
 allow_greater = true
 
-[node name="Button3" type="Button" parent="Viewport/DebugPanel/MarginContainer/AddMiners"]
+[node name="Button3" type="Button" parent="Viewport/DebugPanel1/MarginContainer/AddMiners"]
+layout_mode = 2
+text = "Add"
+
+[node name="DebugPanel2" type="PanelContainer" parent="Viewport"]
+layout_mode = 2
+offset_left = 874.0
+offset_top = 92.0
+offset_right = 1020.0
+offset_bottom = 242.0
+script = ExtResource("5_c15vj")
+
+[node name="MarginContainer" type="MarginContainer" parent="Viewport/DebugPanel2"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="AddMiners" type="GridContainer" parent="Viewport/DebugPanel2/MarginContainer" node_paths=PackedStringArray("game_controller")]
+layout_mode = 2
+columns = 2
+script = ExtResource("6_gq5dx")
+game_controller = NodePath("../../../../GameController")
+team = 2
+
+[node name="Label" type="Label" parent="Viewport/DebugPanel2/MarginContainer/AddMiners"]
+layout_mode = 2
+text = "Debug"
+
+[node name="Control" type="Control" parent="Viewport/DebugPanel2/MarginContainer/AddMiners"]
+layout_mode = 2
+
+[node name="SpinBox1" type="SpinBox" parent="Viewport/DebugPanel2/MarginContainer/AddMiners"]
+layout_mode = 2
+min_value = 1.0
+value = 1.0
+allow_greater = true
+
+[node name="Button1" type="Button" parent="Viewport/DebugPanel2/MarginContainer/AddMiners"]
+layout_mode = 2
+text = "Add"
+
+[node name="SpinBox2" type="SpinBox" parent="Viewport/DebugPanel2/MarginContainer/AddMiners"]
+layout_mode = 2
+min_value = 1.0
+value = 1.0
+allow_greater = true
+
+[node name="Button2" type="Button" parent="Viewport/DebugPanel2/MarginContainer/AddMiners"]
+layout_mode = 2
+text = "Add"
+
+[node name="SpinBox3" type="SpinBox" parent="Viewport/DebugPanel2/MarginContainer/AddMiners"]
+layout_mode = 2
+min_value = 1.0
+value = 1.0
+allow_greater = true
+
+[node name="Button3" type="Button" parent="Viewport/DebugPanel2/MarginContainer/AddMiners"]
 layout_mode = 2
 text = "Add"
 
 [node name="MinersTeam1" type="Node2D" parent="." node_paths=PackedStringArray("reference_grid")]
 script = ExtResource("3_gpr4m")
-color = Color(1, 0.5, 0.5, 1)
 reference_grid = NodePath("../Viewport/AspectRatioContainer/HSplitContainer/MinersTeam1")
 
 [node name="MinersTeam2" type="Node2D" parent="." node_paths=PackedStringArray("reference_grid")]
 script = ExtResource("3_gpr4m")
 flipped = true
-color = Color(0.5, 0.5, 1, 1)
 reference_grid = NodePath("../Viewport/AspectRatioContainer/HSplitContainer/MinersTeam2")
 
 [node name="Camera2D" type="Camera2D" parent="."]

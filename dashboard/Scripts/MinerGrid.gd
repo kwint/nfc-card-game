@@ -6,10 +6,11 @@ const FLOWING_LABEL_TEXT_SCALE: float = 0.7;
 # Maximum number of miner instances per type
 const MAX_RENDERED_MINERS: int = 5_000;
 const MINER_HIGHEST_POSITION: float = 0.05;
-const MINER_LOWEST_POSITION: float = 0.9;
+const MINER_LOWEST_POSITION: float = 0.92;
 
 @export var flipped: bool;
 @export var color: Color = Color.WHITE;
+@export var animate_color: Color = Color.GREEN;
 @export var reference_grid: Control;
 
 # A dict per miner type, containing a list of miner instances.
@@ -17,11 +18,16 @@ var miners = {};
 # A dict of the number of hidden miners per type.
 var miners_hidden = {};
 
-var noise = FastNoiseLite.new();
+# Random source for miner placement
 var random = RandomNumberGenerator.new();
+var random_base: int = 0;
 
 
 func _ready():
+	# Pick a random base number for random miner spread
+	self.random.randomize();
+	self.random_base = self.random.randi() % 999999;
+	
 	get_viewport().connect("size_changed", reposition_miners, CONNECT_DEFERRED);
 
 
@@ -58,6 +64,7 @@ func _add_miner(type: Global.MinerType = Global.MinerType.MINER1, animate_text =
 	if animate_text != null:
 		var flowing_label = FLOWING_LABEL_PREFAB.instantiate();
 		flowing_label.text = animate_text;
+		flowing_label.color = self.animate_color;
 		flowing_label.text_scale = FLOWING_LABEL_TEXT_SCALE;
 		self.add_child(flowing_label);
 		flowing_label.position = miner_position;
@@ -142,26 +149,28 @@ func get_miner_position(type: Global.MinerType, index: int, hidden_amount = null
 	
 	# Pick a base seed based on the miner type
 	# This prevents overlapping of different miner types
-	var base_seed = MAX_RENDERED_MINERS * type;
+	var base_seed = MAX_RENDERED_MINERS * type + self.random_base;
+	self.random.set_seed(base_seed + index);
 
 	# Offset index to prevent position jumps when removing old miners
 	if hidden_amount == null:
 		hidden_amount = self.miners_hidden.get(type, 0);
 	index += hidden_amount;
 	
-	# Height factor in rectangle [0, 1]
-	self.random.set_seed(base_seed + index);
+	# Height factor in rectangle [0, 1], slowly spread from center
 	var height_factor = self.random.randf_range(MINER_HIGHEST_POSITION, MINER_LOWEST_POSITION);
-	
-	# Slowly increase height range from center
 	if index < 45:
 		height_factor = scale_float(height_factor, 0.0, 1.0, max(0.45 - index * 0.01, 0.0), min(0.55 + index * 0.01, 1.0));
 	
-	# Width factor in rectangle, within range of triangle
+	# Width factor in rectangle [0, 1], slowly spread from center
+	var width_factor = self.random.randf_range(0.0, 1.0);
+	if index < 45:
+		width_factor = scale_float(width_factor, 0.0, 1.0, max(0.45 - index * 0.01, 0.0), min(0.55 + index * 0.01, 1.0));
+	
+	# Keep width within rectangle of mountain
 	var width_factor_left = 1.0 - height_factor if !self.flipped else 0.0;
 	var width_factor_right = 1.0 if !self.flipped else height_factor;
-	var width_factor = self.noise.get_noise_1d(base_seed + index);
-	width_factor = scale_float(width_factor, -1.0, 1.0, width_factor_left, width_factor_right);
+	width_factor = scale_float(width_factor, 0.0, 1.0, width_factor_left, width_factor_right);
 	
 	# Scale width and height factor to the reference rectangle
 	var rect = self.reference_grid.get_global_rect();
