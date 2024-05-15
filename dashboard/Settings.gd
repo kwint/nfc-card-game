@@ -63,3 +63,14 @@ static func is_default_fullscreen() -> bool:
 		fullscreen = env.to_lower() == "true" || env.to_int() > 0;
 
 	return fullscreen;
+
+
+static func is_show_debug() -> bool:
+	var show_debug = OS.has_feature("debug");
+
+	# Prefer debug setting from environment
+	var env = OS.get_environment("NFC_DEBUG");
+	if !env.is_empty():
+		show_debug = env.to_lower() == "true" || env.to_int() > 0;
+
+	return show_debug;
