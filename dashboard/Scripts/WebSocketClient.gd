@@ -26,7 +26,7 @@ var reconnect_at = null;
 	
 	
 func _process(_delta):
-	if self.reconnect_at != null && self.reconnect_at <= Global.now():
+	if self.reconnect_at != null && self.reconnect_at <= Settings.now():
 		self.reconnect();
 	if self.socket != null:
 		self.poll_socket();
@@ -44,7 +44,7 @@ func reconnect():
 	
 	# Initialize and connect new socket instance
 	self.socket = WebSocketPeer.new();
-	self.socket.connect_to_url(Global.WEBSOCKET_API_URL);
+	self.socket.connect_to_url(Settings.WEBSOCKET_API_URL);
 	
 	
 func poll_socket():
@@ -99,7 +99,7 @@ func on_connected():
 func on_disconnected():
 	# Schedule reconnecting
 	print("Websocket disconnected, reconnecting in ", WEBSOCKET_FAIL_RETRY_DELAY, " seconds...");
-	self.reconnect_at = Global.now() + WEBSOCKET_FAIL_RETRY_DELAY;
+	self.reconnect_at = Settings.now() + WEBSOCKET_FAIL_RETRY_DELAY;
 
 
 func handle_raw_packet(packet: Dictionary):

@@ -1,4 +1,4 @@
-class_name Global
+class_name Settings
 
 # Available mine IDs
 const MINE_IDS = [1, 2, 3];

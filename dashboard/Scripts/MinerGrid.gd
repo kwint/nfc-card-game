@@ -33,7 +33,7 @@ func _ready():
 
 # Add the given amount of miners
 # The amount rendered on screen may be limited for performance reasons
-func add_miners(type: Global.MinerType = Global.MinerType.MINER1, amount: int = 1, animate_text = null):
+func add_miners(type: Settings.MinerType = Settings.MinerType.MINER1, amount: int = 1, animate_text = null):
 	# Determine how many visible and hidden miners to add
 	var add_visible = min(amount, MAX_RENDERED_MINERS);
 	var add_hidden = max(amount - add_visible, 0);
@@ -45,7 +45,7 @@ func add_miners(type: Global.MinerType = Global.MinerType.MINER1, amount: int = 
 
 
 # Add a single visible miner instance
-func _add_miner(type: Global.MinerType = Global.MinerType.MINER1, animate_text = null):
+func _add_miner(type: Settings.MinerType = Settings.MinerType.MINER1, animate_text = null):
 	var miner = MINER_PREFAB.instantiate();
 	var miner_position = self.get_miner_position(type, self.count_miners(type));
 	
@@ -70,7 +70,7 @@ func _add_miner(type: Global.MinerType = Global.MinerType.MINER1, animate_text =
 		flowing_label.position = miner_position;
 	
 
-func _add_miner_to_list(type: Global.MinerType, miner):
+func _add_miner_to_list(type: Settings.MinerType, miner):
 	if !self.miners.has(type):
 		self.miners[type] = [];
 	var miners = self.miners[type];
@@ -88,19 +88,19 @@ func _add_miner_to_list(type: Global.MinerType, miner):
 	
 
 # Add the given number of hidden miners.
-func _add_hidden_miners(type: Global.MinerType = Global.MinerType.MINER1, amount: int = 1):
+func _add_hidden_miners(type: Settings.MinerType = Settings.MinerType.MINER1, amount: int = 1):
 	if !self.miners_hidden.has(type):
 		self.miners_hidden[type] = 0;
 	self.miners_hidden[type] += amount;
 	
 
 # Get the number of hidden miners.
-func _get_hidden_miners(type: Global.MinerType = Global.MinerType.MINER1) -> int:
+func _get_hidden_miners(type: Settings.MinerType = Settings.MinerType.MINER1) -> int:
 	return self.miners_hidden.get(type, 0);
 
 
 # Remove the given number of miners.
-func remove_miners(type: Global.MinerType = Global.MinerType.MINER1, amount: int = 1):
+func remove_miners(type: Settings.MinerType = Settings.MinerType.MINER1, amount: int = 1):
 	# First remove hidden miners, it is more efficient
 	var remove_hidden = min(amount, self._get_hidden_miners(type));
 	self._add_hidden_miners(type, -remove_hidden);
@@ -120,7 +120,7 @@ func remove_miners(type: Global.MinerType = Global.MinerType.MINER1, amount: int
 
 
 # Set the given number of miners, automatically adding or removing them as needed.
-func set_miners(type: Global.MinerType, amount: int, animate_text = null):
+func set_miners(type: Settings.MinerType, amount: int, animate_text = null):
 	var delta = amount - self.count_miners(type);
 	if delta > 0:
 		self.add_miners(type, delta, animate_text);
@@ -130,7 +130,7 @@ func set_miners(type: Global.MinerType, amount: int, animate_text = null):
 
 # Count the miners of a type
 # Returns the true count, including both visible and invisible miners.
-func count_miners(type: Global.MinerType) -> int:
+func count_miners(type: Settings.MinerType) -> int:
 	return self.miners.get(type, []).size() + self.miners_hidden.get(type, 0);
 
 
@@ -143,7 +143,7 @@ func reposition_miners():
 			miners[i].position = self.get_miner_position(type, i, index_offset);
 
 
-func get_miner_position(type: Global.MinerType, index: int, hidden_amount = null) -> Vector2:
+func get_miner_position(type: Settings.MinerType, index: int, hidden_amount = null) -> Vector2:
 	if self.reference_grid == null:
 		return Vector2.ZERO;
 	
