@@ -46,6 +46,9 @@ def get_player_register(request: HttpRequest, card_uuid: str):
 
 def handle_activities_player(request: HttpRequest, player: Player) -> HttpResponse:
     if act_uuid := request.session.get("post"):
+        if act_uuid == "vote":
+            return render(request, "activities/vote.html")
+
         activity = Activity.objects.get(card_uuid=act_uuid)
         player.activities.add(activity)
 
@@ -231,6 +234,10 @@ def post_color(request, card_uuid: str) -> HttpResponse:
 
 
 def post_activities(request: HttpRequest, card_uuid: str) -> HttpResponse:
+    if card_uuid == "vote":
+        request.session["post"] = card_uuid
+        return render(request, "msg.html", {"text": "logged in as stembus"})
+
     activity = get_object_or_404(Activity, card_uuid=card_uuid)
     request.session["post"] = card_uuid
     return render(request, "msg.html", {"text": f"logged in as {activity.name}"})
