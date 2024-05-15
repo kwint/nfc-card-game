@@ -23,6 +23,7 @@ const FLOWING_LABEL_TEXT_COLOR: Color = Color.LIGHT_BLUE;
 };
 @onready var background = $"../Viewport/Background";
 @onready var mountain = $"../Viewport/AspectRatio/ReferenceRect/Mountain";
+@onready var mine_label = $"../Viewport/Mine/Name/Margin/Label";
 
 @export var background_textures: Array[Texture2D] = [
 	preload("res://Sprites/Mountain/sky1.jpg"),
@@ -38,6 +39,11 @@ const FLOWING_LABEL_TEXT_COLOR: Color = Color.LIGHT_BLUE;
 	Color(0.3, 0.5, 1.0),
 	Color(0.4, 1.0, 0.5),
 	Color(1.0, 0.6, 0.5),
+];
+@export var mine_names: Array[String] = [
+	"Blauw",
+	"Groen",
+	"Rood",
 ];
 
 var mine_id: int;
@@ -106,12 +112,18 @@ func switch_mine(mine_id: int):
 		self.mountain.texture = self.mountain_textures[self.get_mine_index() % self.mountain_textures.size()];
 	if !self.mountain_colors.is_empty():
 		self.mountain.modulate = self.mountain_colors[self.get_mine_index() % self.mountain_colors.size()];
+	if !self.mine_names.is_empty():
+		self.mine_label.text = self.mine_names[self.get_mine_index() % self.mine_names.size()];
 
 
 func cycle_mine():
 	var next_mine_id = Settings.MINE_IDS[(get_mine_index() + 1) % Settings.MINE_IDS.size()];
 	self.switch_mine(next_mine_id);
-	self.render_status(str("Mine ", next_mine_id));
+	
+	var name = str(next_mine_id);
+	if !self.mine_names.is_empty():
+		name = self.mine_names[self.get_mine_index() % self.mine_names.size()];
+	self.render_status(str("Mine: ", name));
 
 
 func get_mine_index() -> int:

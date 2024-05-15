@@ -4,7 +4,9 @@ const MINER_PREFAB = preload("res://Prefabs/Miner.tscn");
 const FLOWING_LABEL_PREFAB = preload("res://Prefabs/FlowingLabel.tscn");
 const FLOWING_LABEL_TEXT_SCALE: float = 0.7;
 # Maximum number of miner instances per type
-const MAX_RENDERED_MINERS: int = 5_000;
+const MAX_VISIBLE_MINERS: int = 5_000;
+# Maximum number of miners to spawn per player operation
+const MAX_VISIBLE_MINERS_ONCE: int = MAX_VISIBLE_MINERS / 10;
 const MINER_HIGHEST_POSITION: float = 0.05;
 const MINER_LOWEST_POSITION: float = 0.92;
 
@@ -33,9 +35,11 @@ func _ready():
 
 # Add the given amount of miners
 # The amount rendered on screen may be limited for performance reasons
-func add_miners(type: Settings.MinerType = Settings.MinerType.MINER1, amount: int = 1, animate_text = null):
+func add_miners(type: Settings.MinerType = Settings.MinerType.MINER1, amount: int = 1, animate_text = null, ignore_spawn_limit : bool = false):
 	# Determine how many visible and hidden miners to add
-	var add_visible = min(amount, MAX_RENDERED_MINERS);
+	var add_visible = min(amount, MAX_VISIBLE_MINERS_ONCE);
+	if ignore_spawn_limit:
+		add_visible = min(amount, MAX_VISIBLE_MINERS);
 	var add_hidden = max(amount - add_visible, 0);
 	
 	# Update the hidden count and add each visible miner
@@ -79,7 +83,7 @@ func _add_miner_to_list(type: Settings.MinerType, miner):
 	miners.append(miner);
 	
 	# Remove old miners when reaching miner limit
-	var overflow = max(miners.size() - MAX_RENDERED_MINERS, 0);
+	var overflow = max(miners.size() - MAX_VISIBLE_MINERS, 0);
 	if overflow > 0:
 		for i in range(overflow):
 			miners[i].destroy();
@@ -123,7 +127,7 @@ func remove_miners(type: Settings.MinerType = Settings.MinerType.MINER1, amount:
 func set_miners(type: Settings.MinerType, amount: int, animate_text = null):
 	var delta = amount - self.count_miners(type);
 	if delta > 0:
-		self.add_miners(type, delta, animate_text);
+		self.add_miners(type, delta, animate_text, true);
 	if delta < 0:
 		self.remove_miners(type, delta * -1);
 
@@ -149,7 +153,7 @@ func get_miner_position(type: Settings.MinerType, index: int, hidden_amount = nu
 	
 	# Pick a base seed based on the miner type
 	# This prevents overlapping of different miner types
-	var base_seed = MAX_RENDERED_MINERS * type + self.random_base;
+	var base_seed = MAX_VISIBLE_MINERS * type + self.random_base;
 	self.random.set_seed(base_seed + index);
 
 	# Offset index to prevent position jumps when removing old miners
