@@ -22,16 +22,44 @@ static func now() -> int:
 
 
 static func get_default_mine() -> int:
-	return MINE_IDS[0];
+	var mine_id = MINE_IDS[0];
+
+	# Prefer mine ID from environment if valid
+	var env = OS.get_environment("NFC_MINE_ID");
+	if !env.is_empty() && MINE_IDS.has(env.to_int()):
+		mine_id = env.to_int();
+
+	return mine_id;
 
 
 static func get_api_url() -> String:
-	return API_URL;
+	var url = API_URL;
+
+	# Prefer API URL from environment
+	var env = OS.get_environment("NFC_API_URL");
+	if !env.is_empty():
+		url = env;
+
+	return url;
 
 
 static func get_websocket_api_url() -> String:
-	return WEBSOCKET_API_URL;
+	var url = WEBSOCKET_API_URL;
+
+	# Prefer websocket API URL from environment
+	var env = OS.get_environment("NFC_WEBSOCKET_API_URL");
+	if !env.is_empty():
+		url = env;
+
+	return url;
 
 
 static func is_default_fullscreen() -> bool:
-	return !OS.has_feature("debug");
+	var fullscreen = !OS.has_feature("debug");
+
+	# Prefer fullscreen setting from environment
+	var env = OS.get_environment("NFC_FULLSCREEN");
+	if !env.is_empty():
+		fullscreen = env.to_lower() == "true" || env.to_int() > 0;
+
+	return fullscreen;
