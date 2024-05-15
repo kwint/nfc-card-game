@@ -10,8 +10,8 @@ const FLOWING_LABEL_TEXT_COLOR: Color = Color.LIGHT_BLUE;
 @onready var stats_http_client = $StatsHttpClient;
 @onready var websocket_client = $WebSocketClient;
 @onready var mines = {
-  Settings.TeamId.TEAM1: $"../MinersTeamLeft",
-  Settings.TeamId.TEAM2: $"../MinersTeamRight",
+  Settings.TeamId.TEAM1: $"../MinersLeft",
+  Settings.TeamId.TEAM2: $"../MinersRight",
 };
 @onready var money = {
   Settings.TeamId.TEAM1: $"../Viewport/TeamPanelLeft/Rows/Money/Margin",
@@ -22,7 +22,7 @@ const FLOWING_LABEL_TEXT_COLOR: Color = Color.LIGHT_BLUE;
   Settings.TeamId.TEAM2: $"../Viewport/TeamPanelRight/Rows/Balance/Margin/BalanceGauge",
 };
 @onready var background = $"../Viewport/Background";
-@onready var mountain = $"../Viewport/AspectRatioContainer/ReferenceRect/Mountain";
+@onready var mountain = $"../Viewport/AspectRatio/ReferenceRect/Mountain";
 
 @export var background_textures: Array[Texture2D] = [
 	preload("res://Sprites/Mountain/sky1.jpg"),
