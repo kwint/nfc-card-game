@@ -18,6 +18,10 @@ const FETCH_STATS_FAIL_RETRY_DELAY: int = 10;
   Global.TeamId.TEAM1: $"../Viewport/BalanceGaugeTeam1",
   Global.TeamId.TEAM2: $"../Viewport/BalanceGaugeTeam2",
 };
+@onready var background = $"../Viewport/Background";
+@onready var mountain = $"../Viewport/AspectRatioContainer/ReferenceRect/Mountain";
+
+@export var mountain_textures: Array[Texture2D] = [];
 
 var mine_id: int = Global.MINE_IDS[0];
 
@@ -77,14 +81,21 @@ func switch_mine(mine_id: int):
 		assert(false, "Unknown mine ID");
 	self.mine_id = mine_id;
 	self.reconnect();
+	
+	if !self.mountain_textures.is_empty():
+		self.mountain.texture = self.mountain_textures[self.get_mine_index() % self.mountain_textures.size()];
 
 
 func cycle_mine():
-	var current_index = Global.MINE_IDS.find(self.mine_id);
-	if current_index == -1:
-		assert(false, "Unknown mine ID");
-	var next_mine_id = Global.MINE_IDS[(current_index + 1) % Global.MINE_IDS.size()];
+	var next_mine_id = Global.MINE_IDS[(get_mine_index() + 1) % Global.MINE_IDS.size()];
 	self.switch_mine(next_mine_id);
+
+
+func get_mine_index() -> int:
+	var i = Global.MINE_IDS.find(self.mine_id);
+	if i == -1:
+		assert(false, "Unknown mine ID");
+	return i;
 
 
 func fetch_stats():
