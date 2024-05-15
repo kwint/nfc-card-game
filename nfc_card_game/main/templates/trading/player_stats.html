@@ -53,7 +53,7 @@
           {% endif %}
         {% elif post %}
           <h5>Hoeveel {{ post.0.post.sells.get_currency_display }}{{post.0.post.sells.get_name_display}} wil je kopen?</h5>
-          <h5>Prijs: {{ price }}</h5>
+          {% if price %} <h5>Prijs: {{ price }}</h5>{% endif %}
           <h5>{{ post.0.sells}}</h5>
           <form method="post">
             {% csrf_token %}
