@@ -3,14 +3,14 @@ extends HBoxContainer
 const ORIGIN: float = 0.5;
 
 @export var values = {
-	Global.MinerType.MINER1: 0,
-	Global.MinerType.MINER2: 0,
-	Global.MinerType.MINER3: 0,
+	Settings.MinerType.MINER1: 0,
+	Settings.MinerType.MINER2: 0,
+	Settings.MinerType.MINER3: 0,
 };
 @onready var levels = {
-	Global.MinerType.MINER1: $Gauge1,
-	Global.MinerType.MINER2: $Gauge2,
-	Global.MinerType.MINER3: $Gauge3,
+	Settings.MinerType.MINER1: $Gauge1,
+	Settings.MinerType.MINER2: $Gauge2,
+	Settings.MinerType.MINER3: $Gauge3,
 };
 
 
@@ -31,9 +31,9 @@ func update_levels():
 	
 	# Determine offsets between [-1, 1], scale them to gauge range
 	var offsets = {
-		Global.MinerType.MINER1: 0.0,
-		Global.MinerType.MINER2: 0.0,
-		Global.MinerType.MINER3: 0.0,
+		Settings.MinerType.MINER1: 0.0,
+		Settings.MinerType.MINER2: 0.0,
+		Settings.MinerType.MINER3: 0.0,
 	};
 	if delta_max > 0.0:
 		for miner_type in miner_types:
@@ -44,11 +44,11 @@ func update_levels():
 		self.levels[miner_type].value = ORIGIN + offsets[miner_type] / 2.0;
 
 
-func add_levels(type: Global.MinerType, amount: int = 1):
+func add_levels(type: Settings.MinerType, amount: int = 1):
 	self.values[type] += amount;
 	self.update_levels();
 
 
-func set_level(type: Global.MinerType, amount: int):
+func set_level(type: Settings.MinerType, amount: int):
 	self.values[type] = amount;
 	self.update_levels();
