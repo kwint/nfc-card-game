@@ -13,6 +13,10 @@ const DRIFT_ROTATION_RANGE: float = PI / 8.0;
 const DRIFT_SCALE: float = 0.6;
 
 func _ready():
+	# Disable regular processing as it is unnecessary
+	self.set_process(false);
+	self.set_process_input(false);
+	
 	self.label.text = text;
 	if self.text_scale != 1.0:
 		self.label.add_theme_font_size_override("font_size", self.label.get_theme_font_size("font_size") * self.text_scale);

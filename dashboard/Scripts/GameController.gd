@@ -14,16 +14,16 @@ const FLOWING_LABEL_TEXT_COLOR: Color = Color.LIGHT_BLUE;
   Settings.TeamId.TEAM2: $"../MinersRight",
 };
 @onready var money = {
-  Settings.TeamId.TEAM1: $"../Viewport/TeamPanelLeft/Rows/Money/Margin",
-  Settings.TeamId.TEAM2: $"../Viewport/TeamPanelRight/Rows/Money/Margin",
+  Settings.TeamId.TEAM1: $"../HUD/TeamPanelLeft/Rows/Money/Margin",
+  Settings.TeamId.TEAM2: $"../HUD/TeamPanelRight/Rows/Money/Margin",
 };
 @onready var levels = {
-  Settings.TeamId.TEAM1: $"../Viewport/TeamPanelLeft/Rows/Balance/Margin/BalanceGauge",
-  Settings.TeamId.TEAM2: $"../Viewport/TeamPanelRight/Rows/Balance/Margin/BalanceGauge",
+  Settings.TeamId.TEAM1: $"../HUD/TeamPanelLeft/Rows/Balance/Margin/BalanceGauge",
+  Settings.TeamId.TEAM2: $"../HUD/TeamPanelRight/Rows/Balance/Margin/BalanceGauge",
 };
 @onready var background = $"../Viewport/Background";
 @onready var mountain = $"../Viewport/AspectRatio/ReferenceRect/Mountain";
-@onready var mine_label = $"../Viewport/Mine/Name/Margin/Label";
+@onready var mine_label = $"../HUD/Mine/Name/Margin/Label";
 
 @export var background_textures: Array[Texture2D] = [
 	preload("res://Sprites/Mountain/sky1.jpg"),

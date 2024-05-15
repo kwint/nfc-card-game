@@ -10,6 +10,14 @@ const MAX_VISIBLE_MINERS: int = 5_000;
 const MAX_VISIBLE_MINERS_ONCE: int = MAX_VISIBLE_MINERS / 10;
 const MINER_HIGHEST_POSITION: float = 0.05;
 const MINER_LOWEST_POSITION: float = 0.92;
+const XP_ENABLED: bool = true;
+const XP_MAX_SPAWN_PER_FRAME: int = 10;
+const XP_MIN_MSEC_PER_XP: int = 10;
+const XP_MAX_MSEC_PER_XP: int = 1000;
+const XP_MAX_RATE_AT_MINER_COUNT: int = MAX_VISIBLE_MINERS;
+const XP_TEXT: String = "+";
+const XP_COLOR: Color = Color.GREEN;
+const XP_SCALE: float = 0.45;
 
 @export var flipped: bool;
 @export var color: Color = Color.WHITE;
@@ -25,6 +33,9 @@ var miners_hidden = {};
 var random = RandomNumberGenerator.new();
 var random_base: int = 0;
 
+# Timer for rendering XP
+var last_xp_at = Time.get_ticks_msec();
+
 
 func _ready():
 	# Pick a random base number for random miner spread
@@ -32,6 +43,10 @@ func _ready():
 	self.random_base = self.random.randi() % 999999;
 	
 	get_viewport().connect("size_changed", reposition_miners, CONNECT_DEFERRED);
+	
+	
+func _process(_delta):
+	render_xp();
 
 
 # Add the given amount of miners
@@ -181,3 +196,40 @@ func get_miner_position(type: Settings.MinerType, index: int, hidden_amount = nu
 	var rect = self.reference_grid.get_global_rect();
 	var offset = rect.size * Vector2(width_factor, height_factor);
 	return rect.position + offset;
+
+
+func render_xp():
+	if !XP_ENABLED:
+		return;
+	
+	# Count visible miners
+	var visible_miners = self.miners.values().map(func(n): return n.size()).reduce(func(a, b): return a + b);
+	if visible_miners == null:
+		return;
+	
+	# Scale to msec per label
+	var msec_per_xp = XP_MAX_MSEC_PER_XP - int(Helpers.scale_float(visible_miners, 0, XP_MAX_RATE_AT_MINER_COUNT, XP_MIN_MSEC_PER_XP, XP_MAX_MSEC_PER_XP - XP_MIN_MSEC_PER_XP));
+	
+	# Determine how many XP to spawn
+	# Update clock, but never fall behind more than one unit
+	var now = Time.get_ticks_msec();
+	var diff_msec = now - self.last_xp_at;
+	@warning_ignore("integer_division")
+	var xp_count = min(int(diff_msec / msec_per_xp), XP_MAX_SPAWN_PER_FRAME);
+	self.last_xp_at = max(self.last_xp_at + xp_count * msec_per_xp, now - msec_per_xp);
+	
+	# Spawn XP particles
+	for _i in range(xp_count):
+		# Pick random miner type and miner
+		var type = Settings.MinerType.values()[randi() % Settings.MinerType.size()];
+		if self.miners.get(type, []).is_empty():
+			break;
+		var miner = self.miners[type][randi() % self.miners[type].size()];
+		
+		# Spawn XP label
+		var flowing_label = FLOWING_LABEL_PREFAB.instantiate();
+		flowing_label.text = XP_TEXT;
+		flowing_label.color = XP_COLOR;
+		flowing_label.text_scale = XP_SCALE;
+		self.add_child(flowing_label);
+		flowing_label.position = miner.get_global_position();
