@@ -157,6 +157,7 @@ def handle_trading_player(request: HttpRequest, player: Player) -> HttpResponse:
         action_dict = action.model_dump() if action else None
         context["action"] = action_dict
 
+    possible_sell_options.pop(0, None)
     context["buy_amounts"] = sorted(possible_sell_options.items())
 
     return render(request, "trading/player_stats.html", context)
