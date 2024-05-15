@@ -6,10 +6,10 @@
 [ext_resource type="Script" path="res://Scripts/MinerGrid.gd" id="3_gpr4m"]
 [ext_resource type="Texture2D" uid="uid://cq153cuh0k6uv" path="res://Sprites/Mountain/sky1.jpg" id="3_ikvi8"]
 [ext_resource type="Script" path="res://Scripts/MoneyDisplay.gd" id="3_o437a"]
-[ext_resource type="PackedScene" uid="uid://c223vha4r3wq7" path="res://Prefabs/BalanceGauge.tscn" id="3_oc27c"]
 [ext_resource type="Texture2D" uid="uid://cnsgveexu0abx" path="res://Sprites/Mountain/mountain1.png" id="4_ca4uh"]
 [ext_resource type="Script" path="res://Scripts/Debug/Panel.gd" id="5_c15vj"]
 [ext_resource type="Script" path="res://Scripts/Debug/AddMiners.gd" id="6_gq5dx"]
+[ext_resource type="PackedScene" uid="uid://cxftknt52fvxt" path="res://Prefabs/BalanceGauge.tscn" id="7_3oq7k"]
 [ext_resource type="Script" path="res://Scripts/WindowManager.gd" id="11_6qksi"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w6uij"]
@@ -85,15 +85,30 @@ layout_mode = 2
 border_color = Color(0, 100, 0, 1)
 border_width = 2.0
 
-[node name="MoneyTeam1" type="MarginContainer" parent="Viewport"]
-layout_mode = 1
-offset_right = 121.0
-offset_bottom = 43.0
+[node name="TeamPanelLeft" type="MarginContainer" parent="Viewport"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
-script = ExtResource("3_o437a")
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
 
-[node name="Label" type="Label" parent="Viewport/MoneyTeam1"]
+[node name="Rows" type="VBoxContainer" parent="Viewport/TeamPanelLeft"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Name" type="PanelContainer" parent="Viewport/TeamPanelLeft/Rows"]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Viewport/TeamPanelLeft/Rows/Name"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 10
+
+[node name="Label" type="Label" parent="Viewport/TeamPanelLeft/Rows/Name/Margin"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -101,7 +116,99 @@ theme = ExtResource("2_1f4xi")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_styles/normal = SubResource("StyleBoxTexture_w6uij")
-text = "$ 123456789"
+text = "Team 1"
+
+[node name="Money" type="PanelContainer" parent="Viewport/TeamPanelLeft/Rows"]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Viewport/TeamPanelLeft/Rows/Money"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 10
+script = ExtResource("3_o437a")
+
+[node name="Label" type="Label" parent="Viewport/TeamPanelLeft/Rows/Money/Margin"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = ExtResource("2_1f4xi")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_styles/normal = SubResource("StyleBoxTexture_w6uij")
+text = "$ 123"
+
+[node name="Balance" type="PanelContainer" parent="Viewport/TeamPanelLeft/Rows"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Margin" type="MarginContainer" parent="Viewport/TeamPanelLeft/Rows/Balance"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="BalanceGauge" parent="Viewport/TeamPanelLeft/Rows/Balance/Margin" instance=ExtResource("7_3oq7k")]
+layout_mode = 2
+
+[node name="Debug" type="PanelContainer" parent="Viewport/TeamPanelLeft/Rows"]
+layout_mode = 2
+size_flags_horizontal = 0
+script = ExtResource("5_c15vj")
+
+[node name="Margin" type="MarginContainer" parent="Viewport/TeamPanelLeft/Rows/Debug"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Grid" type="GridContainer" parent="Viewport/TeamPanelLeft/Rows/Debug/Margin" node_paths=PackedStringArray("game_controller")]
+layout_mode = 2
+columns = 2
+script = ExtResource("6_gq5dx")
+game_controller = NodePath("../../../../../../GameController")
+
+[node name="Label" type="Label" parent="Viewport/TeamPanelLeft/Rows/Debug/Margin/Grid"]
+layout_mode = 2
+theme = ExtResource("2_1f4xi")
+theme_override_font_sizes/font_size = 16
+text = "Debug:"
+
+[node name="Control" type="Control" parent="Viewport/TeamPanelLeft/Rows/Debug/Margin/Grid"]
+layout_mode = 2
+
+[node name="SpinBox1" type="SpinBox" parent="Viewport/TeamPanelLeft/Rows/Debug/Margin/Grid"]
+layout_mode = 2
+min_value = 1.0
+value = 1.0
+allow_greater = true
+
+[node name="Button1" type="Button" parent="Viewport/TeamPanelLeft/Rows/Debug/Margin/Grid"]
+layout_mode = 2
+text = "Add"
+
+[node name="SpinBox2" type="SpinBox" parent="Viewport/TeamPanelLeft/Rows/Debug/Margin/Grid"]
+layout_mode = 2
+min_value = 1.0
+value = 1.0
+allow_greater = true
+
+[node name="Button2" type="Button" parent="Viewport/TeamPanelLeft/Rows/Debug/Margin/Grid"]
+layout_mode = 2
+text = "Add"
+
+[node name="SpinBox3" type="SpinBox" parent="Viewport/TeamPanelLeft/Rows/Debug/Margin/Grid"]
+layout_mode = 2
+min_value = 1.0
+value = 1.0
+allow_greater = true
+
+[node name="Button3" type="Button" parent="Viewport/TeamPanelLeft/Rows/Debug/Margin/Grid"]
+layout_mode = 2
+text = "Add"
 
 [node name="MoneyTeam2" type="MarginContainer" parent="Viewport"]
 layout_mode = 1
@@ -126,134 +233,72 @@ theme_override_constants/outline_size = 5
 text = "$ 123456789"
 horizontal_alignment = 2
 
-[node name="BalanceGaugeTeam1" parent="Viewport" instance=ExtResource("3_oc27c")]
+[node name="BalanceGauge" parent="Viewport" instance=ExtResource("7_3oq7k")]
 layout_mode = 0
-offset_left = 33.0
-offset_top = 96.0
-offset_right = 83.0
-offset_bottom = 246.0
+offset_left = 975.0
+offset_top = 69.0
+offset_right = 1125.0
+offset_bottom = 155.0
 
-[node name="BalanceGaugeTeam2" parent="Viewport" instance=ExtResource("3_oc27c")]
-layout_mode = 0
-offset_left = 1069.0
-offset_top = 96.0
-offset_right = 1119.0
-offset_bottom = 246.0
-
-[node name="DebugPanel1" type="PanelContainer" parent="Viewport"]
+[node name="DebugPanel" type="PanelContainer" parent="Viewport"]
 layout_mode = 2
-offset_left = 133.0
-offset_top = 92.0
-offset_right = 279.0
-offset_bottom = 242.0
+offset_left = 812.0
+offset_top = 68.0
+offset_right = 958.0
+offset_bottom = 218.0
 script = ExtResource("5_c15vj")
 
-[node name="MarginContainer" type="MarginContainer" parent="Viewport/DebugPanel1"]
+[node name="Margin" type="MarginContainer" parent="Viewport/DebugPanel"]
 layout_mode = 2
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="AddMiners" type="GridContainer" parent="Viewport/DebugPanel1/MarginContainer" node_paths=PackedStringArray("game_controller")]
-layout_mode = 2
-columns = 2
-script = ExtResource("6_gq5dx")
-game_controller = NodePath("../../../../GameController")
-
-[node name="Label" type="Label" parent="Viewport/DebugPanel1/MarginContainer/AddMiners"]
-layout_mode = 2
-text = "Debug"
-
-[node name="Control" type="Control" parent="Viewport/DebugPanel1/MarginContainer/AddMiners"]
-layout_mode = 2
-
-[node name="SpinBox1" type="SpinBox" parent="Viewport/DebugPanel1/MarginContainer/AddMiners"]
-layout_mode = 2
-min_value = 1.0
-value = 1.0
-allow_greater = true
-
-[node name="Button1" type="Button" parent="Viewport/DebugPanel1/MarginContainer/AddMiners"]
-layout_mode = 2
-text = "Add"
-
-[node name="SpinBox2" type="SpinBox" parent="Viewport/DebugPanel1/MarginContainer/AddMiners"]
-layout_mode = 2
-min_value = 1.0
-value = 1.0
-allow_greater = true
-
-[node name="Button2" type="Button" parent="Viewport/DebugPanel1/MarginContainer/AddMiners"]
-layout_mode = 2
-text = "Add"
-
-[node name="SpinBox3" type="SpinBox" parent="Viewport/DebugPanel1/MarginContainer/AddMiners"]
-layout_mode = 2
-min_value = 1.0
-value = 1.0
-allow_greater = true
-
-[node name="Button3" type="Button" parent="Viewport/DebugPanel1/MarginContainer/AddMiners"]
-layout_mode = 2
-text = "Add"
-
-[node name="DebugPanel2" type="PanelContainer" parent="Viewport"]
-layout_mode = 2
-offset_left = 874.0
-offset_top = 92.0
-offset_right = 1020.0
-offset_bottom = 242.0
-script = ExtResource("5_c15vj")
-
-[node name="MarginContainer" type="MarginContainer" parent="Viewport/DebugPanel2"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="AddMiners" type="GridContainer" parent="Viewport/DebugPanel2/MarginContainer" node_paths=PackedStringArray("game_controller")]
+[node name="AddMiners" type="GridContainer" parent="Viewport/DebugPanel/Margin" node_paths=PackedStringArray("game_controller")]
 layout_mode = 2
 columns = 2
 script = ExtResource("6_gq5dx")
 game_controller = NodePath("../../../../GameController")
 team = 2
 
-[node name="Label" type="Label" parent="Viewport/DebugPanel2/MarginContainer/AddMiners"]
+[node name="Label" type="Label" parent="Viewport/DebugPanel/Margin/AddMiners"]
 layout_mode = 2
-text = "Debug"
+theme = ExtResource("2_1f4xi")
+theme_override_font_sizes/font_size = 16
+text = "Debug:
+"
 
-[node name="Control" type="Control" parent="Viewport/DebugPanel2/MarginContainer/AddMiners"]
+[node name="Control" type="Control" parent="Viewport/DebugPanel/Margin/AddMiners"]
 layout_mode = 2
 
-[node name="SpinBox1" type="SpinBox" parent="Viewport/DebugPanel2/MarginContainer/AddMiners"]
+[node name="SpinBox1" type="SpinBox" parent="Viewport/DebugPanel/Margin/AddMiners"]
 layout_mode = 2
 min_value = 1.0
 value = 1.0
 allow_greater = true
 
-[node name="Button1" type="Button" parent="Viewport/DebugPanel2/MarginContainer/AddMiners"]
+[node name="Button1" type="Button" parent="Viewport/DebugPanel/Margin/AddMiners"]
 layout_mode = 2
 text = "Add"
 
-[node name="SpinBox2" type="SpinBox" parent="Viewport/DebugPanel2/MarginContainer/AddMiners"]
+[node name="SpinBox2" type="SpinBox" parent="Viewport/DebugPanel/Margin/AddMiners"]
 layout_mode = 2
 min_value = 1.0
 value = 1.0
 allow_greater = true
 
-[node name="Button2" type="Button" parent="Viewport/DebugPanel2/MarginContainer/AddMiners"]
+[node name="Button2" type="Button" parent="Viewport/DebugPanel/Margin/AddMiners"]
 layout_mode = 2
 text = "Add"
 
-[node name="SpinBox3" type="SpinBox" parent="Viewport/DebugPanel2/MarginContainer/AddMiners"]
+[node name="SpinBox3" type="SpinBox" parent="Viewport/DebugPanel/Margin/AddMiners"]
 layout_mode = 2
 min_value = 1.0
 value = 1.0
 allow_greater = true
 
-[node name="Button3" type="Button" parent="Viewport/DebugPanel2/MarginContainer/AddMiners"]
+[node name="Button3" type="Button" parent="Viewport/DebugPanel/Margin/AddMiners"]
 layout_mode = 2
 text = "Add"
 

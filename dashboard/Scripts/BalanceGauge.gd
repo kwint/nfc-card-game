@@ -1,4 +1,4 @@
-extends HBoxContainer
+extends Container
 
 const ORIGIN: float = 0.5;
 

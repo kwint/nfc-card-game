@@ -14,12 +14,12 @@ const FLOWING_LABEL_TEXT_COLOR: Color = Color.LIGHT_BLUE;
   Settings.TeamId.TEAM2: $"../MinersTeam2",
 };
 @onready var money = {
-  Settings.TeamId.TEAM1: $"../Viewport/MoneyTeam1",
+  Settings.TeamId.TEAM1: $"../Viewport/TeamPanelLeft/Rows/Money/Margin",
   Settings.TeamId.TEAM2: $"../Viewport/MoneyTeam2",
 };
 @onready var levels = {
-  Settings.TeamId.TEAM1: $"../Viewport/BalanceGaugeTeam1",
-  Settings.TeamId.TEAM2: $"../Viewport/BalanceGaugeTeam2",
+  Settings.TeamId.TEAM1: $"../Viewport/TeamPanelLeft/Rows/Balance/Margin/BalanceGauge",
+  Settings.TeamId.TEAM2: $"../Viewport/BalanceGauge",
 };
 @onready var background = $"../Viewport/Background";
 @onready var mountain = $"../Viewport/AspectRatioContainer/ReferenceRect/Mountain";
