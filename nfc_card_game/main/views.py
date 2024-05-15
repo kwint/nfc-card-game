@@ -49,8 +49,11 @@ def index(request):
 
 
 def get_player_register(request: HttpRequest, card_uuid: str):
-    player_instance, _ = Player.objects.get_or_create(card_uuid=card_uuid)
-    form = PlayerForm(instance=player_instance)
+    if card_uuid != "":
+        player_instance, _ = Player.objects.get_or_create(card_uuid=card_uuid)
+        form = PlayerForm(instance=player_instance)
+    else:
+        form = PlayerForm()
     return render(request, "register.html", {"form": form})
 
 
@@ -192,9 +195,15 @@ def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
 
 
 def register_player(request: HttpRequest):
-    player_instance = Player.objects.get(card_uuid=request.POST["card_uuid"])
+    if request.method == "GET":
+        return get_player_register(request, "")
     if request.method == "POST":
-        form = PlayerForm(request.POST, instance=player_instance)
+        try:
+            player_instance = Player.objects.get(card_uuid=request.POST['card_uuid'])
+            form = PlayerForm(request.POST, instance=player_instance)
+        except Player.DoesNotExist:
+            form = PlayerForm(request.POST)
+
         if form.is_valid():
             player = form.save()
             return HttpResponseRedirect(f"/player/{player.card_uuid}")

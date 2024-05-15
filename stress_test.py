@@ -5,7 +5,7 @@ import time
 from datetime import datetime
 
 
-base_url = "https://nfc.blankwaard.eu/"
+base_url = "http://localhost:8000/"
 
 
 
@@ -28,7 +28,16 @@ posts = [
     # "69fed407",
     # "207b98b0",
     # "35c458b4",
-    "87b229e8",
+    "da71cb86",
+]
+
+
+players = [
+    'f661fe61',
+    'f661fe62',
+    'f661fe63',
+    'f661fe64',
+    'f661fe65',
 ]
 
 post_headers = []
@@ -43,17 +52,44 @@ headers = {
 num_requests = 20
 
 
+def create_players():
+    i = 0
+    for player in players:
+        headers = {
+            "X-CSRFToken": "IbDXFhByqriHGZCD4edK9YYxFZrdOPx9",
+            "Cookie": "csrftoken=IbDXFhByqriHGZCD4edK9YYxFZrdOPx9; sessionid=4vv3q6lhqnsquwwnuuglev6ku87ng6yg",
+        }
+        payload = {"card_uuid": player,  "name": f"Hans{i}", "section": "STH", "team": 1}
+        r = requests.post(f'{base_url}register-player/', headers=headers, data=payload)
+        print(r.status_code)
+        if r.status_code != 200:
+            print(r.text[500:10000])
+            break
+        i += 1
+
+post_sessions = []
+
+def get_post_sessions():
+    for post in posts:
+        s = requests.Session() 
+        r = s.get(f"{base_url}post/{post}")
+        post_sessions.append(s)
 
 
-def test_single_post():
-    session = requests.Session()
-    response = session.get(base_url)  # create session_id
-    print(response.text)
-    r = session.get(base_url) # get random post id
+def test_posts():
+    for ses in post_sessions:
+        for player in players:
+            r = ses.get(f"{base_url}player/{player}")
+            print(r.status_code)
+            if r.status_code != 200:
+                print(r.text[500:10000])
 
 
 
-test_single_post()
+
+# create_players()
+get_post_sessions()
+test_posts()
 
 
     

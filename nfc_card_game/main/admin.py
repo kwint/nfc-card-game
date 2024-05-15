@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from django.contrib.sessions.models import Session
 
 from nfc_card_game.main.models.activities import Activity
 from nfc_card_game.main.models.game_settings import GameSettings
@@ -17,6 +18,13 @@ from nfc_card_game.main.models.trading import (
 )
 
 from nfc_card_game.main.models.player import Team, Player
+
+
+class SessionAdmin(admin.ModelAdmin):
+    list_display = ["session_key", "_session_data", "expire_date"]
+
+    def _session_data(self, obj):
+        return obj.get_decoded()
 
 
 @admin.register(GameSettings)
@@ -133,3 +141,4 @@ admin.site.register(TeamMineItem, TeamMineItemAdmin)
 admin.site.register(Item, ItemAdmin)
 admin.site.register(PlayerItem, PlayerItemAdmin)
 admin.site.register(PostRecipe, PostRecipeAdmin)
+admin.site.register(Session, SessionAdmin)
