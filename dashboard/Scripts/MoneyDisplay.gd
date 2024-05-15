@@ -10,7 +10,7 @@ const COLOR_NEGATIVE: Color = Color.RED;
 
 @export var right: bool = false;
 @onready var label = $Label;
-@onready var parent = self.get_parent();
+@onready var root = self.get_tree().get_root();
 @onready var default_modulate: Color = self.modulate;
 @onready var flash_tween: Tween;
 
@@ -76,7 +76,7 @@ func animate_flowing_label(diff: int, label = null):
 			text = str(label, " ← ", text);
 	var color = COLOR_POSITIVE if positive else COLOR_NEGATIVE;
 	var label_direction = Vector2.RIGHT if !self.right else Vector2.LEFT;
-	var rect = self.label.get_global_rect();
+	var rect = self.get_global_rect();
 	var label_position = rect.position + (rect.size * Vector2(0, 0.5));
 	if !self.right:
 		label_position += rect.size * Vector2(1, 0);
@@ -87,5 +87,5 @@ func animate_flowing_label(diff: int, label = null):
 	flowing_label.text = text;
 	flowing_label.color = color;
 	flowing_label.direction = label_direction;
-	self.parent.add_child(flowing_label);
+	self.root.add_child(flowing_label);
 	flowing_label.global_position = label_position;

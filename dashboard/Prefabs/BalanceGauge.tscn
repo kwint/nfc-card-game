@@ -1,39 +1,62 @@
-[gd_scene load_steps=2 format=3 uid="uid://c223vha4r3wq7"]
+[gd_scene load_steps=3 format=3 uid="uid://cxftknt52fvxt"]
 
-[ext_resource type="Script" path="res://Scripts/BalanceGauge.gd" id="1_jtrf0"]
+[ext_resource type="Script" path="res://Scripts/BalanceGauge.gd" id="1_yasbp"]
+[ext_resource type="Theme" uid="uid://n2sj11gmuqmo" path="res://Themes/MoneyFont.tres" id="2_klspo"]
 
-[node name="BalanceGauge" type="HBoxContainer"]
-custom_minimum_size = Vector2(50, 150)
-offset_right = 50.0
-offset_bottom = 150.0
+[node name="BalanceGauge" type="VBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+offset_right = 150.0
+offset_bottom = 86.0
 alignment = 1
-script = ExtResource("1_jtrf0")
+script = ExtResource("1_yasbp")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+theme = ExtResource("2_klspo")
+theme_override_font_sizes/font_size = 10
+text = "Mijnwerkers:"
 
 [node name="Gauge1" type="ProgressBar" parent="."]
+custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 max_value = 1.0
-fill_mode = 3
+value = 0.3
 show_percentage = false
+
+[node name="Label2" type="Label" parent="."]
+layout_mode = 2
+theme = ExtResource("2_klspo")
+theme_override_font_sizes/font_size = 10
+text = "Drilboren:"
 
 [node name="Gauge2" type="ProgressBar" parent="."]
+custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 max_value = 1.0
-fill_mode = 3
+value = 0.5
 show_percentage = false
 
+[node name="Label3" type="Label" parent="."]
+layout_mode = 2
+theme = ExtResource("2_klspo")
+theme_override_font_sizes/font_size = 10
+text = "Bulldozers:"
+
 [node name="Gauge3" type="ProgressBar" parent="."]
+custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 max_value = 1.0
-fill_mode = 3
+value = 0.8
 show_percentage = false
 
 [node name="Origin" type="Line2D" parent="."]
-points = PackedVector2Array(-2, 75, 52, 75)
+position = Vector2(75, -7)
+points = PackedVector2Array(0, 20, 0, 96)
 width = 2.0
 antialiased = true

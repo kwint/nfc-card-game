@@ -10,19 +10,19 @@ const FLOWING_LABEL_TEXT_COLOR: Color = Color.LIGHT_BLUE;
 @onready var stats_http_client = $StatsHttpClient;
 @onready var websocket_client = $WebSocketClient;
 @onready var mines = {
-  Settings.TeamId.TEAM1: $"../MinersTeam1",
-  Settings.TeamId.TEAM2: $"../MinersTeam2",
+  Settings.TeamId.TEAM1: $"../MinersLeft",
+  Settings.TeamId.TEAM2: $"../MinersRight",
 };
 @onready var money = {
-  Settings.TeamId.TEAM1: $"../Viewport/MoneyTeam1",
-  Settings.TeamId.TEAM2: $"../Viewport/MoneyTeam2",
+  Settings.TeamId.TEAM1: $"../Viewport/TeamPanelLeft/Rows/Money/Margin",
+  Settings.TeamId.TEAM2: $"../Viewport/TeamPanelRight/Rows/Money/Margin",
 };
 @onready var levels = {
-  Settings.TeamId.TEAM1: $"../Viewport/BalanceGaugeTeam1",
-  Settings.TeamId.TEAM2: $"../Viewport/BalanceGaugeTeam2",
+  Settings.TeamId.TEAM1: $"../Viewport/TeamPanelLeft/Rows/Balance/Margin/BalanceGauge",
+  Settings.TeamId.TEAM2: $"../Viewport/TeamPanelRight/Rows/Balance/Margin/BalanceGauge",
 };
 @onready var background = $"../Viewport/Background";
-@onready var mountain = $"../Viewport/AspectRatioContainer/ReferenceRect/Mountain";
+@onready var mountain = $"../Viewport/AspectRatio/ReferenceRect/Mountain";
 
 @export var background_textures: Array[Texture2D] = [
 	preload("res://Sprites/Mountain/sky1.jpg"),
@@ -55,8 +55,8 @@ func _ready():
 func _process(_delta):
 	# Refresh current mine or cycle to next mine
 	if Input.is_action_just_pressed("reconnect"):
+		self.render_status("Reconnect");
 		self.reconnect();
-		self.render_status("Reconnecting");
 		return;
 	if Input.is_action_just_pressed("next_mine"):
 		self.cycle_mine();
@@ -111,7 +111,7 @@ func switch_mine(mine_id: int):
 func cycle_mine():
 	var next_mine_id = Settings.MINE_IDS[(get_mine_index() + 1) % Settings.MINE_IDS.size()];
 	self.switch_mine(next_mine_id);
-	self.render_status("Switched mine");
+	self.render_status(str("Mine ", next_mine_id));
 
 
 func get_mine_index() -> int:
