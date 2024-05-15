@@ -1,6 +1,6 @@
 [gd_resource type="SpriteFrames" load_steps=28 format=3 uid="uid://cnyvuugqqjwti"]
 
-[ext_resource type="Texture2D" uid="uid://bol0t2c4nfnu7" path="res://Sprites/Raw/Miners/Attack_1.png" id="1_od8e5"]
+[ext_resource type="Texture2D" uid="uid://bol0t2c4nfnu7" path="res://Sprites/Miner/miner_sheet.png" id="1_od8e5"]
 [ext_resource type="Texture2D" uid="uid://63yl260n2bji" path="res://Sprites/Drill/drill_sheet.png" id="2_qrp5r"]
 [ext_resource type="Texture2D" uid="uid://2gdfs0vqwefv" path="res://Sprites/Bulldozer/bulldozer_sheet.png" id="3_buyff"]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://byhl5oi3cbehn"
-path="res://.godot/imported/Attack_2.png-24955ade0ca07999f88aa94c4dd6e84d.ctex"
+uid="uid://bol0t2c4nfnu7"
+path="res://.godot/imported/miner_sheet.png-ec340b87f96f7e681cb0097a6194ae52.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/Raw/Miners/Attack_2.png"
-dest_files=["res://.godot/imported/Attack_2.png-24955ade0ca07999f88aa94c4dd6e84d.ctex"]
+source_file="res://Sprites/Miner/miner_sheet.png"
+dest_files=["res://.godot/imported/miner_sheet.png-ec340b87f96f7e681cb0097a6194ae52.ctex"]
 
 [params]
 
