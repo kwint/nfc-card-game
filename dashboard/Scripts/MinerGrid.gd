@@ -10,6 +10,7 @@ const MINER_LOWEST_POSITION: float = 0.92;
 
 @export var flipped: bool;
 @export var color: Color = Color.WHITE;
+@export var animate_color: Color = Color.GREEN;
 @export var reference_grid: Control;
 
 # A dict per miner type, containing a list of miner instances.
@@ -63,6 +64,7 @@ func _add_miner(type: Global.MinerType = Global.MinerType.MINER1, animate_text =
 	if animate_text != null:
 		var flowing_label = FLOWING_LABEL_PREFAB.instantiate();
 		flowing_label.text = animate_text;
+		flowing_label.color = self.animate_color;
 		flowing_label.text_scale = FLOWING_LABEL_TEXT_SCALE;
 		self.add_child(flowing_label);
 		flowing_label.position = miner_position;

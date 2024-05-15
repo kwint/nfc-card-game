@@ -2,7 +2,7 @@ extends Control
 
 @export var text: String = "+1";
 @export var text_scale: float = 1.0;
-@export var color: Color = Color.GREEN;
+@export var color: Color = Color.WHITE;
 @export var direction: Vector2 = Vector2.UP;
 @onready var shifter = $Shifter;
 @onready var label = $Shifter/Center/Label;
