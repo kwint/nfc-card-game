@@ -3,6 +3,9 @@ extends Node
 # TODO: change to 60*10 on release?
 const FETCH_STATS_INTERVAL: int = 60 * 1;
 const FETCH_STATS_FAIL_RETRY_DELAY: int = 10;
+const FLOWING_LABEL_PREFAB = preload("res://Prefabs/FlowingLabel.tscn");
+const FLOWING_LABEL_TEXT_SCALE: float = 2.5;
+const FLOWING_LABEL_TEXT_COLOR: Color = Color.LIGHT_BLUE;
 
 @onready var stats_http_client = $StatsHttpClient;
 @onready var websocket_client = $WebSocketClient;
@@ -53,6 +56,7 @@ func _process(_delta):
 	# Refresh current mine or cycle to next mine
 	if Input.is_action_just_pressed("reconnect"):
 		self.reconnect();
+		self.render_status("Reconnecting");
 		return;
 	if Input.is_action_just_pressed("next_mine"):
 		self.cycle_mine();
@@ -107,6 +111,7 @@ func switch_mine(mine_id: int):
 func cycle_mine():
 	var next_mine_id = Settings.MINE_IDS[(get_mine_index() + 1) % Settings.MINE_IDS.size()];
 	self.switch_mine(next_mine_id);
+	self.render_status("Switched mine");
 
 
 func get_mine_index() -> int:
@@ -162,3 +167,16 @@ func process_stats_team(team_id: Settings.TeamId, team: Dictionary):
 	for i in range(items.size()):
 		var item = items[i];
 		self.set_miners(team_id, item["miner_type"], item["amount"], item["effective"]);
+
+
+# Render a status message
+func render_status(text: String):
+	var flowing_label = FLOWING_LABEL_PREFAB.instantiate();
+	flowing_label.text = text;
+	flowing_label.color = FLOWING_LABEL_TEXT_COLOR;
+	flowing_label.text_scale = FLOWING_LABEL_TEXT_SCALE;
+	flowing_label.direction = Vector2.DOWN;
+	self.add_child(flowing_label);
+	
+	var viewport = self.get_viewport().get_visible_rect();
+	flowing_label.position = viewport.position + viewport.size * Vector2(0.5, 0.1);
