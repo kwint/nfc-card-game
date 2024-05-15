@@ -56,6 +56,8 @@ func update_levels():
 	# Update gauges
 	for miner_type in miner_types:
 		var value = ORIGIN + offsets[miner_type] / 2.0;
+		if sum == 0:
+			value = 0;
 		self.levels[miner_type].value = value;
 		
 		# Color gauges to hint good/bad state
