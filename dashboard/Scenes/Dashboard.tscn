@@ -3,8 +3,8 @@
 [ext_resource type="Script" path="res://Scripts/GameController.gd" id="1_y0gn5"]
 [ext_resource type="Theme" uid="uid://n2sj11gmuqmo" path="res://Themes/MoneyFont.tres" id="2_1f4xi"]
 [ext_resource type="Script" path="res://Scripts/WebSocketClient.gd" id="2_tpx8r"]
-[ext_resource type="Texture2D" uid="uid://dlpgymkkdtcdc" path="res://Sprites/Mountain/sky.webp" id="3_f71f4"]
 [ext_resource type="Script" path="res://Scripts/MinerGrid.gd" id="3_gpr4m"]
+[ext_resource type="Texture2D" uid="uid://cq153cuh0k6uv" path="res://Sprites/Mountain/sky1.jpg" id="3_ikvi8"]
 [ext_resource type="Script" path="res://Scripts/MoneyDisplay.gd" id="3_o437a"]
 [ext_resource type="PackedScene" uid="uid://c223vha4r3wq7" path="res://Prefabs/BalanceGauge.tscn" id="3_oc27c"]
 [ext_resource type="Texture2D" uid="uid://cnsgveexu0abx" path="res://Sprites/Mountain/mountain1.png" id="4_ca4uh"]
@@ -40,7 +40,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("3_f71f4")
+texture = ExtResource("3_ikvi8")
 expand_mode = 3
 stretch_mode = 6
 

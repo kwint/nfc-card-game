@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dlpgymkkdtcdc"
-path="res://.godot/imported/sky.webp-12ddae73bffe3bef8567ea94fb2be852.ctex"
+uid="uid://vwp85h3xp738"
+path="res://.godot/imported/sky2.jpg-1b32805d03cef98004a9fb0beec6684a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/Mountain/sky.webp"
-dest_files=["res://.godot/imported/sky.webp-12ddae73bffe3bef8567ea94fb2be852.ctex"]
+source_file="res://Sprites/Mountain/sky2.jpg"
+dest_files=["res://.godot/imported/sky2.jpg-1b32805d03cef98004a9fb0beec6684a.ctex"]
 
 [params]
 

@@ -21,10 +21,10 @@ const FETCH_STATS_FAIL_RETRY_DELAY: int = 10;
 @onready var background = $"../Viewport/Background";
 @onready var mountain = $"../Viewport/AspectRatioContainer/ReferenceRect/Mountain";
 
-@export var background_colors: Array[Color] = [
-	Color.WHITE,
-	Color(0.3, 1.5, 0.3),
-	Color(1.5, 0.3, 0.3),
+@export var background_textures: Array[Texture2D] = [
+	preload("res://Sprites/Mountain/sky1.jpg"),
+	preload("res://Sprites/Mountain/sky2.jpg"),
+	preload("res://Sprites/Mountain/sky3.jpg"),
 ];
 @export var mountain_textures: Array[Texture2D] = [
 	preload("res://Sprites/Mountain/mountain1.png"),
@@ -96,8 +96,8 @@ func switch_mine(mine_id: int):
 	self.reconnect();
 	
 	# Update textures and colors
-	if !self.background_colors.is_empty():
-		self.background.modulate = self.background_colors[self.get_mine_index() % self.background_colors.size()];
+	if !self.background_textures.is_empty():
+		self.background.texture = self.background_textures[self.get_mine_index() % self.background_textures.size()];
 	if !self.mountain_textures.is_empty():
 		self.mountain.texture = self.mountain_textures[self.get_mine_index() % self.mountain_textures.size()];
 	if !self.mountain_colors.is_empty():
