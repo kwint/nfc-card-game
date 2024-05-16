@@ -7,6 +7,7 @@ from django.db.models import Sum
 from django.forms.models import model_to_dict
 from pydantic import BaseModel
 from django.db.models.query import QuerySet
+from django.db.models import F
 from .models.player import Player
 from .models.trading import (
     Item,
@@ -225,7 +226,9 @@ def handle_mine_scan(
     mine_money = round(team_mines[0].money * MINE_OFFLOAD_PERCENT)
     received_money = mine_money - player_wallet.amount if mine_money > player_wallet.amount else 0
     player_wallet.amount += received_money
-    mine.money = mine.money - received_money
+    mine.money = F("money") - received_money
+    mine.save()
+    mine.refresh_from_db()
 
     # Broadcast for API clients: mine money update
     if mine.money != 0:
@@ -245,7 +248,6 @@ def handle_mine_scan(
         )
 
     changes.append(player_wallet)
-    changes.append(mine)
     commit_changes(changes)
 
     return ActionInfo(

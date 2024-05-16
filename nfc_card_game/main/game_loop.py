@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field
 from nfc_card_game.main.models.trading import MinerType, TeamMine, TeamMineItem
 import logging
 from django.contrib.auth.decorators import login_required
+from django.db.models import F
 from . import api_consumer
 
 logger = logging.getLogger(__name__)
@@ -75,8 +76,9 @@ def update_team_mine(team_mine: TeamMine):
     if profit <= 0:
         return
 
-    team_mine.money += profit
+    team_mine.money = F("money") + profit
     team_mine.save()
+    team_mine.refresh_from_db()
 
     # Broadcast for API clients: mine money update
     channel_layer = channels.layers.get_channel_layer()
