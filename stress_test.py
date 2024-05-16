@@ -90,6 +90,8 @@ def get_post_sessions():
     for post in posts:
         s = requests.Session() 
         r = s.get(f"{base_url}post/{post}")
+        for player in players:
+            r = s.get(f"{base_url}player/{player}")
         print(r.cookies)
         print(r.cookies['sessionid'])
         s.headers = {
@@ -119,7 +121,7 @@ get_post_sessions()
 def send_request(post, player):
     start_time = time.time()
 
-    r = post.get(f"{base_url}player/{player}")
+    # r = post.get(f"{base_url}player/{player}")
 
     payload = {"amount": 1}
     r = post.post(f"{base_url}player/{player}", data=payload)
@@ -134,7 +136,7 @@ def send_request(post, player):
     end_time = time.time()
     return start_time, end_time, r
 
-NUM_REQUESTS = 20
+NUM_REQUESTS = 2
 REPEATS = 10
 
 with ThreadPoolExecutor(max_workers=NUM_REQUESTS) as executor:
@@ -148,8 +150,8 @@ with ThreadPoolExecutor(max_workers=NUM_REQUESTS) as executor:
         try:
             start_time, end_time, result = future.result()
             st_time = datetime.fromtimestamp(start_time).strftime('%H:%M:%S:%MS')
-            end_time = datetime.fromtimestamp(end_time).strftime('%H:%M:%S:%MS')
-            # print(st_time, end_time, result.status_code)
+            en_time = datetime.fromtimestamp(end_time).strftime('%H:%M:%S:%MS')
+            print(end_time - start_time, result.status_code)
         except Exception as e:
             print(f"Request failed {e}")
 

@@ -56,7 +56,6 @@ class ActionInfo(BaseModel):
         if self.status == "ok":
             data = {"type": "websocket.send", "data": self.model_dump()}
             data = self.clean_message(data)
-            print(data)
             async_to_sync(channel_layer.group_send)(
                 "broadcast", {"type": "action_message", "data": data}
             )
@@ -183,7 +182,6 @@ def handle_mine_scan(
     changes = []
     trans_cost = {}
     mine = team_mines.get()
-    print(mine_items)
 
     curr_miners = player_items.filter(
         item__type=TypeType.MINER, item__currency=mine.mine.currency

@@ -97,7 +97,6 @@ def handle_trading_player_post(request, player: Player, items, player_item):
     price = request.session.get("price")
     player.name = player.name.split(" ")[0]
     context = {"buy_amount": selected_amount, "items": items, "player": player}
-    print(request.session.get("post"))
     if post_uuid := request.session.get("post"):
         post = PostRecipe.objects.filter(post__card_uuid=post_uuid)
         context["post"] = post
@@ -107,7 +106,6 @@ def handle_trading_player_post(request, player: Player, items, player_item):
         elif post[0].post.type == TypeType.RESOURCE:
             action = handle_post_scan(player, post, player_item, price, selected_amount)
 
-    print(action)
     action_dict = action.model_dump() if action else None
     context["action"] = action_dict
     return render(request, "trading/player_bought.html", context)
@@ -126,7 +124,7 @@ def handle_trading_player(request: HttpRequest, player: Player) -> HttpResponse:
 
     player.name = player.name.split(" ")[0]
     context = {"player": player, "items": player_items}
-    request.session.pop("price", None)
+    # request.session.pop("price", None)
     sell_options = copy(SELL_OPTIONS)
 
     if post_uuid := request.session.get("post"):
