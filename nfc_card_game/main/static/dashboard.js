@@ -58,7 +58,14 @@ function update_table(event){
     cur_amount = parseInt(td_amount.innerText);
     cur_amount += Object.values(data.data.costs)[0].amount;
     td_amount.innerText = cur_amount;
-  }
+  };
+
+  if(data.data.log == "game_loop"){
+    var td_amount = document.getElementById(data.data.team.split(" ")[1] +  '_' + Object.values(data.data.bought)[1].name);
+    cur_amount = parseInt(td_amount.innerText);
+    cur_amount += parseInt(Object.values(data.data.bought)[0]);
+    td_amount.innerText = cur_amount;
+  };
 };
 
 
@@ -69,18 +76,24 @@ function update_chart(event) {
   var datasetIndex = c.data.datasets.findIndex(dataset => dataset.label.includes(data.data.bought.item.currency));
 
   var cur_amount = c.data.datasets[datasetIndex].data[index];
-  c.data.datasets[datasetIndex].data[index] = parseInt(cur_amount) - parseInt(data.data.bought.amount);
+
+  if(data.data.log != "game_loop"){
+    c.data.datasets[datasetIndex].data[index] = parseInt(cur_amount) - parseInt(data.data.bought.amount);
+  }else{
+    c.data.datasets[datasetIndex].data[index] = parseInt(cur_amount) + parseInt(data.data.bought.amount);
+  }
   c.update();
 
+  if(data.data.log != "game_loop"){
+    for( item_name in data.data.costs){
+      let item = data.data.costs[item_name];
+      var index = c2.data.labels.findIndex(label => label === team_name);
+      var datasetIndex = c2.data.datasets.findIndex(dataset => dataset.label.includes(item.post));
 
-  for( item_name in data.data.costs){
-    let item = data.data.costs[item_name];
-    var index = c2.data.labels.findIndex(label => label === team_name);
-    var datasetIndex = c2.data.datasets.findIndex(dataset => dataset.label.includes(item.post));
-
-    var cur_amount = c2.data.datasets[datasetIndex].data[index];
-    c2.data.datasets[datasetIndex].data[index] = parseInt(cur_amount) + parseInt(item.amount)
-    c2.update();
+      var cur_amount = c2.data.datasets[datasetIndex].data[index];
+      c2.data.datasets[datasetIndex].data[index] = parseInt(cur_amount) + parseInt(item.amount)
+      c2.update();
+    };
   }
 };
 

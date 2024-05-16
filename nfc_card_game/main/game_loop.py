@@ -1,4 +1,3 @@
-from django.http import Http404, HttpResponse
 from django.shortcuts import render
 from schedule import Scheduler
 from asgiref.sync import async_to_sync
@@ -95,6 +94,22 @@ def update_team_mine(team_mine: TeamMine):
         },
     )
 
+    channel_layer = channels.layers.get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        "broadcast",
+        {
+            "type": "action_message",
+            "data": {
+                "type": "websocket.send",
+                "data": {
+                    "log": "game_loop",
+                    "player": {"name": "loop"},
+                    "team": team_mine.team.name,
+                    "bought": {"amount": profit, "item": {"name": team_mine.mine.currency, "currency": team_mine.mine.currency}},
+                },
+            },
+        },
+    )
 
 def get_profit(amount: int, balance: int):
     in_balance_profit = balance * SETTINGS.base_miner_per_sec
