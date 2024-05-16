@@ -43,7 +43,9 @@ def get_player_register(request: HttpRequest, card_uuid: str):
     return render(request, "register.html", {"form": form})
 
 
-def handle_activities_player(request: HttpRequest, player: Player) -> HttpResponse:
+def handle_activities_player(
+    request: HttpRequest, player: Player, game_mode: GameSettings.GameMode
+) -> HttpResponse:
     if act_uuid := request.session.get("post"):
         if act_uuid == "vote":
             return render(request, "activities/vote.html")
@@ -56,12 +58,16 @@ def handle_activities_player(request: HttpRequest, player: Player) -> HttpRespon
     for player_act in player_activities:
         all_activities[player_act] = True
 
+    if game_mode == GameSettings.GameMode.VOSSENJACHT:
+        all_activities = {act: True for act, value in all_activities.items() if value}
+
     return render(
         request,
         "activities/overview.html",
         {
             "player_activities": all_activities,
             "player": player,
+            "title": game_mode,
         },
     )
 
@@ -141,9 +147,10 @@ def handle_trading_player(request: HttpRequest, player: Player) -> HttpResponse:
                 for factor, text in REL_SELL_OPTIONS.items()
             }
 
-
         if post[0].post.type == TypeType.MINER:
-            min_item_amount = min(player_items.get(item=recipe.item).amount for recipe in post)
+            min_item_amount = min(
+                player_items.get(item=recipe.item).amount for recipe in post
+            )
 
             absolute_sell_options = {
                 sell_option: sell_option * sell_option
@@ -155,7 +162,6 @@ def handle_trading_player(request: HttpRequest, player: Player) -> HttpResponse:
                 math.floor(min_item_amount * factor): text
                 for factor, text in REL_SELL_OPTIONS.items()
             }
-
 
     if mine_uuid := request.session.get("mine"):
         mine = TeamMine.objects.filter(mine__card_uuid=mine_uuid, team=player.team)
@@ -182,13 +188,17 @@ def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
     if player is None or player.name == "" or player.team is None:
         return get_player_register(request, card_uuid)
 
-    if GameSettings.object().mode == GameSettings.GameMode.TRADING:
+    game_mode = GameSettings.object().mode
+    if game_mode == GameSettings.GameMode.TRADING:
         return handle_trading_player(request, player)
 
-    if GameSettings.object().mode == GameSettings.GameMode.ACTIVITIES:
-        return handle_activities_player(request, player)
+    if game_mode in [
+        GameSettings.GameMode.ACTIVITIES,
+        GameSettings.GameMode.VOSSENJACHT,
+    ]:
+        return handle_activities_player(request, player, game_mode)
 
-    if GameSettings.object().mode == GameSettings.GameMode.COLOR:
+    if game_mode == GameSettings.GameMode.COLOR:
         return handle_color_player(request, player)
 
 
@@ -242,13 +252,17 @@ def post_activities(request: HttpRequest, card_uuid: str) -> HttpResponse:
 
 
 def post(request: HttpRequest, card_uuid: str) -> HttpResponse:
-    if GameSettings.object().mode == GameSettings.GameMode.TRADING:
+    game_mode = GameSettings.object().mode
+    if game_mode == GameSettings.GameMode.TRADING:
         return post_trading(request, card_uuid)
 
-    if GameSettings.object().mode == GameSettings.GameMode.COLOR:
+    if game_mode == GameSettings.GameMode.COLOR:
         return post_color(request, card_uuid)
 
-    if GameSettings.object().mode == GameSettings.GameMode.ACTIVITIES:
+    if game_mode in [
+        GameSettings.GameMode.ACTIVITIES,
+        GameSettings.GameMode.VOSSENJACHT,
+    ]:
         return post_activities(request, card_uuid)
 
 

@@ -4,7 +4,8 @@ from django.db import models
 class GameSettings(models.Model):
     class GameMode(models.TextChoices):
         TRADING = "trading"
-        ACTIVITIES = "activities"
+        ACTIVITIES = "activiteiten"
+        VOSSENJACHT = "vossen"
         COLOR = "color"
 
     mode = models.CharField(choices=GameMode, default=GameMode.TRADING, max_length=50)
