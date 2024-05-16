@@ -1,6 +1,5 @@
 from typing import Any, Literal
 
-from asgiref.sync import async_to_sync
 import channels
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
@@ -8,9 +7,8 @@ from django.db.models import Sum
 from django.forms.models import model_to_dict
 from pydantic import BaseModel
 from django.db.models.query import QuerySet
-from .models.player import Player, Team
+from .models.player import Player
 from .models.trading import (
-    CoinType,
     Item,
     Mine,
     MinerType,

@@ -1,4 +1,3 @@
-from copy import copy
 import math
 
 from django.core import serializers
@@ -180,7 +179,7 @@ def player(request: HttpRequest, card_uuid: str) -> HttpResponse:
     except Player.DoesNotExist:
         player = None
 
-    if player is None or player.name == "" or player.team == None:
+    if player is None or player.name == "" or player.team is None:
         return get_player_register(request, card_uuid)
 
     if GameSettings.object().mode == GameSettings.GameMode.TRADING:
