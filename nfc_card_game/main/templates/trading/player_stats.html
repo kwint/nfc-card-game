@@ -52,26 +52,32 @@
             <p>{{ action.status }}: {{ action.log }}</p>
           {% endif %}
         {% elif post %}
-          <h5>Hoeveel {{ post.0.post.sells.get_currency_display }}{{post.0.post.sells.get_name_display}} wil je kopen?</h5>
-          {% if price %} <h5>Prijs: {{ price }}</h5>{% endif %}
-          <form method="post">
-            {% csrf_token %}
-            <div class="d-flex align-items-start justify-content-start flex-row flex-wrap">
-            {% for amount, text in buy_amounts_abs %}
-              <button class="btn btn-primary m-2 d-block w-25" style="height: 62px;" type="submit" name="amount" value="{{ amount }}">
-                {{ amount }}x </br>{% if text %} ({{ text }}) {% endif %}
-              </button>
-            {% endfor %}
-            </div>
-            <!-- <hr> -->
-            <div class="d-flex align-items-start justify-content-start flex-row flex-wrap">
-              {% for amount, text in buy_amounts_rel %}
-                <button class="btn btn-info m-2 d-block w-25" style="height: 62px;" type="submit" name="amount" value="{{ amount }}">
+          {% if buy_amounts_abs %}
+            <h5>Hoeveel {{ post.0.post.sells.get_currency_display }}{{post.0.post.sells.get_name_display}} wil je kopen?</h5>
+            {% if price %} <h5>Prijs: {{ price }}</h5>{% endif %}
+            <form method="post">
+              {% csrf_token %}
+              <div class="d-flex align-items-start justify-content-start flex-row flex-wrap">
+              {% for amount, text in buy_amounts_abs %}
+                <button class="btn btn-primary m-2 d-block w-25" style="height: 62px;" type="submit" name="amount" value="{{ amount }}">
                   {{ amount }}x </br>{% if text %} ({{ text }}) {% endif %}
                 </button>
               {% endfor %}
               </div>
-          </form>
+              <!-- <hr> -->
+              <div class="d-flex align-items-start justify-content-start flex-row flex-wrap">
+                {% for amount, text in buy_amounts_rel %}
+                  <button class="btn btn-info m-2 d-block w-25" style="height: 62px;" type="submit" name="amount" value="{{ amount }}">
+                    {{ amount }}x </br>{% if text %} ({{ text }}) {% endif %}
+                  </button>
+                {% endfor %}
+                </div>
+            </form>
+          {% else %}
+            <div class="alert alert-danger" role="alert">
+              Je kan hier niks kopen!
+            </div>
+          {% endif %}
         {% else %}
           <h4 class="card-title"><span class="bi-cart4 h2" style="filter: invert(0%)"></span>         Deze items heb jij nu:</h4>
         {% endif %}
