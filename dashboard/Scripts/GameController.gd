@@ -61,8 +61,7 @@ func _ready():
 func _process(_delta):
 	# Refresh current mine or cycle to next mine
 	if Input.is_action_just_pressed("reconnect"):
-		self.render_status("Reconnect");
-		self.reconnect();
+		self.reconnect(true);
 		return;
 	if Input.is_action_just_pressed("next_mine"):
 		self.cycle_mine();
@@ -87,7 +86,10 @@ func update_money(team_id: Settings.TeamId, amount: int, flowing_label: bool = t
 	self.money[team_id].set_money(amount, flowing_label, label);
 
 
-func reconnect():
+func reconnect(show_message: bool = false):
+	if show_message:
+		self.render_status("Reconnect");
+	
 	# Reset current visuals
 	for team_id in Settings.TeamId.values():
 		self.update_money(team_id, 0, false);

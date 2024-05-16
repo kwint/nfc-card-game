@@ -214,7 +214,8 @@ text = "R"
 anchor_mode = 0
 
 [connection signal="pressed" from="HUD/TouchHUD/HBoxContainer/SwitchMine" to="GameController" method="cycle_mine"]
-[connection signal="pressed" from="HUD/TouchHUD/HBoxContainer/Reconnect" to="GameController" method="reconnect"]
+[connection signal="pressed" from="HUD/TouchHUD/HBoxContainer/Reconnect" to="GameController" method="reconnect" binds= [true]]
 
 [editable path="HUD/TeamPanelLeft"]
 [editable path="HUD/TeamPanelRight"]
+[editable path="HUD/TeamPanelRight/Rows/Balance/Margin/BalanceGauge"]
