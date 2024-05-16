@@ -55,7 +55,7 @@ static func get_websocket_api_url() -> String:
 
 
 static func is_default_fullscreen() -> bool:
-	var fullscreen = !OS.has_feature("debug");
+	var fullscreen = !OS.is_debug_build();
 
 	# Prefer fullscreen setting from environment
 	var env = OS.get_environment("NFC_FULLSCREEN");
@@ -66,7 +66,7 @@ static func is_default_fullscreen() -> bool:
 
 
 static func is_show_debug() -> bool:
-	var show_debug = OS.has_feature("debug");
+	var show_debug = OS.is_debug_build();
 
 	# Prefer debug setting from environment
 	var env = OS.get_environment("NFC_DEBUG");
