@@ -74,3 +74,8 @@ static func is_show_debug() -> bool:
 		show_debug = env.to_lower() == "true" || env.to_int() > 0;
 
 	return show_debug;
+
+
+static func is_mobile() -> bool:
+	var name = OS.get_name();
+	return name == "Android" || name == "iOS";
