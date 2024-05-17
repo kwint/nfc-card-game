@@ -67,7 +67,7 @@ function update_table(event){
     td_amount.innerText = cur_amount;
   }else{
     var td_amount = document.getElementById(data.data.player.team +  '_' + data.data.bought.item.currency);
-    cur_amount = parseInt(td_amount.innerText);
+cur_amount = parseInt(td_amount.innerText);
     cur_amount -= data.data.bought.amount;
     td_amount.innerText = cur_amount;
   };
@@ -92,7 +92,7 @@ function update_chart(event) {
   for( item_name in data.data.costs){
     let item = data.data.costs[item_name];
     var index = c2.data.labels.findIndex(label => label === team_name);
-    var datasetIndex = c2.data.datasets.findIndex(dataset => dataset.label.includes(item.post));
+    var datasetIndex = c2.data.datasets.findIndex(dataset => dataset.label.includes(item.name.toLowerCase()));
     if(datasetIndex != -1 && index != -1){
       var cur_amount = c2.data.datasets[datasetIndex].data[index];
       c2.data.datasets[datasetIndex].data[index] = parseInt(cur_amount) + parseInt(item.amount)
@@ -137,7 +137,7 @@ function init_miner_chart(){
 
     if(!minerDatasets[item.item]){
       minerDatasets[item.item] = {
-        label: item.item,
+        label: item.item.split(" ")[1].toLowerCase(),
         backgroundColor: get_color_from_currency(item.item),
         data: []
       };
@@ -171,7 +171,7 @@ function init_bar_chart() {
 
     if(!mineDatasets[team.mine]){
       mineDatasets[team.mine] = {
-        label: team.mine,
+        label: team.currency,
         backgroundColor: get_color_from_currency(team.currency),
         data: []
       };
@@ -194,6 +194,14 @@ chart_config = {
     datasets: []
   },
   options: {
+    plugins: {
+      legend: {
+        labels:{
+          boxWidth: 10,
+          padding: 5,
+        }
+      }
+    },
     scales: {
       y: {
         beginAtZero: true,
