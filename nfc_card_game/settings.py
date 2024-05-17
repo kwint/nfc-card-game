@@ -193,13 +193,13 @@ PWA_APP_STATUS_BAR_COLOR = 'default'
 PWA_APP_ICONS = [
     {
         'src': 'static/images/icon512.png',
-        'sizes': '512x512'
+        'sizes': '160x160'
     }
 ]
 PWA_APP_ICONS_APPLE = [
     {
         'src': 'static/images/icon512.png',
-        'sizes': '512x512'
+        'sizes': '160x160'
     }
 ]
 PWA_APP_SPLASH_SCREEN = [
