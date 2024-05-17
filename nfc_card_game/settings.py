@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "channels",
+    "pwa",
 ]
 
 MIDDLEWARE = [
@@ -178,3 +179,34 @@ LOGGING = {
         },
     },
 }
+
+PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'nfc_card_game/main/static', 'serviceworker.js')
+PWA_APP_NAME = 'Scouting 2.0'
+PWA_APP_DESCRIPTION = "NFC Card game scouting 2.0"
+PWA_APP_THEME_COLOR = '#000000'
+PWA_APP_BACKGROUND_COLOR = '#ffffff'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = '/'
+PWA_APP_ORIENTATION = 'any'
+PWA_APP_START_URL = '/dashboard'
+PWA_APP_STATUS_BAR_COLOR = 'default'
+PWA_APP_ICONS = [
+    {
+        'src': 'static/images/icon_160.png',
+        'sizes': '160x160'
+    }
+]
+PWA_APP_ICONS_APPLE = [
+    {
+        'src': 'static/images/icon_160.png',
+        'sizes': '160x160'
+    }
+]
+PWA_APP_SPLASH_SCREEN = [
+    {
+        'src': 'static/images/icon_160.png',
+        'sizes': '160x160'
+    }
+]
+PWA_APP_DIR = 'ltr'
+PWA_APP_LANG = 'nl-NL'
