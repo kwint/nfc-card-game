@@ -16,11 +16,11 @@ class Command(BaseCommand):
             print(f"{player.name}: {player.team}")
 
             # Set all player items to 0
-            for item in items(shuffle):
+            for item in Item.objects.all():
                 PlayerItem.objects.update_or_create(item=item, player=player, defaults={'item': item, 'player': player, 'amount': 0})
 
             # Set one random type of coin to 50
-            items = Item.objects.filter(type=TypeType.COIN).all()
+            items = Item.objects.filter(type=TypeType.COIN)
             items(shuffle)
             item = items[0]
             PlayerItem.objects.update_or_create(item=item, player=player, defaults={'item': item, 'player': player, 'amount': 50})
