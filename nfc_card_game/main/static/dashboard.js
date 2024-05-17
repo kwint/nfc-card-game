@@ -30,24 +30,26 @@ websocket.onmessage = function(event){
 
 function log_message(event){
   var data = JSON.parse(event.data);
-  var table = document.getElementById("logtable");
-  let row = table.insertRow(0);
-  let c1 = row.insertCell(0);
-  let c2 = row.insertCell(1);
-  let c3 = row.insertCell(2);
-  let c4 = row.insertCell(3);
-  
-  if(table.rows.length > 5){
-    table.deleteRow(-1);
-  }
-  if(data.data.bought != null){
-    c2.innerText = data.data.bought.amount + 'x ' +data.data.bought.item.name;
-  }else{
-    c2.innerText = "";
+  if(data.data.log != "game_loop"){
+    var table = document.getElementById("logtable");
+    let row = table.insertRow(0);
+    let c1 = row.insertCell(0);
+    let c2 = row.insertCell(1);
+    let c3 = row.insertCell(2);
+    let c4 = row.insertCell(3);
+    
+    if(table.rows.length > 5){
+      table.deleteRow(-1);
+    }
+    if(data.data.bought != null){
+      c2.innerText = data.data.bought.amount + 'x ' +data.data.bought.item.name;
+    }else{
+      c2.innerText = "";
+    };
+    c1.innerText = data.data.player.name;
+    c3.innerText = items_to_string(data.data.costs);
+    c4.innerText= data.data.log;
   };
-  c1.innerText = data.data.player.name;
-  c3.innerText = items_to_string(data.data.costs);
-  c4.innerText= data.data.log;
 
 };
 
@@ -58,12 +60,15 @@ function update_table(event){
     cur_amount = parseInt(td_amount.innerText);
     cur_amount += Object.values(data.data.costs)[0].amount;
     td_amount.innerText = cur_amount;
-  };
-
-  if(data.data.log == "game_loop"){
+  }else if(data.data.log == "game_loop"){
     var td_amount = document.getElementById(data.data.team.split(" ")[1] +  '_' + Object.values(data.data.bought)[1].name);
     cur_amount = parseInt(td_amount.innerText);
     cur_amount += parseInt(Object.values(data.data.bought)[0]);
+    td_amount.innerText = cur_amount;
+  }else{
+    var td_amount = document.getElementById(data.data.player.team +  '_' + data.data.bought.item.currency);
+    cur_amount = parseInt(td_amount.innerText);
+    cur_amount -= data.data.bought.amount;
     td_amount.innerText = cur_amount;
   };
 };
@@ -84,17 +89,16 @@ function update_chart(event) {
   }
   c.update();
 
-  if(data.data.log != "game_loop"){
-    for( item_name in data.data.costs){
-      let item = data.data.costs[item_name];
-      var index = c2.data.labels.findIndex(label => label === team_name);
-      var datasetIndex = c2.data.datasets.findIndex(dataset => dataset.label.includes(item.post));
-
+  for( item_name in data.data.costs){
+    let item = data.data.costs[item_name];
+    var index = c2.data.labels.findIndex(label => label === team_name);
+    var datasetIndex = c2.data.datasets.findIndex(dataset => dataset.label.includes(item.post));
+    if(datasetIndex != -1 && index != -1){
       var cur_amount = c2.data.datasets[datasetIndex].data[index];
       c2.data.datasets[datasetIndex].data[index] = parseInt(cur_amount) + parseInt(item.amount)
       c2.update();
     };
-  }
+  };
 };
 
 
