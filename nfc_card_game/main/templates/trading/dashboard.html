@@ -13,6 +13,7 @@
       </div>
       <div class="card-body">
         <canvas id="mineChart"></canvas>
+      </div>
     </div>
   </div>
 
@@ -27,12 +28,13 @@
   </div>
 
   <div class="container pt-2">
-    <div class="accordion card shadow">
+    <div class="card shadow w-100" style="width: 100%">
       <div class="card-header align-items-center">
         <h3 class="m-0">Mines</h3>
       </div>
       <div class="card-body">
-        <table class="table table-striped">
+        <div class="table-responsive">
+        <table class="table table-striped table-responsive">
           <thead>
             <tr>
               <th>Mine</th>
@@ -44,13 +46,16 @@
           <tbody id="team_table">
             {% for team in team_mines %}
               <tr>
-                <td>{{ team.mine }}</td>
+                <td>{{ team.mine.name }}</td>
                 <td>{{ team.team }}</td>
                 <td>{{ team.mine.currency }}</td>
                 <td id="{{ team.team.id }}_{{ team.mine.currency }}">{{ team.money }}</td>
+              </tr>
             {% endfor %}
           </tbody>
         </table>
+
+        </div>
       </div>
     </div>
   </div>
