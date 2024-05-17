@@ -21,6 +21,6 @@ class Command(BaseCommand):
 
             # Set one random type of coin to 50
             items = Item.objects.filter(type=TypeType.COIN)
-            items(shuffle)
+            shuffle(items)
             item = items[0]
             PlayerItem.objects.update_or_create(item=item, player=player, defaults={'item': item, 'player': player, 'amount': 50})
