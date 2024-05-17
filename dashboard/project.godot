@@ -26,6 +26,10 @@ window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/handheld/orientation=4
 
+[gui]
+
+common/snap_controls_to_pixels=false
+
 [input]
 
 next_mine={
