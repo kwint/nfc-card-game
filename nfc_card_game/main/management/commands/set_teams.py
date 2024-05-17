@@ -10,9 +10,7 @@ class Command(BaseCommand):
         players = Player.objects.all()
         teams = Team.objects.all()
 
-        i = 0
-        for player in players:
+        for i, player in enumerate(players):
             player.team = teams[i % len(teams)]
             print(f"{player.name}: {player.team}")
             player.save()
-            i += 1
