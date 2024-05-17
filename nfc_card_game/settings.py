@@ -192,20 +192,20 @@ PWA_APP_START_URL = '/dashboard'
 PWA_APP_STATUS_BAR_COLOR = 'default'
 PWA_APP_ICONS = [
     {
-        'src': 'static/images/icon_160.png',
-        'sizes': '160x160'
+        'src': 'static/images/icon512.png',
+        'sizes': '512x512'
     }
 ]
 PWA_APP_ICONS_APPLE = [
     {
-        'src': 'static/images/icon_160.png',
-        'sizes': '160x160'
+        'src': 'static/images/icon512.png',
+        'sizes': '512x512'
     }
 ]
 PWA_APP_SPLASH_SCREEN = [
     {
-        'src': 'static/images/icon_160.png',
-        'sizes': '160x160'
+        'src': 'static/images/icon512.png',
+        'sizes': '512x512'
     }
 ]
 PWA_APP_DIR = 'ltr'
