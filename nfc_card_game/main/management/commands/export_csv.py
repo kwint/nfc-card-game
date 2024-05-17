@@ -12,14 +12,18 @@ class Command(BaseCommand):
         parser.add_argument("file", type=str)
 
     def handle(self, *args, **options):
+        base_url = "nfc.qvdijk.nl"
+
         if options.get("model").upper() == "PLAYER":
             objects = Player.objects.all()
+            base_url += "/player"
 
         elif options.get("model").upper() == "ACTIVITIES":
             objects = Activity.objects.all()
+            base_url += "/post"
 
         lines = [
-            f"LINK_RECORD,https://nfc.qvdijk.nl/player/{object.card_uuid.strip()},URL\n"
+            f"LINK_RECORD,{base_url}/{object.card_uuid.strip()},URL\n"
             for object in objects
         ]
 
