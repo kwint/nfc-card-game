@@ -21,4 +21,5 @@ from django.urls import include, path
 urlpatterns = [
     path("", include("nfc_card_game.main.urls")),
     path("admin/", admin.site.urls),
+    path("", include("pwa.urls")),
 ]
