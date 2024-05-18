@@ -2,7 +2,7 @@
   "name": "Scouting 2.0",
   "short_name": "Scouting 2.0",
   "description": "NFC Card game scouting 2.0",
-  "start_url": "/",
+  "start_url": "/dashboard",
   "display": "standalone",
   "scope": "/",
   "orientation": "any",
