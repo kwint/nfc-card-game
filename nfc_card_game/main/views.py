@@ -34,7 +34,7 @@ REL_SELL_OPTIONS = {1: "100%", 0.5: "50%", 0.25: "25%"}
 
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the main index.")
+    return HttpResponse("Scan een kaartje met je telefoon!")
 
 
 def get_player_register(request: HttpRequest, card_uuid: str):
