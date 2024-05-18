@@ -1,0 +1,24 @@
+{
+  "name": "Scouting 2.0",
+  "short_name": "Scouting 2.0",
+  "description": "NFC Card game scouting 2.0",
+  "start_url": "/",
+  "display": "standalone",
+  "scope": "/",
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "status_bar": "default",
+  "icons": [
+    {
+      "src": "images/icon160_black.png",
+      "sizes": "160x160"
+    },
+    {
+      "src": "images/icon512_black.png",
+      "sizes": "512x512"
+    }
+  ],
+  "dir": "ltr",
+  "lang": "nl-NL"
+}

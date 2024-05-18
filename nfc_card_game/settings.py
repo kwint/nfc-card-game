@@ -192,13 +192,13 @@ PWA_APP_START_URL = '/dashboard'
 PWA_APP_STATUS_BAR_COLOR = 'default'
 PWA_APP_ICONS = [
     {
-        'src': 'static/images/icon512_black.png',
+        'src': 'static/images/icon160_black.png',
         'sizes': '160x160'
     }
 ]
 PWA_APP_ICONS_APPLE = [
     {
-        'src': 'static/images/icon512_black.png',
+        'src': 'static/images/icon160_black.png',
         'sizes': '160x160'
     }
 ]
