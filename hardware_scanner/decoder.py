@@ -6,7 +6,7 @@ import re
 
 try:
     ser = serial.Serial(
-        port="/dev/ttyUSB0",
+        port="/dev/ttyACM0",
         baudrate=115200,
     )
 except serial.SerialException as e:
@@ -15,12 +15,14 @@ except serial.SerialException as e:
 
 
 def decode_nfc_message(hex_data):
-    byte_data = bytearray.fromhex(hex_data.replace(" ", "")[14:])
+    byte_data = bytearray.fromhex(hex_data.replace(" ", "")[14:-12])
 
-    decoded_records = list(ndef.message_decoder(byte_data))
+    # decoded_records = list(ndef.message_decoder(byte_data))
 
-    payload = decoded_records[0].data
-    payload = payload.decode("utf-8") if isinstance(payload, bytes) else payload
+    # payload = decoded_records[0].data
+    # payload = payload.decode("utf-8") if isinstance(payload, bytes) else payload
+    print(byte_data)
+    payload = byte_data.decode('utf-8')
     url = re.sub("\x04", "https://", payload)
     return url
 
