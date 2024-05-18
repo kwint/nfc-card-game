@@ -9,13 +9,13 @@ try:
         port="/dev/ttyACM0",
         baudrate=115200,
     )
-except serial.SerialException as e:
+except Exception as e:
     print(e)
     exit(1)
 
 
 def decode_nfc_message(hex_data):
-    byte_data = bytearray.fromhex(hex_data.replace(" ", "")[14:-12])
+    byte_data = bytearray.fromhex(hex_data.replace(" ", "")[14:-10])
 
     # decoded_records = list(ndef.message_decoder(byte_data))
 
