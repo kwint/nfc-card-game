@@ -11,26 +11,30 @@
   <link rel="shortcut icon" href="{% static '/images/favicon.png' %}">
   <style>
       body, html {
-          margin: 0;
-          padding: 0;
-          height: 100%;
-          overflow: hidden;
-          font-family: Arial, sans-serif;
-      }
-      .bg-image {
-        background-image: url('{% static 'images/group_picture.JPG' %}'); /* Replace with your image URL */
-          height: 100%;
-          background-position: center;
-          background-size: cover;
-          position: relative;
-      }
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            justify-content: center;
+        }
+        .bg-image {
+            background-image: url('{% static 'images/group_picture.JPG' %}');
+            height: 100%;
+            width: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: contain;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
       .overlay-text {
           position: absolute;
-          top: 2%;
+          top: 10%;
           left: 50%;
           transform: translate(-50%, -0%);
           color: #005abbff;
-          font-size: 4em; /* Adjust size as needed */
+          font-size: 1.3em; /* Adjust size as needed */
           text-align: center;
           text-shadow: 2px 2px 10px rgba(0, 0, 0, 1);
       }
@@ -40,7 +44,7 @@
 <body>
   <div class="bg-image">
       <div class="overlay-text">Bedankt voor het redden van Scouting!!!</div>
-      <div class="overlay-text" style="top: 90%">Groepsweekend 2024</div>
+      <div class="overlay-text" style="top: 85%">Groepsweekend 2024</div>
   </div>
   </div>
 </body>
