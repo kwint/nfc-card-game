@@ -6,7 +6,7 @@ from . import game_loop
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("player/<str:card_uuid>", views.player, name="player"),
+    path("player/<str:card_uuid>", views.thanks, name="thanks"),
     path("post/<str:card_uuid>", views.post, name="post"),
     path("dashboard", views.dashboard, name="dasbhoard"),
     path("mine/<str:card_uuid>", views.mine, name="mine"),

@@ -36,6 +36,9 @@ REL_SELL_OPTIONS = {1: "100%", 0.5: "50%", 0.25: "25%"}
 def index(request):
     return HttpResponse("Scan een kaartje met je telefoon!")
 
+def thanks(request, card_uuid):
+    return render(request, "thanks.html")
+
 
 def get_player_register(request: HttpRequest, card_uuid: str):
     player_instance, _ = Player.objects.get_or_create(card_uuid=card_uuid)
