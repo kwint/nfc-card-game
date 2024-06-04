@@ -18,7 +18,7 @@ from .models.trading import (
     ResourceType,
     TeamMine,
     TeamMineItem,
-    TypeType
+    TypeType,
 )
 from .game_loop import SETTINGS
 from . import api_consumer
@@ -48,7 +48,6 @@ class ActionInfo(BaseModel):
             elif isinstance(value, dict):
                 self.clean_message(value)
         return data
-
 
     def broadcast_message(self):
         if self.status == "ok":
@@ -212,9 +211,10 @@ def handle_mine_scan(
                             "miner_type": SETTINGS.miner_type_ids[mine_item.item.name],
                             "miner_type_name": mine_item.item.get_name_display(),
                             "amount": item.amount,
-                            "effective": SETTINGS.miner_factors[mine_item.item.name] * item.amount,
+                            "effective": SETTINGS.miner_factors[mine_item.item.name]
+                            * item.amount,
                         },
-                    }
+                    },
                 )
 
             changes.append(mine_item)
@@ -224,7 +224,9 @@ def handle_mine_scan(
         item__currency=team_mines[0].mine.currency, item__type=TypeType.COIN
     )
     mine_money = round(team_mines[0].money * MINE_OFFLOAD_PERCENT)
-    received_money = mine_money - player_wallet.amount if mine_money > player_wallet.amount else 0
+    received_money = (
+        mine_money - player_wallet.amount if mine_money > player_wallet.amount else 0
+    )
     player_wallet.amount += received_money
     mine.money = F("money") - received_money
     mine.save()
@@ -244,7 +246,7 @@ def handle_mine_scan(
                     "money": mine.money,
                     "label": player.name or None,
                 },
-            }
+            },
         )
 
     changes.append(player_wallet)
@@ -278,8 +280,12 @@ def get_resource_price(team_mines: QuerySet[TeamMine], resource: Item) -> int:
     if resource.name == ResourceType.A:
         return bijl_price
 
-    tandwiel_price = get_miner_price(team_mine, MinerType.B.value) - bijl_price
-    if resource.name == ResourceType.B:
-        return tandwiel_price
+    base_tandwiel = get_miner_price(team_mine, MinerType.B.value)
+    tandwiel_price = base_tandwiel - bijl_price
 
-    return get_miner_price(team_mine, MinerType.C.value) - tandwiel_price
+    if resource.name == ResourceType.B:
+        return max(tandwiel_price, base_tandwiel)
+
+    base_bulldozer = get_miner_price(team_mine, MinerType.C.value)
+    bulldozer_price = base_tandwiel - tandwiel_price
+    return max(base_bulldozer, bulldozer_price)
