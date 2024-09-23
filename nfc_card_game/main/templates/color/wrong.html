@@ -14,17 +14,13 @@
   <div class="container p-2 h-100">
     <div class="d-flex flex-column align-items-stretch accordion card shadow h-100">
       
-      <div class="card-header align-items-center">
-        <h4 class="m-0">Post gescanned</h4>
-      </div>
-      <div class="card-body flex-grow-1" style="background-color: {{ post_color }}">
-
+      <div class="card-body flex-grow-1 d-flex align-items-center" style="background-color: {{ post_color }}">
+        <h4 class="m-auto text-center">Post gescanned</h4>
+        
       </div>
 
-      <div class="card-header align-items-center">
-        <h4 class="m-0">{{ player.name }}'s kleur</h4>
-      </div>
-      <div class="card-body flex-grow-1" style="background-color: {{ player.color }}">
+      <div class="card-body flex-grow-1 d-flex align-items-center" style="background-color: {{ player.color }}">
+        <h4 class="m-auto text-center">{{ player.name }}'s kleur</h4>
         
       </div>
     </div>

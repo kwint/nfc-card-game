@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
+from nfc_card_game.main.color_match.models import ColorMatchSettings
 from nfc_card_game.main.models.activities import Activity
 from nfc_card_game.main.models.game_settings import GameSettings
 from nfc_card_game.main.models.trading import (
@@ -22,6 +23,11 @@ from nfc_card_game.main.models.player import Team, Player
 @admin.register(GameSettings)
 class GameModeAdmin(admin.ModelAdmin):
     list_display = ["mode"]
+
+
+@admin.register(ColorMatchSettings)
+class ColorMatchSettingsAdmin(admin.ModelAdmin):
+    list_display = ["game_state"]
 
 
 @admin.register(Activity)

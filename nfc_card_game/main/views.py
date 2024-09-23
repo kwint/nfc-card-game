@@ -5,16 +5,8 @@ from django.db.models import Sum
 from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_list_or_404, get_object_or_404, render
 
-from nfc_card_game.main.color import (
-    ALL_COLOR_UUID,
-    COLOR_HOME_UUID,
-    COLOR_JOKER_UUID,
-    COLOR_UUID,
-    give_player_color,
-    post_correct_color,
-    post_wrong_color,
-    remove_player_color,
-)
+from nfc_card_game.main.color_match.color import handle_color_player
+from nfc_card_game.main.color_match.color import post_color
 from nfc_card_game.main.forms import PlayerForm
 from nfc_card_game.main.models.activities import Activity
 from nfc_card_game.main.models.game_settings import GameSettings
@@ -35,6 +27,7 @@ REL_SELL_OPTIONS = {1: "100%", 0.5: "50%", 0.25: "25%"}
 
 def index(request):
     return HttpResponse("Scan een kaartje met je telefoon!")
+
 
 def thanks(request, card_uuid):
     return render(request, "thanks.html")
@@ -73,21 +66,6 @@ def handle_activities_player(
             "title": game_mode,
         },
     )
-
-
-def handle_color_player(request: HttpRequest, player: Player) -> HttpResponse:
-    post_uuid = request.session.get("post")
-    if COLOR_HOME_UUID == post_uuid:
-        return give_player_color(request, player)
-
-    if COLOR_JOKER_UUID == post_uuid:
-        return remove_player_color(request, player)
-
-    if color := COLOR_UUID.get(post_uuid):
-        if color == player.color:
-            return post_correct_color(request, player, str(color))
-
-        return post_wrong_color(request, player, str(color))
 
 
 def handle_trading_player_post(request, player: Player, items, player_item):
@@ -232,16 +210,6 @@ def post_trading(request, card_uuid: str) -> HttpResponse:
     request.session.pop("mine", None)
 
     return render(request, "trading/post.html", {"post": post, "buys": buys})
-
-
-def post_color(request, card_uuid: str) -> HttpResponse:
-    if card_uuid in ALL_COLOR_UUID:
-        request.session["post"] = card_uuid
-        return render(
-            request, "msg.html", {"text": f"logged in as {ALL_COLOR_UUID[card_uuid]}"}
-        )
-
-    return render(request, "msg.html", {"text": "Geen kleur gevonden op deze kaart!"})
 
 
 def post_activities(request: HttpRequest, card_uuid: str) -> HttpResponse:

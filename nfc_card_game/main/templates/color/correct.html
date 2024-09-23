@@ -14,22 +14,19 @@
   <div class="container p-2 h-100">
     <div class="d-flex flex-column align-items-stretch accordion card shadow h-100">
       
-      <div class="card-header align-items-center">
-        <h4 class="m-0">Post gescanned</h4>
-      </div>
-      <div class="card-body flex-grow-1" style="background-color: {{ post_color }}">
+      
+      <div class="card-body flex-grow-1 d-flex align-items-center" style="background-color: {{ post_color }}">
+        <div class="flex-grow-1 text-center">
+        <h4 class="p-3 ">Hupakee, dat is de goede!</h4>
 
-      </div>
-
-      <div class="card-header align-items-center">
-        <h4 class="m-0">Mooi werk {{ player.name }}!</h4>
-      </div>
-      <div class="card-body flex-grow-1">
-        <h1>  
+        <h4 class="p-3 ">Lekker bezig {{ player.name }}!</h4>
+        <h1 class="p-3 ">  
           <i style="width: 100px;" class="bi bi-check-all"></i>
           Aantal punten: {{ player.color_points}}
         </h1>
       </div>
+      </div>
+
     </div>
 
   </div>

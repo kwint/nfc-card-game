@@ -3,7 +3,7 @@ from django.db.models import Sum
 from django.http import Http404, HttpRequest, JsonResponse
 from django.shortcuts import get_list_or_404, get_object_or_404, render
 
-from nfc_card_game.main.color import (
+from nfc_card_game.main.color_match.color import (
     COLOR_HOME_UUID,
     COLOR_JOKER_UUID,
     COLOR_UUID,
@@ -68,13 +68,15 @@ def describe_mine(mine: Mine | int):
     for team_mine in mine.teammine_set.all():
         data_items = []
         for item in team_mine.teammineitem_set.all().order_by("item_id"):
-            data_items.append({
-                "name": item.item.name,
-                "miner_type": SETTINGS.miner_type_ids[item.item.name],
-                "miner_type_name": item.item.get_name_display(),
-                "amount": item.amount,
-                "effective": SETTINGS.miner_factors[item.item.name] * item.amount,
-            })
+            data_items.append(
+                {
+                    "name": item.item.name,
+                    "miner_type": SETTINGS.miner_type_ids[item.item.name],
+                    "miner_type_name": item.item.get_name_display(),
+                    "amount": item.amount,
+                    "effective": SETTINGS.miner_factors[item.item.name] * item.amount,
+                }
+            )
 
         data_teams[team_mine.team_id] = {
             "money": team_mine.money,

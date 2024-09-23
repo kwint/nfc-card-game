@@ -12,23 +12,20 @@
 
 <body>
   <div class="container p-2 h-100">
-    <div class="d-flex flex-column align-items-stretch accordion card shadow h-100">      
-      <div class="card-header align-items-center">
-        <h4 class="m-0">Post gescanned</h4>
-      </div>
-      <div class="card-body flex-grow-1">
+    <div class="d-flex flex-column align-items-stretch accordion card shadow h-100">
+      
+      <div class="card-body flex-grow-1 d-flex align-items-center" style="background-color: {{ post_color }}">
         <img class="img-fluid" src="{% static '/images/joker.jpg' %}"></img>
 
       </div>
 
-      <div class="card-header align-items-center">
-        <h4 class="m-0">{{ player.name }} heeft geen kleur</h4>
+      <div class="card-body flex-grow-1 d-flex flex-column align-items-center" style="background-color: {{ player.color }}">
+        <h1 class="m-5">{{ player.name }} heeft geen meer kleur!</h4>
+          <h4 class="m-5">Ga terug naar de thuispost om er eentje op te halen!</h2>
       </div>
-      <div class="card-body flex-grow-1" style="height: 100px">
-      </div>
-    </div>
-
   </div>
+
+</div>
 </body>
 
 
