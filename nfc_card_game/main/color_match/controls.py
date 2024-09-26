@@ -1,5 +1,6 @@
 from django.http import HttpRequest, HttpResponse
 
+from nfc_card_game.main.color_match.color import color_overview
 from nfc_card_game.main.color_match.models import (
     ColorMatchGameState,
     ColorMatchSettings,
@@ -16,7 +17,7 @@ def reset_and_start_game(request: HttpRequest) -> HttpResponse:
     game_settings.game_state = ColorMatchGameState.RUNNING
     game_settings.save()
 
-    return HttpResponse("Color game resetted, new game can be started imediatly!")
+    return color_overview(request)
 
 
 def stop_game(request: HttpRequest) -> HttpResponse:
@@ -24,7 +25,7 @@ def stop_game(request: HttpRequest) -> HttpResponse:
     game_settings.game_state = ColorMatchGameState.STOPPED
     game_settings.save()
 
-    return HttpResponse("Color game stopped")
+    return color_overview(request)
 
 
 def start_game(request: HttpRequest) -> HttpResponse:
@@ -32,4 +33,4 @@ def start_game(request: HttpRequest) -> HttpResponse:
     game_settings.game_state = ColorMatchGameState.RUNNING
     game_settings.save()
 
-    return HttpResponse("Color game started, this action did <b>not</b> reset points")
+    return color_overview(request)

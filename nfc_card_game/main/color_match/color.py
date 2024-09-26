@@ -111,7 +111,10 @@ def color_overview(request: HttpRequest) -> HttpResponse:
         rank += rank_offset
         rank_offset = 0
 
-    return render(request, "color/overview.html", {"player_infos": ranking})
+    running = ColorMatchSettings.object().game_state == ColorMatchGameState.RUNNING
+    return render(
+        request, "color/overview.html", {"player_infos": ranking, "running": running}
+    )
 
 
 def post_color(request, card_uuid: str) -> HttpResponse:
