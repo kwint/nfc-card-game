@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block title %}{{ player.name }}{% endblock %}
+
+{% block content %}
+<head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.0/font/bootstrap-icons.css">
+  <link rel="shortcut icon"  href="{% static '/images/favicon.png' %}">
+</head>
+
+<body>
+  <div class="container p-2 h-100">
+    <div class="accordion shadow h-100 p-2">
+      <p>
+          <h1>Kleurenpasjesspel</h1>
+          <h3>De pasjes en het spel</h3>
+          Iedere speler krijgt een pasje. Op dit pasje staat iets eetbaars geschreven, dit is de nickname van de speler. Onder deze naam is de score van de speler te zienS
+      </p>
+      <p>
+          De leiding scant ieder een van de volgende pasjes, en neemt dan de bijbehordende kleur aan:
+          <ul>
+          <li>Thuis: spelers kunnen bij jou een kleur ophalen. Als ze al een kleur hebben krijgen ze niet een nieuwe</li>
+          <li>Een kleur: deze leiding verspreiden zich door het bos. De spelers proberen jou te tikken, wanneer ze dat doen mogen ze hun pasje scannen. Als jij dezelfde kleur hebt als de speler krijgt de speler een punt</li>
+          <li>Joker: Jij doet je voor als een leiding met een kleur, maar wanneer er bij jou een pasje wordt gescand verdwijnt de kleur van een speler en moeten ze terug naar de thuispost</li>
+        </ul>
+          Wanneer een speler een leiding heeft gescand met dezelfde kleur krijgt de speler een punt en moet er een nieuwe kleur worden opgehaald bij de thuispost.<br>
+          Zorg er voor dat je genoeg leiding hebt om alle kleuren (rood, blauw, groen, geel) te bemensen, het spel deelt namelijk altijd alle 4 de kleuren uit.<br>
+          Leiding in het bos kan uiteraard wisselen van kleur/joker. 
+      </p>
+      <p>
+        <h3>Score en controle knoppen</h3>
+        Op <a href={% url 'color_overview' %}>https://www.nfc.qvdijk.nl/color/overview</a> vind je een overzicht van de scores en knoppen om het spel te stoppen en de score te resetten.
+      </p>
+      <p>
+        De scores zijn gerangschikt op zo'n manier dat wanneer twee spelers dezelfde score hebben, ze een gelijke rang hebben (dwz de ranglijst houdt rekening met een gedeelde eerste plaats).
+      </p>
+      <p>
+        Door op "Disable" te drukken stop je het spel, iedere keer dat iemand dan een pasje scant verschijnt de melding dat het spel is gestopt. Dat is handig voor <s>leiding</s>spelers die je fluitje niet horen.
+      </p>
+      <p>
+        Wanneer het spel is gestopt kan je op "Reset score" drukken om iedereens score te resetten, dit haalt ook de verkregen kleur weg bij spelers.
+      </p>
+      <p>
+        Om het spel weer te starten druk je op "Enable"
+      </p>
+      <p>
+        Deze knoppen zijn niet beveiligd met een wachtwoord, dus best om bovenstaande link alleen met leiding te delen.
+      </p>
+
+      <p>
+        <h3>Pro tip: niet duizend tabbladen open</h3>
+        Iedere keer wanneer een pasje wordt gescand opent je browser waarschijnlijk een nieuw tabblad. Om dit te voorkomen kan je deze website toevoegen aan je home screen en dan kiezen voor "installeren". 
+        <a href="https://support.google.com/chrome/answer/9658361?hl=en&co=GENIE.Platform%3DAndroid">Instructies voor chrome</a> |
+        <a href="https://web.dev/learn/pwa/installation#ios_and_ipados_installation">Instructies voor iPhone</a>
+
+      </p>
+    </div>
+
+  </div>
+</body>
+
+
+{% endblock content %}
+

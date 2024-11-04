@@ -125,3 +125,7 @@ def post_color(request, card_uuid: str) -> HttpResponse:
         )
 
     return render(request, "msg.html", {"text": "Geen kleur gevonden op deze kaart!"})
+
+
+def rules(request):
+    return render(request, "color/rules.html")

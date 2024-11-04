@@ -1,5 +1,5 @@
 from pathlib import Path
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from nfc_card_game.main.models.player import Player
 
 
