@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block title %}{{ player.name }}{% endblock %}
+
+{% block content %}
+<head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.0/font/bootstrap-icons.css">
+  <link rel="shortcut icon"  href="{% static '/images/favicon.png' %}">
+</head>
+
+<body>
+  <div class="container h-100">
+
+    <div class="d-flex flex-column align-items-stretch accordion card shadow h-100">
+        <table class="table table-striped table-responsive">
+            <thead>
+              <tr>
+                <th>Speler</th>
+                <th>Aantal vossen</th>
+                <th>Vossen</th>
+              <tr>
+            </thead>
+            <tbody id="team_table">
+              {% for player_info in player_infos %}
+                <tr>
+                  <td>{{ player_info.0 }}</td>
+                  <td>{{ player_info.1 }}</td>
+                  <td>{{ player_info.2 }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+    </div>
+
+  </div>
+</body>
+
+
+{% endblock content %}
+

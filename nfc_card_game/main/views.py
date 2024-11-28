@@ -247,7 +247,27 @@ def dashboard(request: HttpRequest) -> HttpResponse:
     return render(request, "trading/dashboard.html", data)
 
 
-def clear_session(request: HttpRequest) -> HttpRequest:
+def clear_session(request: HttpRequest) -> HttpResponse:
     request.session.pop("post", None)
     request.session.pop("mine", None)
     return render(request, "msg.html", {"text": "Cleared session"})
+
+
+def vossenjacht(request: HttpRequest) -> HttpResponse:
+    players = Player.objects.all()
+
+    overview = []
+    for player in players:
+        num_activities = player.activities.count()
+        if not num_activities:
+            continue
+        overview.append(
+            (
+                player.name,
+                num_activities,
+                ", ".join([str(activity) for activity in player.activities.all()]),
+            )
+        )
+    overview = sorted(overview, key=lambda x: x[1], reverse=True)
+
+    return render(request, "activities/all.html", {"player_infos": overview})
